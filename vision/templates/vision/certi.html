@@ -1,0 +1,229 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        @page {
+            size: letter landscape;
+            margin: 0;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            font-family: 'Georgia', serif;
+            background-color: #FDFCF0;
+            /* Elegant Ivory Background */
+            color: #2c3e50;
+            /* Deep Charcoal for readability */
+        }
+
+        /* The Heavy Frame */
+        .outer-frame {
+            position: absolute;
+            top: 20pt;
+            left: 20pt;
+            right: 20pt;
+            bottom: 20pt;
+            border: 6pt double #C5A059;
+            /* Classic double-line gold border */
+            background-color: #ffffff;
+            box-shadow: inset 0 0 50pt rgba(197, 160, 89, 0.1);
+            /* Subtle inner glow */
+        }
+
+        .inner-content {
+            height: 100%;
+            padding: 40pt;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+            /* Optional: Lightly overlay your logo as a watermark */
+            background-image: url("{% static 'vision/image/TRjcertificate.png' %}");
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: 40%;
+            opacity: 0.95;
+        }
+
+        /* Top Bar */
+        .header-meta {
+            position: absolute;
+            top: 10pt;
+            left: 10%;
+            right: 10%;
+            display: flex;
+            justify-content: space-between;
+            font-size: 10pt;
+            font-weight: bold;
+            color: #C5A059;
+            text-transform: uppercase;
+            letter-spacing: 1pt;
+        }
+
+        /* Title Styling */
+        .title-section {
+            text-align: center;
+            margin-top: 20pt;
+        }
+
+        .main-title {
+            font-size: 48pt;
+            letter-spacing: 8pt;
+            margin: 0;
+            color: #1a252f;
+            text-transform: uppercase;
+        }
+
+        .sub-title {
+            font-size: 14pt;
+            letter-spacing: 5pt;
+            color: #C5A059;
+            margin-top: 5pt;
+            font-weight: bold;
+        }
+
+        /* Student Name - The Focus */
+        .name-container {
+            text-align: center;
+            margin: 20pt 0;
+        }
+
+        .award-text {
+            font-size: 14pt;
+            font-style: italic;
+            margin-bottom: 10pt;
+        }
+
+        .student-name {
+            font-size: 55pt;
+            color: #C5A059;
+            font-family: 'Times New Roman', serif;
+            border-bottom: 1pt solid #C5A059;
+            padding: 0 50pt 5pt 50pt;
+            display: inline-block;
+        }
+
+        /* Body Text */
+        .description {
+            width: 80%;
+            font-size: 16pt;
+            line-height: 1.8;
+            text-align: center;
+            color: #34495e;
+        }
+
+        .highlight {
+            font-weight: bold;
+            color: #1a252f;
+        }
+
+        /* Signature Section */
+        .footer-signatures {
+            width: 90%;
+            /* Widened to push the Co-Founder signature to the right */
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0pt;
+            /* Pushed physically to the bottom of the content container */
+        }
+
+        .sig-box {
+            width: 180pt;
+            text-align: center;
+        }
+
+        .sig-line {
+            border-top: 1.5pt solid #2c3e50;
+            margin-bottom: 2pt;
+        }
+
+        .sig-label {
+            font-size: 11pt;
+            font-weight: bold;
+            text-transform: uppercase;
+            color: #C5A059;
+        }
+
+        /* High-Visibility QR Code */
+        .qr-section {
+            position: absolute;
+            bottom: 10pt;
+            /* Pushed down */
+            right: 10pt;
+            /* Pushed to the right corner */
+            text-align: center;
+        }
+
+        .qr-box {
+            width: 100pt;
+            height: 100pt;
+            border: 2pt solid #C5A059;
+            padding: 4pt;
+            background: white;
+        }
+
+        .qr-id {
+            font-size: 8pt;
+            margin-top: 5pt;
+            font-family: monospace;
+            color: #2c3e50;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="outer-frame">
+        <div class="inner-content">
+
+            <div class="header-meta">
+                <span>Certificate No: {{ student_id }}</span>
+                <span>Issue Date: {% now "F d, Y" %}</span>
+            </div>
+
+            <div class="title-section">
+                <h1 class="main-title">Certificate</h1>
+                <div class="sub-title">OF INTERNSHIP COMPLETION</div>
+            </div>
+
+            <div class="name-container">
+                <div class="award-text">This is to certify that</div>
+                <div class="student-name">{{ full_name }}</div>
+            </div>
+
+            <div class="description">
+                has successfully completed <span class="highlight">{{a-period }}</span>
+                <span class="highlight">{{ domain }}</span> Internship from {% now "M Y" %}
+                at <span class="highlight">TRHvision</span>, demonstrating exceptional dedication, technical
+                proficiency, and
+                professional commitment throughout all assigned responsibilities.
+            </div>
+
+            <div class="footer-signatures">
+                <div class="sig-box">
+                    <div class="sig-line"></div>
+                    <div class="sig-label">CEO & Founder</div>
+                </div>
+                <!--<div class="sig-box">
+                    <div class="sig-line"></div>
+                    <div class="sig-label">Co-Founder</div>
+                </div>-->
+            </div>
+
+            <div class="qr-section">
+                <img src="data:image/png;base64,{{ qr_code }}" class="qr-box">
+                <div class="qr-id">REF: {{ student_id }}</div>
+            </div>
+
+        </div>
+    </div>
+
+</body>
+
+</html>

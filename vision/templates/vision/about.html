@@ -1,0 +1,231 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About TRHvision | Analytics Agency & Academy</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="{% static 'vision/css/style.css' %}">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+    <style>
+        .about-header {
+            padding-top: 140px;
+            padding-bottom: 100px;
+            background: linear-gradient(135deg, #111111 0%, #2d2d2d 100%);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .pattern-dots {
+            background-image: radial-gradient(#ffffff 1px, transparent 1px);
+            background-size: 20px 20px;
+            opacity: 0.05;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .team-card {
+            border: none;
+            transition: all 0.3s ease;
+        }
+
+        .team-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .team-img-wrapper {
+            position: relative;
+            overflow: hidden;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+
+        .team-socials {
+            position: absolute;
+            bottom: -50px;
+            left: 0;
+            width: 100%;
+            background: rgba(255, 107, 0, 0.9);
+            padding: 10px;
+            text-align: center;
+            transition: bottom 0.3s ease;
+        }
+
+        .team-card:hover .team-socials {
+            bottom: 0;
+        }
+    </style>
+</head>
+
+<body class="bg-light">
+
+    <nav class="navbar navbar-expand-lg fixed-top shadow-sm custom-nav bg-white">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center gap-2" href="{% url 'index' %}">
+                <img src="{% static 'vision/image/logo.png' %}" alt="TRHvision Logo" class="brand-logo"
+                    onerror="this.style.display='none'">
+                <span class="brand-name fw-bold fs-4">TRHvision<span class="text-orange"></span></span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="menu">
+                <ul class="navbar-nav mx-auto gap-lg-4 fw-semibold">
+                    <li class="nav-item"><a class="nav-link" href="{% url 'index' %}">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'services' %}">Services</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'internship' %}">Internships <span
+                                class="badge bg-danger rounded-pill small ms-1"
+                                style="font-size: 0.6em; vertical-align: top;">New</span></a></li>
+                    <li class="nav-item"><a class="nav-link active" href="{% url 'about' %}">About</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'contact' %}">Contact</a></li>
+                </ul>
+                <div class="d-flex gap-2">
+                    <a href="{% url 'sigin' %}" class="btn btn-outline-dark rounded-pill px-4">Login</a>
+                    <a href="{% url 'contact' %}"
+                        class="btn btn-orange rounded-pill px-4 text-white hover-up shadow-sm">Get Started</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <header class="about-header text-center">
+        <div class="pattern-dots"></div>
+        <div class="container position-relative z-1" data-aos="fade-up">
+            <span class="badge rounded-pill bg-orange text-white mb-3 px-3 py-2 fw-bold ls-1">WHO WE ARE</span>
+            <h1 class="display-3 fw-800 mb-4">Bridging Insights & <span class="text-orange">Talent</span></h1>
+            <p class="lead text-white-50 mx-auto" style="max-width: 800px;">
+                TRHvision is a dual-purpose analytics firm. We empower enterprises with high-ROI data solutions while
+                shaping the next generation of data leaders through our immersive academy.
+            </p>
+        </div>
+    </header>
+
+    <section class="py-5 bg-white">
+        <div class="container py-5">
+            <div class="row align-items-center g-5">
+                <div class="col-lg-6" data-aos="fade-right">
+                    <h6 class="text-orange fw-bold ls-1 mb-3">OUR MISSION</h6>
+                    <h2 class="fw-800 display-5 mb-4">Democratizing Data Excellence</h2>
+                    <p class="text-muted fs-5 mb-4">
+                        In a world driven by data, the gap between raw numbers and actionable strategy is widening. At
+                        TRHvision, we build the bridges.
+                    </p>
+                    <div class="d-flex gap-4 mt-5">
+                        <div class="border-start border-4 border-orange ps-4">
+                            <h4 class="fw-bold">For Business</h4>
+                            <p class="text-muted small mb-0">We act as an extended analytics arm, delivering bespoke
+                                Dashboards and AI models.</p>
+                        </div>
+                        <div class="border-start border-4 border-primary ps-4">
+                            <h4 class="fw-bold">For Students</h4>
+                            <p class="text-muted small mb-0">We provide accessible, high-quality mentorship to launch
+                                tech careers.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6" data-aos="fade-left">
+                    <div class="row g-3">
+                        <div class="col-6">
+                            <div
+                                class="p-4 bg-light rounded-4 mb-3 text-center h-100 d-flex flex-column justify-content-center">
+                                <h2 class="display-4 fw-bold text-orange mb-0">50+</h2>
+                                <small class="text-muted fw-bold">Global Projects</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div
+                                class="p-4 bg-dark text-white rounded-4 mb-3 text-center h-100 d-flex flex-column justify-content-center">
+                                <h2 class="display-4 fw-bold mb-0">1.2k</h2>
+                                <small class="text-white-50 fw-bold">Students Trained</small>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="p-5 bg-soft-orange rounded-4 text-center">
+                                <h2 class="display-4 fw-bold text-dark mb-0">100%</h2>
+                                <small class="text-muted fw-bold">Commitment to Quality</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Values / Methodology -->
+    <section class="py-5 bg-light">
+        <div class="container py-5">
+            <div class="text-center mb-5" data-aos="fade-up">
+                <h6 class="text-orange fw-bold ls-1">OUR APPROACH</h6>
+                <h2 class="fw-800">From Data to Impact</h2>
+            </div>
+
+            <div class="row g-4 text-center">
+                <div class="col-md-3" data-aos="fade-up" data-aos-delay="0">
+                    <div class="bg-white p-4 rounded-4 shadow-sm h-100 hover-up">
+                        <div class="icon-box-large mb-3 text-orange"><i class="bi bi-search display-5"></i></div>
+                        <h5 class="fw-bold">1. Discover</h5>
+                        <p class="text-muted small">We analyze your core business objectives and identify key metrics.
+                        </p>
+                    </div>
+                </div>
+                <div class="col-md-3" data-aos="fade-up" data-aos-delay="100">
+                    <div class="bg-white p-4 rounded-4 shadow-sm h-100 hover-up">
+                        <div class="icon-box-large mb-3 text-primary"><i class="bi bi-filter-square display-5"></i>
+                        </div>
+                        <h5 class="fw-bold">2. Structure</h5>
+                        <p class="text-muted small">Raw data is cleaned, processed, and piped into scalable warehouses.
+                        </p>
+                    </div>
+                </div>
+                <div class="col-md-3" data-aos="fade-up" data-aos-delay="200">
+                    <div class="bg-white p-4 rounded-4 shadow-sm h-100 hover-up">
+                        <div class="icon-box-large mb-3 text-success"><i class="bi bi-graph-up-arrow display-5"></i>
+                        </div>
+                        <h5 class="fw-bold">3. Visualise</h5>
+                        <p class="text-muted small">Interactive dashboards bring hidden patterns to the surface.</p>
+                    </div>
+                </div>
+                <div class="col-md-3" data-aos="fade-up" data-aos-delay="300">
+                    <div class="bg-white p-4 rounded-4 shadow-sm h-100 hover-up">
+                        <div class="icon-box-large mb-3 text-info"><i class="bi bi-lightning-charge display-5"></i>
+                        </div>
+                        <h5 class="fw-bold">4. Accelerate</h5>
+                        <p class="text-muted small">Insights are translated into actionable strategies for growth.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-black text-white py-5 border-top border-secondary">
+        <div class="container text-center">
+            <p class="h4 mb-3">TRHvision<span class="text-orange"></span></p>
+            <p class="text-white-50 mb-1">📞 +91 8816847227 | 📧 hello@trhvision.in</p>
+            <hr class="border-secondary my-4">
+            <small class="text-white-50">© 2025 TRHvision. All Rights Reserved.</small>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({
+            duration: 800,
+            once: true
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,214 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us | TRHvision</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="{% static 'vision/css/style.css' %}">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+    <style>
+        .contact-header {
+            padding-top: 140px;
+            padding-bottom: 200px;
+            background: linear-gradient(135deg, #111111 0%, #2d2d2d 100%);
+            color: white;
+            position: relative;
+            margin-bottom: -150px;
+        }
+
+        .contact-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .custom-input {
+            border: 2px solid #eee;
+            border-radius: 12px;
+            padding: 15px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .custom-input:focus {
+            border-color: var(--accent-color);
+            box-shadow: none;
+        }
+
+        .info-box {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            height: 100%;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .info-box:hover {
+            transform: translateY(-5px);
+        }
+    </style>
+</head>
+
+<body class="bg-light">
+
+    <nav class="navbar navbar-expand-lg fixed-top shadow-sm custom-nav bg-white">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center gap-2" href="{% url 'index' %}">
+                <img src="{% static 'vision/image/logo.png' %}" alt="TRHvision Logo" class="brand-logo"
+                    onerror="this.style.display='none'">
+                <span class="brand-name fw-bold fs-4">TRHvision<span class="text-orange"></span></span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="menu">
+                <ul class="navbar-nav mx-auto gap-lg-4 fw-semibold">
+                    <li class="nav-item"><a class="nav-link" href="{% url 'index' %}">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'services' %}">Services</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'internship' %}">Internships <span
+                                class="badge bg-danger rounded-pill small ms-1"
+                                style="font-size: 0.6em; vertical-align: top;">New</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'about' %}">About</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="{% url 'contact' %}">Contact</a></li>
+                </ul>
+                <div class="d-flex gap-2">
+                    <a href="{% url 'sigin' %}" class="btn btn-outline-dark rounded-pill px-4">Login</a>
+                    <a href="{% url 'contact' %}"
+                        class="btn btn-orange rounded-pill px-4 text-white hover-up shadow-sm">Get Started</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <header class="contact-header text-center">
+        <div class="container position-relative z-1" data-aos="fade-up">
+            <span class="badge rounded-pill bg-orange text-white mb-3 px-3 py-2 fw-bold ls-1">GET IN TOUCH</span>
+            <h1 class="display-3 fw-800 mb-4">Let's Build <span class="text-orange">Together</span></h1>
+            <p class="lead text-white-50 mx-auto" style="max-width: 600px;">
+                Have a project in mind or want to join our academy? We're here to help you navigate your data journey.
+            </p>
+        </div>
+    </header>
+
+    <main class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="contact-card" data-aos="fade-up" data-aos-delay="100">
+                    <form class="row g-4" id="contactForm" method="POST" action="{% url 'contact' %}">
+                        {% csrf_token %}
+                        {% if messages %}
+                        {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                        {% endfor %}
+                        {% endif %}
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">First Name</label>
+                            <input type="text" name="name" class="form-control custom-input" required
+                                placeholder="John Doe">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Email Address</label>
+                            <input type="email" name="email" class="form-control custom-input" required
+                                placeholder="john@example.com">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Phone Number</label>
+                            <input type="tel" name="phone" class="form-control custom-input" pattern="[0-9]{10}"
+                                required placeholder="9876543210">
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">I am a...</label>
+                            <select name="role" class="form-select custom-input" required>
+                                <option selected disabled>Select Role</option>
+                                <option value="Student">Student (Looking for Internship)</option>
+                                <option value="Business">Business (Looking for Services)</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-bold">Subject</label>
+                            <input type="text" name="subject" class="form-control custom-input" required
+                                placeholder="Subject">
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label fw-bold">Message</label>
+                            <textarea name="message" rows="4" class="form-control custom-input" required
+                                placeholder="Tell us more about your requirements..."></textarea>
+                        </div>
+
+                        <div class="col-12 text-center mt-4">
+                            <button type="submit" class="btn btn-dark btn-lg px-5 rounded-pill fw-bold hover-up w-100">
+                                Send Message <i class="bi bi-send-fill ms-2"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4 mt-5">
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+                <div class="info-box">
+                    <div class="fs-1 text-orange mb-3"><i class="bi bi-envelope-at"></i></div>
+                    <h5 class="fw-bold">Email Us</h5>
+                    <p class="text-muted small">support@trhvision.com</p>
+                </div>
+            </div>
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
+                <div class="info-box">
+                    <div class="fs-1 text-primary mb-3"><i class="bi bi-telephone"></i></div>
+                    <h5 class="fw-bold">Call Us</h5>
+                    <p class="text-muted small">+91 8816847227</p>
+                </div>
+            </div>
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="400">
+                <div class="info-box">
+                    <div class="fs-1 text-success mb-3"><i class="bi bi-geo-alt"></i></div>
+                    <h5 class="fw-bold">Visit Us</h5>
+                    <p class="text-muted small">Global HQ, India</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-black text-white py-5 mt-5">
+        <div class="container text-center">
+            <p class="h4 mb-3">TRHvision<span class="text-orange"></span></p>
+            <p class="text-white-50 mb-1">📞 +91 8816847227 | 📧 support@trhvision.com</p>
+            <hr class="border-secondary my-4">
+            <small class="text-white-50">© 2025 TRHvision. All Rights Reserved.</small>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({
+            duration: 800,
+            once: true
+        });
+
+        // Simple form handling: Removed, using Django View instead.
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,755 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TRHvision | Global Digital Solutions & Internship Academy</title>
+    <meta name="description" content="TRHvision — your trusted partner for web development, data analytics, and paid internships. Build real skills, earn verified certificates, and win rewards.">
+    <meta name="keywords" content="internship, web development, data analytics, python, paid internship India, certificates">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="{% static 'vision/css/style.css' %}">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+    <style>
+        *, *::before, *::after { box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; }
+
+        /* ── Hero ─────────────────────────────────────────── */
+        .hero-split {
+            background: linear-gradient(135deg, rgba(14,165,233,.05) 0%, #fff 100%);
+            padding-top: 120px;
+            padding-bottom: 80px;
+            overflow: hidden;
+        }
+        .hero-blob { position:absolute; z-index:0; opacity:.1; filter:blur(40px); border-radius:50%; }
+        .blob-1 { top:-50px; right:-50px; width:300px; height:300px; background:#0ea5e9; }
+        .blob-2 { bottom:-30px; left:-30px; width:200px; height:200px; background:#000; }
+
+        .stat-box {
+            background:#fff; border-radius:16px; padding:20px;
+            box-shadow:0 10px 30px rgba(0,0,0,.05);
+            transition:transform .3s;
+        }
+        .stat-box:hover { transform:translateY(-5px); }
+        .service-pill {
+            background:rgba(14,165,233,.1); color:#0ea5e9;
+            padding:8px 16px; border-radius:50px; font-weight:600;
+            display:inline-block; margin-bottom:15px;
+        }
+
+        /* ── Dual cards ───────────────────────────────────── */
+        .dual-card {
+            border:none; border-radius:20px; overflow:hidden;
+            transition:all .4s ease; height:100%; position:relative;
+        }
+        .dual-card:hover { transform:translateY(-10px); box-shadow:0 20px 40px rgba(0,0,0,.1); }
+
+        /* ── How-It-Works steps ───────────────────────────── */
+        .step-card {
+            background:#fff; border-radius:18px; padding:2rem 1.5rem;
+            border:1px solid #f1f5f9; box-shadow:0 4px 20px rgba(0,0,0,.04);
+            text-align:center; transition:transform .2s, box-shadow .2s;
+        }
+        .step-card:hover { transform:translateY(-6px); box-shadow:0 12px 32px rgba(0,0,0,.09); }
+        .step-num {
+            width:52px; height:52px; border-radius:50%;
+            background:linear-gradient(135deg,#0ea5e9,#0284c7);
+            color:#fff; font-size:1.2rem; font-weight:900;
+            display:flex; align-items:center; justify-content:center;
+            margin:0 auto 1rem;
+        }
+
+        /* ── Why Us ───────────────────────────────────────── */
+        .why-item {
+            display:flex; align-items:flex-start; gap:1rem;
+            padding:1.2rem 1.4rem; background:#fff;
+            border-radius:14px; border:1px solid #f1f5f9;
+            box-shadow:0 2px 10px rgba(0,0,0,.04);
+            transition:transform .2s;
+        }
+        .why-item:hover { transform:translateX(5px); }
+        .why-icon {
+            width:44px; height:44px; border-radius:12px;
+            display:flex; align-items:center; justify-content:center;
+            font-size:1.25rem; flex-shrink:0;
+        }
+
+        /* ── Tech stack ───────────────────────────────────── */
+        .tech-stack-icon { font-size:2.5rem; opacity:.6; transition:.3s; }
+        .tech-stack-icon:hover { opacity:1; transform:scale(1.1); }
+
+        /* ── Stats ticker strip ───────────────────────────── */
+        .ticker-strip { background:#111; color:#fff; overflow:hidden; }
+        .ticker-inner {
+            display:flex; gap:4rem; animation:ticker 20s linear infinite;
+            white-space:nowrap; padding:.85rem 0;
+        }
+        @keyframes ticker {
+            0%   { transform:translateX(0); }
+            100% { transform:translateX(-50%); }
+        }
+        .ticker-item { display:flex; align-items:center; gap:.6rem; font-size:.85rem; font-weight:600; }
+
+        /* ── Testimonial ──────────────────────────────────── */
+        .testi-card {
+            background:#fff; border-radius:18px; padding:1.8rem;
+            border:1px solid #e8ecf0; box-shadow:0 4px 20px rgba(0,0,0,.05);
+        }
+        .testi-avatar {
+            width:44px; height:44px; border-radius:50%;
+            background:linear-gradient(135deg,#0ea5e9,#0284c7);
+            color:#fff; font-weight:800; font-size:1rem;
+            display:flex; align-items:center; justify-content:center;
+        }
+
+        /* ── Robot widget (fixed, applied globally) ────────── */
+        #dc-robot-btn {
+            position:fixed; bottom:28px; right:28px;
+            width:64px; height:64px; border-radius:50%;
+            background:linear-gradient(135deg,#10b981,#0f766e);
+            border:none; cursor:pointer; z-index:9998;
+            box-shadow:0 8px 32px rgba(16,185,129,.5);
+            display:flex; align-items:center; justify-content:center;
+            animation:robotBob 2.5s ease-in-out infinite;
+        }
+        #dc-robot-btn::before {
+            content:''; position:absolute; inset:-6px; border-radius:50%;
+            border:2px solid rgba(16,185,129,.45);
+            animation:robotRing 2s ease-out infinite;
+        }
+        .robot-face { font-size:1.9rem; line-height:1; pointer-events:none; animation:robotBlink 4s ease-in-out infinite; }
+        @keyframes robotBob   { 0%,100%{transform:translateY(0)}  50%{transform:translateY(-8px)} }
+        @keyframes robotBlink { 0%,48%,52%,100%{opacity:1}        50%{opacity:.1} }
+        @keyframes robotRing  { 0%{transform:scale(1);opacity:.7} 100%{transform:scale(1.65);opacity:0} }
+
+        #dc-robot-tooltip {
+            position:fixed; bottom:36px; right:106px;
+            background:#1e293b; color:#fff;
+            font-size:.75rem; font-weight:700; padding:7px 13px;
+            border-radius:9px; white-space:nowrap; z-index:9998;
+            box-shadow:0 4px 16px rgba(0,0,0,.3);
+            animation:tooltipPop .4s ease; pointer-events:none;
+        }
+        #dc-robot-tooltip::after {
+            content:''; position:absolute; top:50%; right:-7px;
+            transform:translateY(-50%); border:7px solid transparent;
+            border-left-color:#1e293b;
+        }
+        @keyframes tooltipPop { from{opacity:0;transform:translateX(8px)} to{opacity:1;transform:translateX(0)} }
+
+        #dc-panel {
+            position:fixed; bottom:106px; right:28px;
+            width:min(420px,calc(100vw - 32px));
+            max-height:calc(100vh - 140px); overflow-y:auto;
+            background:linear-gradient(160deg,#0f172a 0%,#1e3a5f 55%,#064e3b 100%);
+            border-radius:22px;
+            box-shadow:0 24px 60px rgba(0,0,0,.5), 0 0 0 1px rgba(255,255,255,.06);
+            z-index:9997;
+            transform:translateY(30px) scale(.96); opacity:0; pointer-events:none;
+            transition:transform .35s cubic-bezier(.34,1.56,.64,1), opacity .3s ease;
+        }
+        #dc-panel.open { transform:translateY(0) scale(1); opacity:1; pointer-events:all; }
+        #dc-panel::-webkit-scrollbar { width:4px; }
+        #dc-panel::-webkit-scrollbar-thumb { background:rgba(255,255,255,.15); border-radius:4px; }
+
+        .dcp-header { display:flex; align-items:center; justify-content:space-between; padding:1.2rem 1.4rem 1rem; border-bottom:1px solid rgba(255,255,255,.08); }
+        .dcp-header-left { display:flex; align-items:center; gap:.7rem; }
+        .dcp-robot-sm { width:38px; height:38px; border-radius:12px; background:rgba(16,185,129,.2); display:flex; align-items:center; justify-content:center; font-size:1.25rem; }
+        .dcp-title { font-size:.95rem; font-weight:800; color:#fff; margin:0; }
+        .dcp-sub   { font-size:.68rem; color:rgba(255,255,255,.4); margin:2px 0 0; }
+        .dcp-close { width:30px; height:30px; border-radius:50%; background:rgba(255,255,255,.08); border:none; color:#fff; cursor:pointer; font-size:1rem; display:flex; align-items:center; justify-content:center; transition:background .15s; }
+        .dcp-close:hover { background:rgba(255,255,255,.18); }
+        .dcp-body { padding:1.1rem 1.4rem 1.5rem; }
+        .dcp-streak-row { display:flex; align-items:center; justify-content:space-between; background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.09); border-radius:14px; padding:.9rem 1.1rem; margin-bottom:1rem; }
+        .dcp-streak-num { font-size:2.2rem; font-weight:900; color:#10b981; line-height:1; }
+        .dcp-streak-lbl { font-size:.57rem; letter-spacing:1.5px; text-transform:uppercase; color:rgba(255,255,255,.35); }
+        .dcp-best-val { font-size:1.2rem; font-weight:900; color:#fbbf24; }
+        .dcp-best-lbl { font-size:.57rem; letter-spacing:1px; text-transform:uppercase; color:rgba(255,255,255,.3); }
+        .dcp-tracks { display:grid; grid-template-columns:1fr 1fr; gap:.6rem; margin-bottom:1rem; }
+        .dcp-track { background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.1); border-radius:12px; padding:.7rem .9rem; display:flex; align-items:center; gap:.6rem; transition:background .2s; }
+        .dcp-track:hover { background:rgba(255,255,255,.12); }
+        .dcp-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; animation:pDot 2s ease-in-out infinite; }
+        @keyframes pDot { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(1.5)} }
+        .dcp-track-name   { font-size:.72rem; font-weight:700; color:#fff; margin:0; }
+        .dcp-track-status { font-size:.6rem; color:rgba(255,255,255,.4); margin:0; }
+        .dcp-hm-label { font-size:.57rem; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,.3); margin:0 0 .45rem; }
+        .dcp-heatmap  { display:flex; gap:3px; }
+        .dcp-hm-dot   { width:12px; height:12px; border-radius:2px; flex-shrink:0; }
+        .dcp-milestones { display:flex; flex-wrap:wrap; gap:.4rem; margin:.9rem 0; }
+        .dcp-ms { font-size:.68rem; font-weight:700; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.15); border-radius:50px; padding:3px 10px; color:rgba(255,255,255,.65); }
+        .dcp-ms.gold { background:rgba(251,191,36,.12); border-color:rgba(251,191,36,.35); color:#fbbf24; }
+        .dcp-gift { background:linear-gradient(90deg,#451a03,#78350f); color:#fbbf24; border-radius:10px; padding:.65rem 1rem; font-size:.72rem; font-weight:700; margin:.5rem 0 1rem; display:flex; align-items:center; gap:.5rem; }
+        .dcp-cta { width:100%; background:linear-gradient(90deg,#10b981,#059669); color:#fff; font-weight:800; font-size:.88rem; border:none; border-radius:12px; padding:13px; cursor:pointer; text-decoration:none; display:block; text-align:center; animation:dcp-pulse 2.5s ease-in-out infinite; transition:transform .15s; }
+        .dcp-cta:hover { transform:scale(1.02); color:#fff; }
+        @keyframes dcp-pulse { 0%{box-shadow:0 0 0 0 rgba(16,185,129,.5)} 70%{box-shadow:0 0 0 14px rgba(16,185,129,0)} 100%{box-shadow:0 0 0 0 rgba(16,185,129,0)} }
+    </style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════
+     NAVBAR
+     ══════════════════════════════════════════════ -->
+<nav class="navbar navbar-expand-lg fixed-top shadow-sm custom-nav bg-white">
+    <div class="container">
+        <a class="navbar-brand d-flex align-items-center gap-2" href="{% url 'index' %}">
+            <img src="{% static 'vision/image/logo.png' %}" alt="TRHvision Logo" class="brand-logo" onerror="this.style.display='none'">
+            <span class="brand-name fw-bold fs-4">TRHvision<span class="text-orange"></span></span>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="menu">
+            <ul class="navbar-nav mx-auto gap-lg-4 fw-semibold">
+                <li class="nav-item"><a class="nav-link active" href="{% url 'index' %}">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'services' %}">Services</a></li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'internship' %}">Internships
+                        <span class="badge bg-danger rounded-pill small ms-1" style="font-size:.6em;vertical-align:top;">New</span>
+                    </a>
+                </li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'about' %}">About</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'contact' %}">Contact</a></li>
+            </ul>
+            <div class="d-flex gap-2">
+                <a href="{% url 'sigin' %}" class="btn btn-outline-dark rounded-pill px-4">Login</a>
+                <a href="{% url 'contact' %}" class="btn btn-orange rounded-pill px-4 text-white hover-up shadow-sm">Get Started</a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- ══════════════════════════════════════════════
+     HERO
+     ══════════════════════════════════════════════ -->
+<section class="hero-split d-flex align-items-center" id="hero">
+    <div class="container position-relative">
+        <div class="hero-blob blob-1"></div>
+        <div class="hero-blob blob-2"></div>
+        <div class="row align-items-center g-5">
+            <div class="col-lg-6" data-aos="fade-right">
+                <span class="service-pill">Scale · Transform · Learn</span>
+                <h1 class="display-3 fw-800 mb-4 lh-tight">
+                    Innovating for <span class="text-orange">Business</span>.<br>
+                    Empowering <span class="text-primary">Careers</span>.
+                </h1>
+                <p class="lead text-muted mb-5">
+                    Your trusted partner for <strong>Web Development &amp; Data Analytics</strong> solutions,
+                    and a premier destination for <strong>Paid Internships</strong> that launch careers.
+                </p>
+                <div class="d-flex flex-wrap gap-3 mb-5">
+                    <a href="{% url 'services' %}" class="btn btn-dark btn-lg px-4 rounded-pill shadow-lg hover-up">
+                        <i class="bi bi-briefcase me-2"></i>Hire Our Experts
+                    </a>
+                    <a href="{% url 'internship' %}" class="btn btn-outline-orange btn-lg px-4 rounded-pill hover-up">
+                        <i class="bi bi-mortarboard me-2"></i>Join Internship
+                    </a>
+                </div>
+                <div class="d-flex align-items-center gap-4">
+                    <span class="bg-light rounded-circle border p-1"><i class="bi bi-check-circle-fill text-success fs-4"></i></span>
+                    <div>
+                        <p class="mb-0 fw-bold">Trusted by Global Clients</p>
+                        <small class="text-muted">From Startups to Enterprise</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6" data-aos="fade-left">
+                <div class="row g-4">
+                    <div class="col-6">
+                        <div class="stat-box mb-4">
+                            <h2 class="fw-bold text-orange mb-0"><span class="counter">15</span>+</h2>
+                            <small class="text-muted text-uppercase fw-bold">Projects Delivered</small>
+                        </div>
+                        <div class="stat-box bg-dark text-white">
+                            <h2 class="fw-bold mb-0"><span class="counter">250</span>+</h2>
+                            <small class="text-white-50 text-uppercase fw-bold">Students Trained</small>
+                        </div>
+                    </div>
+                    <div class="col-6 mt-5">
+                        <div class="stat-box mb-4 text-white" style="background:#0ea5e9;">
+                            <h2 class="fw-bold mb-0"><span class="counter">85</span>%</h2>
+                            <small class="text-white-50 text-uppercase fw-bold">Client Retention</small>
+                        </div>
+                        <div class="stat-box">
+                            <h2 class="fw-bold text-primary mb-0"><span class="counter">24</span>/7</h2>
+                            <small class="text-muted text-uppercase fw-bold">Global Support</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     TICKER STRIP
+     ══════════════════════════════════════════════ -->
+<div class="ticker-strip">
+    <div class="ticker-inner">
+        <!-- Duplicate for seamless loop -->
+        {% for _ in "12" %}
+        <span class="ticker-item"><i class="bi bi-check-circle-fill text-success"></i> Paid Internships</span>
+        <span class="ticker-item"><i class="bi bi-patch-check-fill text-warning"></i> Verified Certificates</span>
+        <span class="ticker-item"><i class="bi bi-graph-up-arrow text-info"></i> Data Analytics</span>
+        <span class="ticker-item"><i class="bi bi-code-slash text-orange"></i> Web Development</span>
+        <span class="ticker-item"><i class="bi bi-lightning-charge-fill text-success"></i> Daily Challenger — 500-Day Reward 🎁</span>
+        <span class="ticker-item"><i class="bi bi-people-fill text-primary"></i> 250+ Students Trained</span>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     ECOSYSTEM — For Business & Students
+     ══════════════════════════════════════════════ -->
+<section class="py-5 bg-white" id="ecosystem">
+    <div class="container py-5">
+        <div class="text-center mb-5" data-aos="fade-up">
+            <h6 class="text-orange fw-bold ls-1">OUR ECOSYSTEM</h6>
+            <h2 class="fw-800 display-5">A Platform Built for Impact</h2>
+            <p class="text-muted mx-auto" style="max-width:540px;">We serve two audiences with equal dedication — global enterprises and aspiring students.</p>
+        </div>
+        <div class="row g-4">
+            <!-- For Business -->
+            <div class="col-md-6" data-aos="fade-up" data-aos-delay="100">
+                <div class="dual-card bg-light p-5 h-100 position-relative">
+                    <div class="position-absolute top-0 end-0 p-4 opacity-25">
+                        <i class="bi bi-buildings display-1"></i>
+                    </div>
+                    <span class="badge bg-dark text-white mb-3 px-3 py-2">FOR BUSINESS</span>
+                    <h3 class="fw-bold mb-3">Enterprise Solutions</h3>
+                    <p class="text-muted mb-4 fs-5">Scalable digital solutions to drive your business forward globally. We specialize in:</p>
+                    <div class="row g-3 mb-5">
+                        <div class="col-sm-6">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="bg-white p-2 rounded shadow-sm"><i class="bi bi-code-slash text-info fs-4"></i></div>
+                                <span class="fw-bold text-dark">Web Development</span>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="bg-white p-2 rounded shadow-sm"><i class="bi bi-graph-up-arrow text-success fs-4"></i></div>
+                                <span class="fw-bold text-dark">Data Analysis</span>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="bg-white p-2 rounded shadow-sm"><i class="bi bi-laptop text-warning fs-4"></i></div>
+                                <span class="fw-bold text-dark">Dashboards</span>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="bg-white p-2 rounded shadow-sm"><i class="bi bi-server text-danger fs-4"></i></div>
+                                <span class="fw-bold text-dark">Backend APIs</span>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="{% url 'services' %}" class="btn btn-dark rounded-pill px-4">Explore Services <i class="bi bi-arrow-right ms-2"></i></a>
+                </div>
+            </div>
+            <!-- For Students -->
+            <div class="col-md-6" data-aos="fade-up" data-aos-delay="200">
+                <div class="dual-card bg-soft-orange p-5 h-100 position-relative">
+                    <div class="position-absolute top-0 end-0 p-4 opacity-25">
+                        <i class="bi bi-mortarboard display-1 text-orange"></i>
+                    </div>
+                    <span class="badge bg-orange text-white mb-3 px-3 py-2">FOR STUDENTS</span>
+                    <h3 class="fw-bold mb-3">Vision Academy</h3>
+                    <p class="text-dark mb-4 fs-5">Kickstart your career with hands-on experience and mentorship. Join our paid program.</p>
+                    <ul class="list-unstyled mb-5">
+                        <li class="mb-3 d-flex align-items-center"><i class="bi bi-check-circle-fill text-orange me-3 fs-5"></i><strong>Paid Internships</strong>&nbsp;with Stipend</li>
+                        <li class="mb-3 d-flex align-items-center"><i class="bi bi-check-circle-fill text-orange me-3 fs-5"></i><strong>Verified Certificates</strong></li>
+                        <li class="mb-3 d-flex align-items-center"><i class="bi bi-check-circle-fill text-orange me-3 fs-5"></i>Real-world Project Experience</li>
+                        <li class="mb-3 d-flex align-items-center"><i class="bi bi-check-circle-fill text-orange me-3 fs-5"></i>Mentorship from Industry Experts</li>
+                        <li class="mb-3 d-flex align-items-center"><i class="bi bi-check-circle-fill text-orange me-3 fs-5"></i>Daily Challenger — Build Habits &amp; Win Rewards 🏆</li>
+                    </ul>
+                    <a href="{% url 'internship' %}" class="btn btn-orange text-white rounded-pill px-4">Apply Now <i class="bi bi-arrow-right ms-2"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     HOW IT WORKS
+     ══════════════════════════════════════════════ -->
+<section class="py-5 bg-light" id="how-it-works">
+    <div class="container py-5">
+        <div class="text-center mb-5" data-aos="fade-up">
+            <h6 class="text-orange fw-bold ls-1">SIMPLE PROCESS</h6>
+            <h2 class="fw-800 display-5">How It Works</h2>
+            <p class="text-muted">Four simple steps from sign-up to certificate.</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-sm-6 col-lg-3" data-aos="fade-up" data-aos-delay="0">
+                <div class="step-card">
+                    <div class="step-num">1</div>
+                    <h6 class="fw-bold mb-2">Apply Online</h6>
+                    <p class="text-muted small mb-0">Fill out the internship application in under 2 minutes.</p>
+                </div>
+            </div>
+            <div class="col-sm-6 col-lg-3" data-aos="fade-up" data-aos-delay="100">
+                <div class="step-card">
+                    <div class="step-num">2</div>
+                    <h6 class="fw-bold mb-2">Get Enrolled</h6>
+                    <p class="text-muted small mb-0">Receive your student dashboard and access your learning roadmap.</p>
+                </div>
+            </div>
+            <div class="col-sm-6 col-lg-3" data-aos="fade-up" data-aos-delay="200">
+                <div class="step-card">
+                    <div class="step-num">3</div>
+                    <h6 class="fw-bold mb-2">Complete Tasks</h6>
+                    <p class="text-muted small mb-0">Work through real projects, track daily habits, submit your capstone.</p>
+                </div>
+            </div>
+            <div class="col-sm-6 col-lg-3" data-aos="fade-up" data-aos-delay="300">
+                <div class="step-card">
+                    <div class="step-num">4</div>
+                    <h6 class="fw-bold mb-2">Earn Certificate</h6>
+                    <p class="text-muted small mb-0">Download your verified certificate and unlock rewards.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     WHY CHOOSE US
+     ══════════════════════════════════════════════ -->
+<section class="py-5 bg-white" id="why-us">
+    <div class="container py-5">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-5" data-aos="fade-right">
+                <h6 class="text-orange fw-bold ls-1">WHY TRHVISION</h6>
+                <h2 class="fw-800 display-5 mb-4">Built Different.<br>Proven Results.</h2>
+                <p class="text-muted mb-4">We combine enterprise-grade digital solutions with a student-first mentorship model. Everything we build is measurable, trackable, and built to last.</p>
+                <a href="{% url 'about' %}" class="btn btn-dark rounded-pill px-5">Learn More <i class="bi bi-arrow-right ms-2"></i></a>
+            </div>
+            <div class="col-lg-7" data-aos="fade-left">
+                <div class="d-flex flex-column gap-3">
+                    <div class="why-item">
+                        <div class="why-icon" style="background:#f0fdf4;"><i class="bi bi-shield-check text-success fs-4"></i></div>
+                        <div>
+                            <h6 class="fw-bold mb-1">Verified Certifications</h6>
+                            <p class="text-muted small mb-0">Every certificate is blockchain-traceable and downloadable as PDF.</p>
+                        </div>
+                    </div>
+                    <div class="why-item">
+                        <div class="why-icon" style="background:#fff7ed;"><i class="bi bi-currency-rupee text-orange fs-4"></i></div>
+                        <div>
+                            <h6 class="fw-bold mb-1">Paid Internships with Stipend</h6>
+                            <p class="text-muted small mb-0">Earn while you learn — real stipends for committed learners.</p>
+                        </div>
+                    </div>
+                    <div class="why-item">
+                        <div class="why-icon" style="background:#eff6ff;"><i class="bi bi-lightning-charge-fill text-primary fs-4"></i></div>
+                        <div>
+                            <h6 class="fw-bold mb-1">Daily Challenger — 500-Day Reward 🎁</h6>
+                            <p class="text-muted small mb-0">Track daily habits across 4 tracks. Complete 500 days &amp; win ₹500 gift card.</p>
+                        </div>
+                    </div>
+                    <div class="why-item">
+                        <div class="why-icon" style="background:#fdf4ff;"><i class="bi bi-people-fill text-purple fs-4" style="color:#8b5cf6;"></i></div>
+                        <div>
+                            <h6 class="fw-bold mb-1">Expert Mentorship</h6>
+                            <p class="text-muted small mb-0">1-on-1 guidance from industry professionals throughout your journey.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     TECH STACK
+     ══════════════════════════════════════════════ -->
+<section class="py-4 bg-white border-top border-bottom" id="tech-stack">
+    <div class="container text-center py-3">
+        <p class="text-muted fw-bold mb-4 ls-1" style="font-size:.75rem;letter-spacing:2px;">POWERED BY MODERN TECHNOLOGIES</p>
+        <div class="d-flex justify-content-center flex-wrap gap-5 align-items-center">
+            <div class="text-center">
+                <i class="bi bi-filetype-py tech-stack-icon text-dark" title="Python"></i>
+                <p class="small text-muted mt-1 mb-0">Python</p>
+            </div>
+            <div class="text-center">
+                <i class="bi bi-filetype-sql tech-stack-icon text-primary" title="SQL"></i>
+                <p class="small text-muted mt-1 mb-0">SQL</p>
+            </div>
+            <div class="text-center">
+                <i class="bi bi-database tech-stack-icon text-warning" title="Power BI"></i>
+                <p class="small text-muted mt-1 mb-0">Power BI</p>
+            </div>
+            <div class="text-center">
+                <i class="bi bi-filetype-html tech-stack-icon text-danger" title="HTML5"></i>
+                <p class="small text-muted mt-1 mb-0">HTML5</p>
+            </div>
+            <div class="text-center">
+                <i class="bi bi-bootstrap tech-stack-icon text-info" title="Bootstrap"></i>
+                <p class="small text-muted mt-1 mb-0">Bootstrap</p>
+            </div>
+            <div class="text-center">
+                <i class="bi bi-server tech-stack-icon text-success" title="Django"></i>
+                <p class="small text-muted mt-1 mb-0">Django</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     STUDENT TESTIMONIALS
+     ══════════════════════════════════════════════ -->
+<section class="py-5 bg-light" id="testimonials">
+    <div class="container py-5">
+        <div class="text-center mb-5" data-aos="fade-up">
+            <h6 class="text-orange fw-bold ls-1">WHAT STUDENTS SAY</h6>
+            <h2 class="fw-800 display-5">Real Stories. Real Growth.</h2>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="0">
+                <div class="testi-card h-100">
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <div class="testi-avatar">RK</div>
+                        <div>
+                            <h6 class="fw-bold mb-0">Rahul K.</h6>
+                            <small class="text-muted">Python & Data Analytics Track</small>
+                        </div>
+                    </div>
+                    <p class="text-muted small">"The daily challenger kept me consistent. 87-day streak and counting! The certificate I earned opened doors at my first job interview."</p>
+                    <div class="text-warning">★★★★</div>
+                </div>
+            </div>
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+                <div class="testi-card h-100">
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <div class="testi-avatar" style="background:linear-gradient(135deg,#f472b6,#db2777);">PS</div>
+                        <div>
+                            <h6 class="fw-bold mb-0">Priya S.</h6>
+                            <small class="text-muted">Web Development Intern</small>
+                        </div>
+                    </div>
+                    <p class="text-muted small">"TRHvision gave me real projects, not dummy tasks. I built actual dashboards that are now live for a client. The stipend was a bonus!"</p>
+                    <div class="text-warning">★★★★</div>
+                </div>
+            </div>
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+                <div class="testi-card h-100">
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <div class="testi-avatar" style="background:linear-gradient(135deg,#60a5fa,#2563eb);">AM</div>
+                        <div>
+                            <h6 class="fw-bold mb-0">Arjun M.</h6>
+                            <small class="text-muted">Data Analytics Track</small>
+                        </div>
+                    </div>
+                    <p class="text-muted small">"I completed the 100-day milestone and got the milestone badge. The habit tracking system changed how I approach every single day."</p>
+                    <div class="text-warning">★★★★★</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     CTA SECTION
+     ══════════════════════════════════════════════ -->
+<section class="py-5 bg-dark text-white position-relative overflow-hidden" id="cta">
+    <div class="position-absolute rounded-circle bg-orange opacity-10"
+         style="width:400px;height:400px;right:-100px;top:-100px;"></div>
+    <div class="container py-5 text-center position-relative z-1" data-aos="zoom-in">
+        <h2 class="fw-bold display-5 mb-3">Ready to Collaborate?</h2>
+        <p class="lead text-white-50 mb-5 mx-auto" style="max-width:600px;">
+            Whether you're a business needing a digital overhaul or a student ready to learn,
+            we have the right path for you.
+        </p>
+        <div class="d-flex justify-content-center flex-wrap gap-3">
+            <a href="{% url 'contact' %}" class="btn btn-light text-dark btn-lg rounded-pill px-5 fw-bold hover-up">Contact Us</a>
+            <a href="{% url 'internship' %}" class="btn btn-outline-light btn-lg rounded-pill px-5 fw-bold hover-up">Join Internship</a>
+        </div>
+    </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     FOOTER
+     ══════════════════════════════════════════════ -->
+<footer class="bg-black text-white py-5 border-top border-secondary">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-lg-4 mb-4 mb-lg-0">
+                <span class="brand-name fw-bold fs-3">TRHvision<span class="text-orange"></span></span>
+                <p class="text-white-50 mt-3">Empowering global enterprises with cutting-edge data solutions while nurturing the next generation of tech talent.</p>
+                <div class="d-flex gap-3 mt-4">
+                    <a href="https://www.linkedin.com/company/rhtvision/?viewAsMember=true" class="text-white-50 hover-white"><i class="bi bi-linkedin fs-5"></i></a>
+                    <a href="#" class="text-white-50 hover-white"><i class="bi bi-twitter-x fs-5"></i></a>
+                    <a href="#" class="text-white-50 hover-white"><i class="bi bi-instagram fs-5"></i></a>
+                </div>
+            </div>
+            <div class="col-6 col-lg-2 offset-lg-1">
+                <h6 class="text-orange fw-bold mb-4">COMPANY</h6>
+                <ul class="list-unstyled text-white-50">
+                    <li class="mb-2"><a href="{% url 'about' %}" class="text-white-50 text-decoration-none hover-white">About Us</a></li>
+                    <li class="mb-2"><a href="{% url 'services' %}" class="text-white-50 text-decoration-none hover-white">Services</a></li>
+                    <li class="mb-2"><a href="{% url 'contact' %}" class="text-white-50 text-decoration-none hover-white">Contact</a></li>
+                </ul>
+            </div>
+            <div class="col-6 col-lg-2">
+                <h6 class="text-orange fw-bold mb-4">ACADEMY</h6>
+                <ul class="list-unstyled text-white-50">
+                    <li class="mb-2"><a href="{% url 'internship' %}" class="text-white-50 text-decoration-none hover-white">Internships</a></li>
+                    <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none hover-white">Certificates</a></li>
+                    <li class="mb-2"><a href="{% url 'sigin' %}" class="text-white-50 text-decoration-none hover-white">Student Login</a></li>
+                </ul>
+            </div>
+            <div class="col-lg-3">
+                <h6 class="text-orange fw-bold mb-4">CONTACT</h6>
+                <ul class="list-unstyled text-white-50">
+                    <li class="mb-2"><i class="bi bi-geo-alt me-2"></i>Global HQ, India</li>
+                    <li class="mb-2"><i class="bi bi-envelope me-2"></i>contact@trhvision.in</li>
+                    <li class="mb-2"><i class="bi bi-phone me-2"></i>+91 8816847227</li>
+                </ul>
+            </div>
+        </div>
+        <hr class="border-secondary my-5">
+        <div class="text-center text-white-50">
+            <small>© 2026 TRHvision. All Rights Reserved.</small>
+        </div>
+    </div>
+</footer>
+
+<!-- ══════════════════════════════════════════════
+     FLOATING ROBOT WIDGET — Daily Challenger
+     ══════════════════════════════════════════════ -->
+<div id="dc-robot-tooltip">⚡ Daily Challenger</div>
+
+<button id="dc-robot-btn" aria-label="Open Daily Challenger" onclick="dcToggle()">
+    <span class="robot-face">🤖</span>
+</button>
+
+<div id="dc-panel" role="dialog" aria-label="Daily Challenger">
+    <div class="dcp-header">
+        <div class="dcp-header-left">
+            <div class="dcp-robot-sm">🤖</div>
+            <div>
+                <p class="dcp-title">Daily Challenger</p>
+                <p class="dcp-sub">Build habits. Win rewards.</p>
+            </div>
+        </div>
+        <button class="dcp-close" onclick="dcClose()" aria-label="Close">✕</button>
+    </div>
+    <div class="dcp-body">
+        <div class="dcp-streak-row">
+            <div>
+                <p class="dcp-streak-lbl">Sample Streak</p>
+                <div class="d-flex align-items-end gap-1">
+                    <span class="dcp-streak-num" id="dcStreakNum">0</span>
+                    <span style="font-size:1.3rem;margin-bottom:3px;">🔥</span>
+                </div>
+                <p class="dcp-streak-lbl">consecutive days</p>
+            </div>
+            <div class="text-end">
+                <p class="dcp-best-lbl">Best Record</p>
+                <p class="dcp-best-val">🏆 247</p>
+                <p class="dcp-best-lbl">all time</p>
+            </div>
+        </div>
+        <div class="dcp-tracks">
+            <div class="dcp-track"><div class="dcp-dot" style="background:#10b981;animation-delay:0s;"></div><div><p class="dcp-track-name">🐍 Python</p><p class="dcp-track-status">142d streak</p></div></div>
+            <div class="dcp-track"><div class="dcp-dot" style="background:#f472b6;animation-delay:.6s;"></div><div><p class="dcp-track-name">💪 Gym</p><p class="dcp-track-status">✅ Done Today</p></div></div>
+            <div class="dcp-track"><div class="dcp-dot" style="background:#60a5fa;animation-delay:1.2s;"></div><div><p class="dcp-track-name">🚀 Project</p><p class="dcp-track-status">⏳ Pending</p></div></div>
+            <div class="dcp-track"><div class="dcp-dot" style="background:#fbbf24;animation-delay:1.8s;"></div><div><p class="dcp-track-name">💼 Freelance</p><p class="dcp-track-status">✅ Done Today</p></div></div>
+        </div>
+        <p class="dcp-hm-label">30-Day Activity</p>
+        <div class="dcp-heatmap" id="dcHeatmap"></div>
+        <div class="dcp-milestones">
+            <span class="dcp-ms">🌱 30d</span>
+            <span class="dcp-ms">🔥 50d</span>
+            <span class="dcp-ms">💎 100d</span>
+            <span class="dcp-ms">⚡ 200d</span>
+            <span class="dcp-ms">👑 300d</span>
+            <span class="dcp-ms gold">🎁 500d</span>
+        </div>
+        <div class="dcp-gift"><span>🎁</span><span>Complete 500 days → Win <strong>₹500 Gift Card!</strong></span></div>
+        <p style="font-size:.7rem;color:rgba(255,255,255,.4);margin:0 0 .9rem;line-height:1.6;">
+            Track up to <strong style="color:#fff;">4 habits</strong> simultaneously.<br>
+            Min 30 days · Milestones: 50 · 100 · 200 · 300 · 500 days
+        </p>
+        <a href="{% url 'sigin' %}" class="dcp-cta"><i class="bi bi-lightning-charge-fill me-2"></i>Start Your Streak Today ⚡</a>
+    </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SCRIPTS
+     ══════════════════════════════════════════════ -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>
+AOS.init({ duration: 800, once: true });
+
+// Animated counters
+let counted = false;
+window.addEventListener('scroll', function() {
+    const s = document.querySelector('.hero-split');
+    if(s && s.getBoundingClientRect().top < window.innerHeight && !counted){
+        counted = true;
+        document.querySelectorAll('.counter').forEach(el => {
+            const target = +el.innerText;
+            el.setAttribute('data-target', target); el.innerText = 0;
+            (function step(){
+                const c = +el.innerText, inc = Math.ceil(target/200);
+                if(c < target){ el.innerText = Math.min(c+inc, target); setTimeout(step,20); }
+            })();
+        });
+    }
+});
+
+// Robot widget
+(function(){
+    setTimeout(() => {
+        const t = document.getElementById('dc-robot-tooltip');
+        if(t){ t.style.transition='opacity .4s'; t.style.opacity='0'; setTimeout(()=>t.remove(),400); }
+    }, 5000);
+
+    let open = false;
+    window.dcToggle = () => open ? dcClose() : dcOpen();
+    window.dcOpen = function(){
+        open = true;
+        document.getElementById('dc-panel').classList.add('open');
+        document.getElementById('dc-robot-btn').querySelector('.robot-face').textContent = '👾';
+        buildHeatmap(); animateStreak();
+    };
+    window.dcClose = function(){
+        open = false;
+        document.getElementById('dc-panel').classList.remove('open');
+        document.getElementById('dc-robot-btn').querySelector('.robot-face').textContent = '🤖';
+    };
+    document.addEventListener('click', e => {
+        if(open && !e.target.closest('#dc-panel') && !e.target.closest('#dc-robot-btn')) dcClose();
+    });
+
+    let streakDone = false;
+    function animateStreak(){
+        if(streakDone) return; streakDone = true;
+        const el = document.getElementById('dcStreakNum');
+        let v=0,t=38; (function s(){ v+=Math.ceil((t-v)/7)||1; el.textContent=v; if(v<t) requestAnimationFrame(s); })();
+    }
+    let hmBuilt = false;
+    function buildHeatmap(){
+        if(hmBuilt) return; hmBuilt = true;
+        const hm = document.getElementById('dcHeatmap');
+        const pat=[0,0,1,1,1,0,1,1,1,1,0,1,1,0,1,1,1,1,1,0,1,1,1,1,1,1,0,1,1,1];
+        const today = new Date();
+        pat.forEach((v,i)=>{
+            const d=document.createElement('div'); d.className='dcp-hm-dot';
+            d.style.background=v?'#10b981':'rgba(255,255,255,.07)';
+            if(i===29){d.style.outline='2px solid #10b981';d.style.outlineOffset='1px';}
+            const day=new Date(today); day.setDate(today.getDate()-(29-i));
+            d.title=day.toDateString()+(v?' ✓':''); hm.appendChild(d);
+        });
+    }
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,222 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In | TRHvision Analytics</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="{% static 'vision/css/style.css' %}">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9fa;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Reusing your Homepage Logic */
+        .text-orange {
+            color: #0ea5e9 !important;
+        }
+
+        .bg-soft-orange {
+            background-color: rgba(14, 165, 233, 0.1);
+        }
+
+        .auth-card {
+            border: none;
+            border-radius: 2rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            background: #ffffff;
+        }
+
+        .login-header-gradient {
+            background: linear-gradient(45deg, #1a1d23, #2d3436);
+            padding: 3rem 2rem;
+            color: white;
+            text-align: center;
+        }
+
+        .form-control {
+            padding: 0.8rem 1rem;
+            border-radius: 10px;
+            border: 1px solid #eee;
+            background-color: #fcfcfc;
+        }
+
+        .form-control:focus {
+            box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.15);
+            border-color: #0ea5e9;
+        }
+
+        .input-group-text {
+            background-color: #fcfcfc;
+            border: 1px solid #eee;
+            border-radius: 10px;
+        }
+
+        .btn-orange {
+            background: #0ea5e9;
+            border: none;
+            padding: 0.8rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-orange:hover {
+            background: #0284c7;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(14, 165, 233, 0.2);
+        }
+
+        footer {
+            margin-top: auto;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-lg sticky-top shadow-sm custom-nav bg-white">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center gap-2" href="{% url 'index' %}">
+                <img src="{% static 'vision/image/logo.png' %}" alt="TRHvision Logo" class="brand-logo"
+                    style="height: 40px;">
+                <span class="brand-name fw-bold">TRHvision</span>
+            </a>
+            <div class="ms-auto">
+                <!--<a href="{% url 'signup' %}" class="btn btn-outline-dark rounded-pill px-4">Create Account</a>-->
+            </div>
+        </div>
+    </nav>
+
+    <main class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-md-5 animate__animated animate__fadeInUp">
+
+                <div class="auth-card">
+                    <div class="login-header-gradient">
+                        <span class="badge rounded-pill bg-soft-orange text-orange mb-3">Secure Access</span>
+                        <h2 class="fw-800 mb-0">Welcome Back</h2>
+                        <p class="text-white-50 small mt-2">Sign in to manage your data & internships</p>
+                    </div>
+
+                    <div class="p-4 p-md-5">
+                        <form action="{% url 'sigin' %}" method="POST">
+                            {% csrf_token %}
+
+                            <div class="mb-4">
+                                <label class="form-label fw-bold small text-muted">EMAIL ADDRESS</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                                    <input type="text" name="username" class="form-control"
+                                        placeholder="name@example.com" required>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <div class="d-flex justify-content-between">
+                                    <label class="form-label fw-bold small text-muted">PASSWORD</label>
+                                    <a href="#" class="small text-orange text-decoration-none fw-bold"
+                                        data-bs-toggle="modal" data-bs-target="#forgotPasswordModal">Forgot?</a>
+                                </div>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                                    <input type="password" id="loginPass" name="password" class="form-control"
+                                        placeholder="••••••••" required>
+                                    <button class="btn btn-light border" type="button"
+                                        onclick="togglePassword('loginPass')">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="form-check mb-4">
+                                <input class="form-check-input" type="checkbox" id="remember">
+                                <label class="form-check-label small text-muted" for="remember">Remember this
+                                    device</label>
+                            </div>
+
+                            <button type="submit" class="btn btn-orange text-white w-100 rounded-pill mb-4">
+                                Sign In to Dashboard <i class="bi bi-arrow-right ms-2"></i>
+                            </button>
+
+                            <!--<p class="text-center small text-muted mb-0">
+                            Don't have an account? <a href="{% url 'signup' %}" class="text-orange fw-bold text-decoration-none">Get Started</a>
+                        </p>-->
+                        </form>
+                    </div>
+                </div>
+
+                <div class="text-center mt-4">
+                    <p class="text-muted small"><i class="bi bi-shield-check text-success me-1"></i> AES-256 Encrypted
+                        Connection</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-dark text-white py-4">
+        <div class="container text-center">
+            <small class="text-white-50">© 2025 TRHvision Analytics. Global HQ. All Rights Reserved.</small>
+        </div>
+    </footer>
+
+    <!-- Forgot Password Modal -->
+    <div class="modal fade" id="forgotPasswordModal" tabindex="-1" aria-labelledby="forgotPasswordModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content rounded-4 border-0 shadow">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title fw-bold" id="forgotPasswordModalLabel">Reset Password</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <p class="text-muted small mb-4">Enter your email address and we'll send you a link to reset your
+                        password.</p>
+                    <form action="{% url 'password_reset' %}" method="post">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="id_email_modal" class="form-label fw-bold small text-muted">EMAIL
+                                ADDRESS</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                                <input type="email" name="email" id="id_email_modal" class="form-control"
+                                    placeholder="name@example.com" required>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-orange text-white w-100 rounded-pill fw-bold">Send Reset
+                            Link</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function togglePassword(id) {
+            const input = document.getElementById(id);
+            const icon = input.parentElement.querySelector('.bi-eye, .bi-eye-slash');
+            if (input.type === "password") {
+                input.type = "text";
+                icon.classList.replace('bi-eye', 'bi-eye-slash');
+            } else {
+                input.type = "password";
+                icon.classList.replace('bi-eye-slash', 'bi-eye');
+            }
+        }
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

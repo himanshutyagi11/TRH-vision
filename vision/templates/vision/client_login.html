@@ -1,0 +1,190 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Client Portal | TRHvision</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        .login-container {
+            width: 100%;
+            max-width: 440px;
+            padding: 2rem;
+        }
+        .login-card {
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 24px;
+            padding: 3rem 2.5rem;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.3);
+        }
+        .brand-logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 2rem;
+        }
+        .brand-logo span {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #fff;
+        }
+        .brand-logo .dot { color: #f97316; }
+        .client-badge {
+            background: linear-gradient(135deg, #f97316, #fb923c);
+            color: #fff;
+            font-size: 0.65rem;
+            font-weight: 700;
+            padding: 4px 12px;
+            border-radius: 50px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            display: inline-block;
+            margin-bottom: 1.5rem;
+        }
+        .form-floating > .form-control {
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 14px;
+            color: #fff;
+            height: 56px;
+        }
+        .form-floating > .form-control:focus {
+            background: rgba(255,255,255,0.1);
+            border-color: #f97316;
+            box-shadow: 0 0 0 3px rgba(249,115,22,0.15);
+            color: #fff;
+        }
+        .form-floating > label { color: rgba(255,255,255,0.4); }
+        .form-floating > .form-control:focus ~ label,
+        .form-floating > .form-control:not(:placeholder-shown) ~ label {
+            color: rgba(255,255,255,0.6);
+        }
+        .btn-login {
+            background: linear-gradient(135deg, #f97316, #ea580c);
+            border: none;
+            border-radius: 14px;
+            padding: 14px;
+            font-weight: 700;
+            font-size: 1rem;
+            color: #fff;
+            width: 100%;
+            transition: all 0.3s;
+        }
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(249,115,22,0.35);
+            color: #fff;
+        }
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        .divider::before, .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: rgba(255,255,255,0.1);
+        }
+        .divider span {
+            font-size: 0.75rem;
+            color: rgba(255,255,255,0.3);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .alert {
+            background: rgba(239,68,68,0.15);
+            border: 1px solid rgba(239,68,68,0.3);
+            color: #fca5a5;
+            border-radius: 12px;
+            font-size: 0.85rem;
+        }
+        /* Floating particles */
+        .particle {
+            position: fixed;
+            width: 4px;
+            height: 4px;
+            background: rgba(249,115,22,0.3);
+            border-radius: 50%;
+            animation: float 15s infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0) translateX(0); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100vh) translateX(50px); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating particles -->
+    <div class="particle" style="left:10%;animation-delay:0s;animation-duration:12s"></div>
+    <div class="particle" style="left:25%;animation-delay:3s;animation-duration:15s"></div>
+    <div class="particle" style="left:50%;animation-delay:6s;animation-duration:18s"></div>
+    <div class="particle" style="left:75%;animation-delay:2s;animation-duration:14s"></div>
+    <div class="particle" style="left:90%;animation-delay:8s;animation-duration:16s"></div>
+
+    <div class="login-container">
+        <div class="login-card text-center">
+            <div class="brand-logo">
+                <img src="{% static 'vision/image/logo.png' %}" alt="Logo" width="40" onerror="this.style.display='none'">
+                <span>TRHvision<span class="dot">.</span></span>
+            </div>
+            <span class="client-badge">Client Portal</span>
+            <h4 class="text-white fw-bold mb-1">Welcome back</h4>
+            <p class="text-white-50 small mb-4">Sign in to track your project progress</p>
+
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-danger py-2 mb-3">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+
+            <form method="POST" action="{% url 'client_login' %}">
+                {% csrf_token %}
+                <div class="form-floating mb-3">
+                    <input type="email" class="form-control" id="email" name="username" placeholder="Email" required>
+                    <label for="email"><i class="bi bi-envelope me-2"></i>Email Address</label>
+                </div>
+                <div class="form-floating mb-4">
+                    <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
+                    <label for="password"><i class="bi bi-lock me-2"></i>Password</label>
+                </div>
+                <button type="submit" class="btn btn-login">
+                    <i class="bi bi-box-arrow-in-right me-2"></i>Sign In
+                </button>
+            </form>
+
+            <div class="divider"><span>or</span></div>
+
+            <div class="d-flex gap-2">
+                <a href="{% url 'sigin' %}" class="btn btn-outline-light w-50 rounded-pill btn-sm py-2" style="border-color: rgba(255,255,255,0.15);">
+                    <i class="bi bi-mortarboard me-1"></i>Student Login
+                </a>
+                <a href="{% url 'index' %}" class="btn btn-outline-light w-50 rounded-pill btn-sm py-2" style="border-color: rgba(255,255,255,0.15);">
+                    <i class="bi bi-house me-1"></i>Go Home
+                </a>
+            </div>
+        </div>
+        <p class="text-center text-white-50 mt-4" style="font-size: 0.7rem;">
+            © 2025 TRHvision Solutions. Client accounts are created by admin.
+        </p>
+    </div>
+</body>
+</html>

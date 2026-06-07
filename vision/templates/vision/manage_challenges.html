@@ -1,0 +1,646 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Challenges | TRHvision</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; }
+        body { font-family:'Inter',sans-serif; background:#f0f4f9; color:#1e293b; }
+
+        /* ─── Layout ─────────────────────────────────────────────── */
+        .page-wrap { max-width: 1100px; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
+
+        /* ─── Page Header ────────────────────────────────────────── */
+        .page-header {
+            background: linear-gradient(135deg,#0f172a 0%,#1e3a5f 55%,#1e293b 100%);
+            border-radius: 22px;
+            padding: 2rem 2.2rem;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+        .page-header::before {
+            content:'';
+            position:absolute; top:-40px; right:-40px;
+            width:220px; height:220px; border-radius:50%;
+            background:rgba(255,255,255,.04);
+        }
+        .user-avatar {
+            width:54px; height:54px; border-radius:16px;
+            background:rgba(255,255,255,.15);
+            display:flex; align-items:center; justify-content:center;
+            font-size:1.25rem; font-weight:900; color:#fff;
+            flex-shrink:0;
+        }
+        .header-label { font-size:.65rem; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,.45); margin:0 0 3px; }
+        .header-name  { font-size:1.5rem; font-weight:800; color:#fff; margin:0; letter-spacing:-.4px; }
+
+        /* ─── Back link ──────────────────────────────────────────── */
+        .back-link { font-size:.82rem; color:#64748b; text-decoration:none; display:inline-flex; align-items:center; gap:.4rem; margin-bottom:1.25rem; transition:color .15s; }
+        .back-link:hover { color:#1e293b; }
+
+        /* ─── Section label ──────────────────────────────────────── */
+        .sec-label { font-size:.65rem; letter-spacing:2px; text-transform:uppercase; color:#94a3b8; font-weight:700; margin-bottom:1rem; display:flex; align-items:center; gap:.5rem; }
+        .sec-label::after { content:''; flex:1; height:1px; background:#e2e8f0; }
+
+        /* ─── Stat cards ─────────────────────────────────────────── */
+        .stat-card {
+            background:#fff; border-radius:16px; padding:1.4rem 1.6rem;
+            border:1px solid #e8ecf0;
+            box-shadow:0 2px 8px rgba(0,0,0,.04);
+            display:flex; align-items:center; gap:1.1rem;
+        }
+        .stat-icon {
+            width:48px; height:48px; border-radius:14px;
+            display:flex; align-items:center; justify-content:center;
+            font-size:1.4rem; flex-shrink:0;
+        }
+        .stat-val { font-size:1.8rem; font-weight:900; color:#1e293b; line-height:1; }
+        .stat-lbl { font-size:.72rem; color:#64748b; margin-top:3px; }
+
+        /* ─── Track breakdown cards ──────────────────────────────── */
+        .track-card {
+            background:#fff; border-radius:18px; padding:1.5rem 1.6rem;
+            border:1px solid #e8ecf0; border-left-width:5px;
+            box-shadow:0 2px 12px rgba(0,0,0,.05);
+            transition:transform .2s, box-shadow .2s;
+        }
+        .track-card:hover { transform:translateY(-3px); box-shadow:0 6px 24px rgba(0,0,0,.09); }
+        .track-card.done-today { background:linear-gradient(135deg,#f0fdf4,#fff); }
+
+        .track-emoji-lg { font-size:2.2rem; line-height:1; }
+        .track-name-lg  { font-size:1.05rem; font-weight:800; color:#1e293b; margin:0 0 2px; }
+        .track-desc-sm  { font-size:.76rem; color:#64748b; margin:0; }
+
+        /* Per-track heatmap */
+        .mini-heatmap { display:flex; gap:3px; flex-wrap:nowrap; overflow-x:auto; margin:.9rem 0 .5rem; }
+        .mh-dot {
+            width:14px; height:14px; border-radius:3px; flex-shrink:0;
+            background:#f1f5f9; transition:transform .15s; cursor:default;
+        }
+        .mh-dot:hover { transform:scale(1.5); }
+        .mh-dot.done-dot { background: var(--tc, #10b981); opacity:.85; }
+        .mh-dot.today-dot { outline:2px solid #334155; outline-offset:1px; }
+
+        .track-bar-bg { background:#f1f5f9; border-radius:99px; height:5px; margin:.6rem 0 .4rem; }
+        .track-bar-fill { height:5px; border-radius:99px; background:var(--tc,#10b981); transition:width .7s ease; }
+
+        .track-stats-row { display:flex; gap:1.25rem; margin-top:.75rem; }
+        .ts-item { text-align:center; }
+        .ts-val { font-size:1.1rem; font-weight:800; color:#1e293b; line-height:1; }
+        .ts-lbl { font-size:.6rem; letter-spacing:1px; text-transform:uppercase; color:#94a3b8; }
+
+        /* Today badge */
+        .today-badge {
+            display:inline-flex; align-items:center; gap:.35rem;
+            font-size:.72rem; font-weight:700; border-radius:50px;
+            padding:4px 12px;
+        }
+        .today-badge.done  { background:#dcfce7; color:#166534; }
+        .today-badge.todo  { background:#fef9c3; color:#92400e; }
+
+        /* ─── Chart container ────────────────────────────────────── */
+        .chart-card {
+            background:#fff; border-radius:18px; padding:1.8rem 2rem;
+            border:1px solid #e8ecf0; box-shadow:0 2px 12px rgba(0,0,0,.05);
+        }
+        .chart-title { font-size:.95rem; font-weight:700; color:#1e293b; margin:0 0 1.25rem; }
+
+        /* ─── Activity log ───────────────────────────────────────── */
+        .log-card {
+            background:#fff; border-radius:18px;
+            border:1px solid #e8ecf0; box-shadow:0 2px 12px rgba(0,0,0,.05);
+            overflow:hidden;
+        }
+        .log-row {
+            display:flex; align-items:center; gap:1rem;
+            padding:.85rem 1.5rem;
+            border-bottom:1px solid #f1f5f9;
+            transition:background .15s;
+        }
+        .log-row:last-child { border-bottom:none; }
+        .log-row:hover { background:#f8fafc; }
+        .log-dot {
+            width:10px; height:10px; border-radius:50%; flex-shrink:0;
+        }
+        .log-track { font-size:.85rem; font-weight:600; color:#1e293b; }
+        .log-date  { font-size:.75rem; color:#94a3b8; margin-left:auto; }
+        .log-note  { font-size:.75rem; color:#64748b; font-style:italic; margin-top:1px; }
+        .log-empty { padding:2.5rem; text-align:center; color:#94a3b8; font-size:.9rem; }
+
+        /* ─── Enroll / Custom / Milestones ───────────────────────── */
+        .card-preset {
+            background:#fff; border-radius:16px; padding:1.4rem 1.6rem;
+            border:1px solid #e8ecf0; box-shadow:0 2px 8px rgba(0,0,0,.04);
+            transition:transform .2s, box-shadow .2s;
+        }
+        .card-preset:hover { transform:translateY(-2px); box-shadow:0 6px 20px rgba(0,0,0,.08); }
+        .btn-enroll {
+            font-size:.8rem; font-weight:700; border-radius:8px; padding:6px 14px;
+            background:#1e293b; color:#fff; border:none; cursor:pointer; transition:background .15s;
+        }
+        .btn-enroll:hover { background:#334155; }
+        .btn-remove { font-size:.75rem; color:#ef4444; border:1px solid #fecaca; background:#fff; border-radius:8px; padding:4px 12px; cursor:pointer; }
+        .btn-remove:hover { background:#fee2e2; }
+        .custom-box { background:linear-gradient(135deg,#f0fdf4,#ecfdf5); border:1px dashed #86efac; border-radius:18px; padding:2rem; }
+        .milestone-card { border-radius:14px; padding:1.25rem; text-align:center; border:1px solid #e8ecf0; background:#fff; }
+        .gift-banner { background:linear-gradient(135deg,#451a03,#78350f); color:#fef3c7; border-radius:14px; padding:1rem 1.5rem; margin-bottom:1.5rem; }
+
+        /* ─── Responsive tweaks ──────────────────────────────────── */
+        @media(max-width:767px) { .stat-val { font-size:1.4rem; } .chart-card { padding:1.2rem 1rem; } }
+    </style>
+</head>
+<body>
+<div class="page-wrap">
+
+    <a href="{% url 'dashboard' %}" class="back-link">
+        <i class="bi bi-arrow-left"></i> Back to Dashboard
+    </a>
+
+    <!-- ══════════════════════════════════════════════════════════
+         PAGE HEADER  — User name from data
+         ══════════════════════════════════════════════════════════ -->
+    <div class="page-header mb-4">
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-3">
+            <div class="d-flex align-items-center gap-3">
+                <div class="user-avatar">
+                    {{ request.user.first_name|first|upper }}{{ request.user.last_name|first|upper }}
+                </div>
+                <div>
+                    <p class="header-label">Daily Challenges Hub</p>
+                    <h2 class="header-name">{{ request.user.get_full_name|default:request.user.username }}</h2>
+                </div>
+            </div>
+            <div class="text-end">
+                <p style="color:rgba(255,255,255,.45);font-size:.65rem;margin:0 0 2px;letter-spacing:1px;text-transform:uppercase;">Overall Streak</p>
+                <p style="color:#fff;font-size:2rem;font-weight:900;margin:0;line-height:1;">
+                    {{ streak.current_streak|default:0 }} 🔥
+                </p>
+                <p style="color:rgba(255,255,255,.4);font-size:.7rem;margin:2px 0 0;">Best: {{ streak.longest_streak|default:0 }} days</p>
+            </div>
+        </div>
+        <div class="d-flex flex-wrap gap-2">
+            {% for val, label in target_choices %}
+            <span style="background:rgba(255,255,255,.1);color:rgba(255,255,255,.7);font-size:.68rem;font-weight:600;border-radius:50px;padding:3px 12px;border:1px solid rgba(255,255,255,.15);">
+                🏅 {{ label }}
+            </span>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Messages -->
+    {% if messages %}{% for msg in messages %}
+    <div class="alert alert-{{ msg.tags }} alert-dismissible fade show rounded-3 mb-3">
+        {{ msg }}<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    {% endfor %}{% endif %}
+
+    <!-- ══════════════════════════════════════════════════════════
+         SUMMARY STATS ROW
+         ══════════════════════════════════════════════════════════ -->
+    <p class="sec-label"><i class="bi bi-bar-chart-fill"></i> Summary Stats</p>
+    <div class="row g-3 mb-5">
+        <div class="col-6 col-md-3">
+            <div class="stat-card">
+                <div class="stat-icon" style="background:#f0fdf4;">🔥</div>
+                <div>
+                    <div class="stat-val">{{ streak.current_streak|default:0 }}</div>
+                    <div class="stat-lbl">Overall Streak</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="stat-card">
+                <div class="stat-icon" style="background:#fef9c3;">✅</div>
+                <div>
+                    <div class="stat-val">{{ total_overall }}</div>
+                    <div class="stat-lbl">Total Check-ins</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="stat-card">
+                <div class="stat-icon" style="background:#ede9fe;">🌟</div>
+                <div>
+                    <div class="stat-val">{{ perfect_days }}</div>
+                    <div class="stat-lbl">Perfect Days (30d)</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="stat-card">
+                <div class="stat-icon" style="background:#ffedd5;">🏆</div>
+                <div>
+                    <div class="stat-val">{{ streak.longest_streak|default:0 }}</div>
+                    <div class="stat-lbl">Best Streak</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════
+         PER-TRACK ACTIVITY CARDS  (with individual heatmaps)
+         ══════════════════════════════════════════════════════════ -->
+    {% if active_enrollments %}
+    <p class="sec-label"><i class="bi bi-lightning-charge-fill"></i> Your Active Challenges</p>
+    <div class="row g-4 mb-5">
+        {% for enr in active_enrollments %}
+        <div class="col-md-6">
+            <div class="track-card {% if enr.checked_today %}done-today{% endif %}"
+                 style="--tc:{{ enr.color }}; border-left-color:{{ enr.color }};">
+
+                <!-- Track header -->
+                <div class="d-flex align-items-start justify-content-between mb-2">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="track-emoji-lg">{{ enr.track.emoji }}</span>
+                        <div>
+                            <p class="track-name-lg">{{ enr.track.name }}</p>
+                            <p class="track-desc-sm">{{ enr.track.description|default:"Your daily challenge" }}</p>
+                        </div>
+                    </div>
+                    <div>
+                        {% if enr.checked_today %}
+                        <span class="today-badge done">
+                            <i class="bi bi-check-circle-fill"></i> Done Today
+                        </span>
+                        {% else %}
+                        <span class="today-badge todo">
+                            <i class="bi bi-clock"></i> Pending
+                        </span>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Stats row -->
+                <div class="track-stats-row">
+                    <div class="ts-item">
+                        <div class="ts-val" style="color:{{ enr.color }}">{{ enr.track_streak }}</div>
+                        <div class="ts-lbl">🔥 Streak</div>
+                    </div>
+                    <div class="ts-item">
+                        <div class="ts-val">{{ enr.total_checkins }}</div>
+                        <div class="ts-lbl">Total Days</div>
+                    </div>
+                    <div class="ts-item">
+                        <div class="ts-val">{{ enr.target_days }}</div>
+                        <div class="ts-lbl">Target</div>
+                    </div>
+                    <div class="ts-item">
+                        <div class="ts-val">{% if enr.last_checkin_date %}{{ enr.last_checkin_date|date:"d M" }}{% else %}—{% endif %}</div>
+                        <div class="ts-lbl">Last Done</div>
+                    </div>
+                </div>
+
+                <!-- Progress toward next milestone -->
+                <div class="track-bar-bg mt-3">
+                    <div class="track-bar-fill" style="width:{{ enr.milestone_pct }}%;"></div>
+                </div>
+                <div class="d-flex justify-content-between" style="font-size:.62rem;color:#94a3b8;">
+                    <span>{% if enr.last_milestone %}✅ {{ enr.last_milestone }}d reached{% else %}Starting…{% endif %}</span>
+                    <span>{% if enr.next_milestone %}Next: {{ enr.next_milestone }}d ({{ enr.milestone_pct }}%){% else %}🎉 All milestones done!{% endif %}</span>
+                </div>
+
+                <!-- 30-day mini heatmap -->
+                <p style="font-size:.6rem;letter-spacing:1.5px;text-transform:uppercase;color:#94a3b8;margin:.9rem 0 .35rem;">
+                    30-Day Activity
+                </p>
+                <div class="mini-heatmap">
+                    {% for cell in enr.cal30 %}
+                    <div class="mh-dot {% if cell.done %}done-dot{% endif %} {% if cell.is_today %}today-dot{% endif %}"
+                         title="{{ cell.date|date:'d M' }}{% if cell.done %} ✓{% endif %}{% if cell.is_today %} (Today){% endif %}">
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Check-in button -->
+                {% if not enr.checked_today %}
+                <button class="btn w-100 mt-3 fw-bold rounded-3"
+                        style="background:{{ enr.color }};color:#fff;font-size:.82rem;border:none;padding:8px;"
+                        data-bs-toggle="modal" data-bs-target="#modal{{ enr.track.id }}">
+                    <i class="bi bi-plus-circle me-1"></i>Check In for Today
+                </button>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- ══════════════════════════════════════════════════════════
+         ANALYTICS CHARTS
+         ══════════════════════════════════════════════════════════ -->
+    {% if active_enrollments %}
+    <p class="sec-label"><i class="bi bi-graph-up-arrow"></i> Performance Analytics</p>
+    <div class="row g-4 mb-5">
+
+        <!-- Stacked Bar Chart — last 14 days -->
+        <div class="col-lg-7">
+            <div class="chart-card h-100">
+                <p class="chart-title">📅 Daily Activity — Last 14 Days</p>
+                <canvas id="barChart" height="200"></canvas>
+            </div>
+        </div>
+
+        <!-- Doughnut Chart — track distribution -->
+        <div class="col-lg-5">
+            <div class="chart-card h-100 d-flex flex-column">
+                <p class="chart-title">🍩 Check-in Distribution</p>
+                <div class="d-flex align-items-center justify-content-center flex-grow-1">
+                    <canvas id="pieChart" height="220" style="max-width:260px;"></canvas>
+                </div>
+                <!-- Legend -->
+                <div class="d-flex flex-wrap justify-content-center gap-2 mt-3">
+                    {% for enr in active_enrollments %}
+                    <span style="font-size:.72rem;font-weight:600;color:#1e293b;display:flex;align-items:center;gap:4px;">
+                        <span style="width:10px;height:10px;border-radius:50%;background:{{ enr.color }};display:inline-block;"></span>
+                        {{ enr.track.emoji }} {{ enr.track.name }}
+                        <strong>({{ enr.total_checkins }})</strong>
+                    </span>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════
+         RECENT ACTIVITY LOG
+         ══════════════════════════════════════════════════════════ -->
+    <p class="sec-label"><i class="bi bi-clock-history"></i> Recent Activity (Last 14 Days)</p>
+    <div class="log-card mb-5">
+        {% if recent_log %}
+            {% regroup recent_log by date as log_by_date %}
+            {% for group in log_by_date %}
+                <!-- Date separator -->
+                <div style="background:#f8fafc;padding:.5rem 1.5rem;font-size:.7rem;font-weight:700;
+                            letter-spacing:1px;text-transform:uppercase;color:#64748b;border-bottom:1px solid #f1f5f9;">
+                    {% if group.grouper == today %}📅 Today{% else %}{{ group.grouper|date:"D, d M Y" }}{% endif %}
+                </div>
+                {% for ci in group.list %}
+                <div class="log-row">
+                    <div class="log-dot" style="background:
+                        {% for enr in active_enrollments %}{% if enr.track.id == ci.track.id %}{{ enr.color }}{% endif %}{% endfor %};"></div>
+                    <div>
+                        <div class="log-track">{{ ci.track.emoji }} {{ ci.track.name }}</div>
+                        {% if ci.notes %}<div class="log-note">"{{ ci.notes }}"</div>{% endif %}
+                    </div>
+                    <div class="log-date">{{ ci.done_at|date:"h:i A" }}</div>
+                </div>
+                {% endfor %}
+            {% endfor %}
+        {% else %}
+        <div class="log-empty">
+            <i class="bi bi-inbox fs-2 d-block mb-2 opacity-50"></i>
+            No check-ins in the last 14 days. Start tracking today!
+        </div>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    <!-- ══════════════════════════════════════════════════════════
+         ADD CHALLENGES (system presets)
+         ══════════════════════════════════════════════════════════ -->
+    {% if system_tracks %}
+    <p class="sec-label"><i class="bi bi-grid-3x3-gap-fill"></i> Available Challenges</p>
+    <div class="row g-3 mb-5">
+        {% for track in system_tracks %}
+        <div class="col-md-6 col-lg-4">
+            <div class="card-preset">
+                <div style="font-size:2rem;margin-bottom:.4rem;">{{ track.emoji }}</div>
+                <p style="font-size:.92rem;font-weight:700;margin:0 0 3px;color:#1e293b;">{{ track.name }}</p>
+                <p style="font-size:.76rem;color:#64748b;margin:0 0 1rem;">{{ track.description }}</p>
+                <form method="POST" class="d-flex gap-2 align-items-center">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="enroll">
+                    <input type="hidden" name="track_id" value="{{ track.id }}">
+                    <select name="target_days" class="form-select form-select-sm rounded-3" style="font-size:.78rem;">
+                        {% for val, label in target_choices %}
+                        <option value="{{ val }}">{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                    <button type="submit" class="btn-enroll text-nowrap">
+                        <i class="bi bi-plus"></i> Add
+                    </button>
+                </form>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- ══════════════════════════════════════════════════════════
+         CREATE CUSTOM CHALLENGE
+         ══════════════════════════════════════════════════════════ -->
+    <p class="sec-label"><i class="bi bi-pencil-square"></i> Create a Custom Challenge</p>
+    <div class="custom-box mb-5">
+        <h6 class="fw-bold mb-4" style="color:#166534;"><i class="bi bi-stars me-2"></i>Design Your Own Daily Challenge</h6>
+        <form method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="add_custom">
+            <div class="row g-3">
+                <div class="col-sm-2">
+                    <label class="form-label small fw-semibold">Emoji</label>
+                    <input type="text" name="emoji" class="form-control text-center fs-4 rounded-3" placeholder="🎯" maxlength="4" value="🎯">
+                </div>
+                <div class="col-sm-5">
+                    <label class="form-label small fw-semibold">Name <span class="text-danger">*</span></label>
+                    <input type="text" name="name" class="form-control rounded-3" required placeholder="e.g. 1 Hour Freelancing">
+                </div>
+                <div class="col-sm-5">
+                    <label class="form-label small fw-semibold">Target</label>
+                    <select name="target_days" class="form-select rounded-3">
+                        {% for val, label in target_choices %}
+                        <option value="{{ val }}">{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-12">
+                    <label class="form-label small fw-semibold">Description (optional)</label>
+                    <input type="text" name="description" class="form-control rounded-3" placeholder="Brief description…" maxlength="255">
+                </div>
+                <div class="col-12 text-end">
+                    <button type="submit" class="btn btn-dark fw-bold rounded-pill px-5">
+                        <i class="bi bi-plus-circle me-2"></i>Create & Start Tracking
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════
+         MANAGE ACTIVE ENROLLMENTS (remove)
+         ══════════════════════════════════════════════════════════ -->
+    {% if enrollments %}
+    <p class="sec-label"><i class="bi bi-sliders"></i> Manage Enrollments</p>
+    <div class="row g-3 mb-5">
+        {% for enr in enrollments %}
+        <div class="col-md-6">
+            <div class="card-preset d-flex align-items-center justify-content-between gap-3">
+                <div class="d-flex align-items-center gap-2">
+                    <span style="font-size:1.6rem;">{{ enr.track.emoji }}</span>
+                    <div>
+                        <p style="font-size:.88rem;font-weight:700;margin:0;color:#1e293b;">{{ enr.track.name }}</p>
+                        <div class="d-flex gap-2 mt-1">
+                            <span style="font-size:.67rem;background:#f1f5f9;color:#475569;border-radius:50px;padding:2px 9px;font-weight:600;">
+                                {{ enr.get_target_days_display }}
+                            </span>
+                            {% if enr.is_active %}
+                            <span style="font-size:.67rem;background:#dcfce7;color:#166534;border-radius:50px;padding:2px 9px;font-weight:600;">Active 🟢</span>
+                            {% else %}
+                            <span style="font-size:.67rem;background:#fee2e2;color:#991b1b;border-radius:50px;padding:2px 9px;font-weight:600;">Paused ⏸</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% if enr.is_active %}
+                <form method="POST" class="flex-shrink-0">{% csrf_token %}
+                    <input type="hidden" name="action" value="remove">
+                    <input type="hidden" name="enrollment_id" value="{{ enr.id }}">
+                    <button type="submit" class="btn-remove"><i class="bi bi-x me-1"></i>Remove</button>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- ══════════════════════════════════════════════════════════
+         MILESTONE REWARDS REFERENCE
+         ══════════════════════════════════════════════════════════ -->
+    <div class="gift-banner d-flex align-items-center gap-3">
+        <span style="font-size:2rem;">🎁</span>
+        <div>
+            <strong style="font-size:.95rem;">500-Day Legend Reward</strong><br>
+            <span style="font-size:.8rem;color:rgba(254,243,199,.75);">
+                Complete a 500-day streak on any challenge track and win a ₹500 gift card!
+            </span>
+        </div>
+    </div>
+    <p class="sec-label"><i class="bi bi-trophy-fill"></i> Milestone Rewards</p>
+    <div class="row g-3 mb-5">
+        <div class="col-6 col-md-4 col-lg-2"><div class="milestone-card"><p style="font-size:1.8rem;">🌱</p><h6 class="fw-bold mb-1" style="font-size:.82rem;">30 Days</h6><p class="text-muted" style="font-size:.7rem;margin:0;">Starter</p></div></div>
+        <div class="col-6 col-md-4 col-lg-2"><div class="milestone-card"><p style="font-size:1.8rem;">🔥</p><h6 class="fw-bold mb-1" style="font-size:.82rem;">50 Days</h6><p class="text-muted" style="font-size:.7rem;margin:0;">Committed</p></div></div>
+        <div class="col-6 col-md-4 col-lg-2"><div class="milestone-card"><p style="font-size:1.8rem;">💎</p><h6 class="fw-bold mb-1" style="font-size:.82rem;">100 Days</h6><p class="text-muted" style="font-size:.7rem;margin:0;">Dedicated</p></div></div>
+        <div class="col-6 col-md-4 col-lg-2"><div class="milestone-card"><p style="font-size:1.8rem;">⚡</p><h6 class="fw-bold mb-1" style="font-size:.82rem;">200 Days</h6><p class="text-muted" style="font-size:.7rem;margin:0;">Elite</p></div></div>
+        <div class="col-6 col-md-4 col-lg-2"><div class="milestone-card"><p style="font-size:1.8rem;">👑</p><h6 class="fw-bold mb-1" style="font-size:.82rem;">300 Days</h6><p class="text-muted" style="font-size:.7rem;margin:0;">Master</p></div></div>
+        <div class="col-6 col-md-4 col-lg-2">
+            <div class="milestone-card" style="border:2px solid #fbbf24;background:linear-gradient(135deg,#451a03,#78350f);">
+                <p style="font-size:1.8rem;">🎁</p>
+                <h6 class="fw-bold mb-1 text-warning" style="font-size:.82rem;">500 Days</h6>
+                <p style="font-size:.68rem;color:rgba(254,243,199,.8);margin:0;">₹500 Gift Card</p>
+            </div>
+        </div>
+    </div>
+
+</div><!-- /.page-wrap -->
+
+<!-- ── Check-in Modals ─────────────────────────────────────── -->
+{% for enr in active_enrollments %}
+{% if not enr.checked_today %}
+<div class="modal fade" id="modal{{ enr.track.id }}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+            <div class="modal-header border-0 text-white"
+                 style="background:linear-gradient(135deg,#1e293b,{{ enr.color }});">
+                <h5 class="modal-title fw-bold">{{ enr.track.emoji }} {{ enr.track.name }}</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form action="{% url 'track_checkin' enr.track.id %}" method="POST">
+                {% csrf_token %}
+                <div class="modal-body p-4">
+                    <p class="text-muted small mb-3">What did you do today? <span class="text-muted">(optional)</span></p>
+                    <input type="text" name="notes" class="form-control rounded-3" maxlength="300"
+                           placeholder="e.g. 30 min workout, solved 2 LeetCode problems…">
+                </div>
+                <div class="modal-footer border-0 px-4 pb-4">
+                    <button type="button" class="btn btn-outline-secondary rounded-pill px-4" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn fw-bold rounded-pill px-5 text-white"
+                            style="background:{{ enr.color }};border:none;">
+                        <i class="bi bi-check-circle me-2"></i>Mark as Done
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endfor %}
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+// ── Chart initialization ────────────────────────────────────────
+const barLabels   = {{ bar_labels|safe }};
+const barDatasets = {{ bar_datasets|safe }};
+const pieLabels   = {{ pie_labels|safe }};
+const pieData     = {{ pie_data|safe }};
+const pieColors   = {{ pie_colors|safe }};
+
+// Bar chart
+const barCtx = document.getElementById('barChart');
+if (barCtx && barDatasets.length) {
+    new Chart(barCtx, {
+        type: 'bar',
+        data: { labels: barLabels, datasets: barDatasets },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { position: 'bottom', labels: { font: { family: 'Inter', size: 11 }, padding: 16 } },
+                tooltip: { mode: 'index', intersect: false }
+            },
+            scales: {
+                x: {
+                    stacked: true,
+                    grid: { display: false },
+                    ticks: { font: { family: 'Inter', size: 10 }, color: '#94a3b8' }
+                },
+                y: {
+                    stacked: true,
+                    beginAtZero: true,
+                    max: Math.max(4, barDatasets.length),
+                    ticks: {
+                        stepSize: 1, font: { family: 'Inter', size: 10 }, color: '#94a3b8',
+                        callback: v => Number.isInteger(v) ? v : ''
+                    },
+                    grid: { color: '#f1f5f9' }
+                }
+            }
+        }
+    });
+}
+
+// Pie / Doughnut chart
+const pieCtx = document.getElementById('pieChart');
+if (pieCtx && pieData.some(v => v > 0)) {
+    new Chart(pieCtx, {
+        type: 'doughnut',
+        data: {
+            labels: pieLabels,
+            datasets: [{ data: pieData, backgroundColor: pieColors, borderWidth: 2, borderColor: '#fff' }]
+        },
+        options: {
+            responsive: true,
+            cutout: '65%',
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        label: ctx => ` ${ctx.label}: ${ctx.parsed} day${ctx.parsed !== 1 ? 's' : ''}`
+                    }
+                }
+            }
+        }
+    });
+} else if (pieCtx) {
+    // No data yet
+    const parent = pieCtx.parentElement;
+    parent.innerHTML = '<p class="text-center text-muted py-5" style="font-size:.85rem;">No check-ins yet.<br>Start checking in to see your distribution!</p>';
+}
+</script>
+</body>
+</html>

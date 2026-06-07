@@ -1,0 +1,236 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ project.title }} | Admin Panel</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        body { background: #f8fafc; }
+        .admin-main { max-width: 1100px; margin: 0 auto; padding: 2rem; }
+        .card-section { background: #fff; border-radius: 16px; padding: 1.5rem; border: 1px solid rgba(0,0,0,0.04); box-shadow: 0 1px 3px rgba(0,0,0,0.04); margin-bottom: 1.5rem; }
+        .form-control, .form-select { border-radius: 12px; }
+        .progress { height: 8px; border-radius: 10px; }
+        .status-badge { padding: 5px 14px; border-radius: 50px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+        .status-discovery { background: #dbeafe; color: #1d4ed8; }
+        .status-in_progress { background: #d1fae5; color: #059669; }
+        .status-review { background: #fef3c7; color: #d97706; }
+        .status-completed { background: #dcfce7; color: #16a34a; }
+        .status-on_hold { background: #f1f5f9; color: #64748b; }
+        .milestone-row { display: flex; align-items: center; gap: 1rem; padding: 0.75rem 1rem; border-radius: 12px; margin-bottom: 0.5rem; }
+        .milestone-row:hover { background: #f8fafc; }
+    </style>
+</head>
+<body>
+    <main class="admin-main">
+        {% if messages %}
+        <div class="mb-3">{% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show py-2 small rounded-3">{{ message }}<button type="button" class="btn-close btn-close-sm" data-bs-dismiss="alert"></button></div>
+        {% endfor %}</div>
+        {% endif %}
+
+        <a href="{% url 'trh_admin_clients' %}" class="text-muted text-decoration-none small fw-bold d-inline-block mb-4">
+            <i class="bi bi-arrow-left me-1"></i>Back to Clients
+        </a>
+
+        <!-- Project Header -->
+        <div class="card-section">
+            <form method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="update_project">
+                <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-3">
+                    <div class="flex-grow-1">
+                        <input type="text" name="title" value="{{ project.title }}" class="form-control form-control-lg fw-bold border-0 px-0" style="font-size:1.3rem;">
+                        <small class="text-muted"><i class="bi bi-building me-1"></i>{{ project.client.company_name }} · {{ project.service_type }}</small>
+                    </div>
+                    <div class="d-flex gap-2 align-items-center">
+                        <select name="status" class="form-select form-select-sm rounded-pill" style="width:auto;">
+                            {% for val, label in status_choices %}
+                            <option value="{{ val }}" {% if project.status == val %}selected{% endif %}>{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                        <button type="submit" class="btn btn-sm btn-dark rounded-pill px-3">Save</button>
+                    </div>
+                </div>
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <label class="form-label small fw-bold">Progress (%)</label>
+                        <input type="range" name="progress" class="form-range" min="0" max="100" value="{{ project.progress }}" oninput="this.nextElementSibling.textContent=this.value+'%'">
+                        <small class="fw-bold">{{ project.progress }}%</small>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label small fw-bold">Deadline</label>
+                        <input type="date" name="deadline" class="form-control form-control-sm" value="{{ project.deadline|date:'Y-m-d' }}">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label small fw-bold">Budget (₹)</label>
+                        <input type="number" class="form-control form-control-sm" value="{{ project.budget|floatformat:0 }}" disabled>
+                    </div>
+                </div>
+                <div class="mt-3">
+                    <label class="form-label small fw-bold">Description</label>
+                    <textarea name="description" class="form-control form-control-sm" rows="2">{{ project.description }}</textarea>
+                </div>
+            </form>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-lg-7">
+                <!-- Milestones -->
+                <div class="card-section">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h6 class="fw-bold mb-0"><i class="bi bi-flag-fill text-primary me-2"></i>Milestones</h6>
+                    </div>
+                    {% for m in milestones %}
+                    <div class="milestone-row {% if m.is_completed %}bg-success bg-opacity-10{% endif %}">
+                        <form method="POST" class="d-inline">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="toggle_milestone">
+                            <input type="hidden" name="milestone_id" value="{{ m.id }}">
+                            <button type="submit" class="btn btn-sm {% if m.is_completed %}btn-success{% else %}btn-outline-secondary{% endif %} rounded-circle p-0" style="width:28px;height:28px;">
+                                {% if m.is_completed %}<i class="bi bi-check-lg"></i>{% endif %}
+                            </button>
+                        </form>
+                        <div class="flex-grow-1">
+                            <span class="fw-bold small {% if m.is_completed %}text-decoration-line-through text-muted{% endif %}">{{ m.title }}</span>
+                            {% if m.due_date %}<br><small class="text-muted">Due: {{ m.due_date|date:"M d" }}</small>{% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                    <!-- Add Milestone Form -->
+                    <form method="POST" class="mt-3 p-3 bg-light rounded-3">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="add_milestone">
+                        <div class="row g-2">
+                            <div class="col-md-5"><input type="text" name="milestone_title" class="form-control form-control-sm" placeholder="Milestone title" required></div>
+                            <div class="col-md-4"><input type="text" name="milestone_description" class="form-control form-control-sm" placeholder="Description"></div>
+                            <div class="col-md-3 d-flex gap-2">
+                                <input type="date" name="milestone_due_date" class="form-control form-control-sm">
+                                <button class="btn btn-sm btn-dark rounded-pill px-3" style="white-space:nowrap;">+ Add</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Deliverables -->
+                <div class="card-section">
+                    <h6 class="fw-bold mb-3"><i class="bi bi-file-earmark-arrow-up text-warning me-2"></i>Deliverables</h6>
+                    {% for d in deliverables %}
+                    <div class="d-flex align-items-center gap-3 py-2 border-bottom" style="border-color:#f1f5f9!important;">
+                        <i class="bi bi-file-earmark-text text-muted"></i>
+                        <div class="flex-grow-1">
+                            <span class="fw-bold small">{{ d.title }}</span>
+                            <small class="text-muted d-block">{{ d.uploaded_at|date:"M d, Y" }}</small>
+                        </div>
+                        <a href="{{ d.file.url }}" class="btn btn-sm btn-outline-dark rounded-pill px-3" download style="font-size:0.7rem;">Download</a>
+                    </div>
+                    {% endfor %}
+                    <form method="POST" enctype="multipart/form-data" class="mt-3 p-3 bg-light rounded-3">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="add_deliverable">
+                        <div class="row g-2">
+                            <div class="col-md-4"><input type="text" name="deliverable_title" class="form-control form-control-sm" placeholder="Title" required></div>
+                            <div class="col-md-4"><input type="file" name="deliverable_file" class="form-control form-control-sm" required></div>
+                            <div class="col-md-3"><input type="text" name="deliverable_description" class="form-control form-control-sm" placeholder="Description"></div>
+                            <div class="col-md-1"><button class="btn btn-sm btn-dark rounded-pill w-100"><i class="bi bi-upload"></i></button></div>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Post Update -->
+                <div class="card-section">
+                    <h6 class="fw-bold mb-3"><i class="bi bi-chat-square-text text-info me-2"></i>Post Update</h6>
+                    <form method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="post_update">
+                        <textarea name="update_message" class="form-control form-control-sm mb-2" rows="3" placeholder="Write an update for the client..." required></textarea>
+                        <div class="text-end">
+                            <button class="btn btn-sm btn-dark rounded-pill px-4"><i class="bi bi-send me-1"></i>Post & Notify Client</button>
+                        </div>
+                    </form>
+                    <hr>
+                    {% for u in updates %}
+                    <div class="py-2 border-bottom" style="border-color:#f1f5f9!important;">
+                        <p class="small mb-1">{{ u.message }}</p>
+                        <small class="text-muted">{% if u.posted_by %}{{ u.posted_by.get_full_name }}{% else %}System{% endif %} · {{ u.created_at|timesince }} ago</small>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Right Column -->
+            <div class="col-lg-5">
+                <!-- Invoices -->
+                <div class="card-section">
+                    <h6 class="fw-bold mb-3"><i class="bi bi-receipt text-warning me-2"></i>Invoices & Billing</h6>
+                    {% for inv in invoices %}
+                    <div class="d-flex justify-content-between align-items-center py-2 border-bottom" style="border-color:#f1f5f9!important;">
+                        <div>
+                            <span class="fw-bold small">INV-{{ inv.invoice_number }}</span>
+                            <small class="text-muted d-block">{{ inv.description|default:"-" }}</small>
+                        </div>
+                        <div class="text-end">
+                            <span class="fw-bold">₹{{ inv.amount|floatformat:0 }}</span><br>
+                            {% if inv.status == 'paid' %}
+                            <span class="badge bg-success" style="font-size:0.6rem;">Paid</span>
+                            {% elif inv.status == 'pending' %}
+                            <form method="POST" class="d-inline">
+                                {% csrf_token %}
+                                <input type="hidden" name="action" value="mark_invoice_paid">
+                                <input type="hidden" name="invoice_id" value="{{ inv.id }}">
+                                <button type="submit" class="badge bg-warning text-dark border-0 cursor-pointer" style="font-size:0.6rem;cursor:pointer;">Mark Paid</button>
+                            </form>
+                            {% elif inv.status == 'overdue' %}
+                            <span class="badge bg-danger" style="font-size:0.6rem;">Overdue</span>
+                            {% else %}
+                            <span class="badge bg-secondary" style="font-size:0.6rem;">{{ inv.get_status_display }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+
+                    <!-- Add Invoice -->
+                    <form method="POST" class="mt-3 p-3 bg-light rounded-3">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="add_invoice">
+                        <h6 class="fw-bold small mb-2">Add Invoice</h6>
+                        <div class="row g-2">
+                            <div class="col-6"><input type="text" name="invoice_number" class="form-control form-control-sm" placeholder="Invoice #" required></div>
+                            <div class="col-6"><input type="number" name="invoice_amount" class="form-control form-control-sm" placeholder="Amount ₹" step="0.01" required></div>
+                            <div class="col-8"><input type="text" name="invoice_description" class="form-control form-control-sm" placeholder="Description"></div>
+                            <div class="col-4"><input type="date" name="invoice_due_date" class="form-control form-control-sm"></div>
+                            <div class="col-12"><button class="btn btn-sm btn-dark rounded-pill w-100">Add Invoice</button></div>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Quick Stats -->
+                <div class="card-section">
+                    <h6 class="fw-bold mb-3">Quick Stats</h6>
+                    <div class="d-flex justify-content-between py-2 border-bottom" style="border-color:#f1f5f9!important;">
+                        <span class="text-muted small">Total Milestones</span>
+                        <span class="fw-bold small">{{ project.total_milestones }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between py-2 border-bottom" style="border-color:#f1f5f9!important;">
+                        <span class="text-muted small">Completed</span>
+                        <span class="fw-bold small text-success">{{ project.completed_milestones }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between py-2 border-bottom" style="border-color:#f1f5f9!important;">
+                        <span class="text-muted small">Deliverables</span>
+                        <span class="fw-bold small">{{ deliverables|length }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between py-2">
+                        <span class="text-muted small">Updates Posted</span>
+                        <span class="fw-bold small">{{ updates|length }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

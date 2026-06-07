@@ -1,0 +1,411 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enterprise Solutions | TRHvision</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="{% static 'vision/css/style.css' %}">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+    <style>
+        .services-header {
+            padding-top: 140px;
+            padding-bottom: 100px;
+            background: linear-gradient(135deg, #111111 0%, #2d2d2d 100%);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .service-card {
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+            height: 100%;
+            background: white;
+            position: relative;
+            z-index: 1;
+        }
+
+        .service-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 1rem;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: -1;
+        }
+
+        .service-card:hover {
+            transform: translateY(-5px);
+            border-color: transparent;
+        }
+
+        .service-card:hover::before {
+            opacity: 1;
+        }
+
+        .tech-icon {
+            font-size: 2.5rem;
+            transition: transform 0.3s ease;
+            opacity: 0.7;
+        }
+
+        .tech-icon:hover {
+            transform: scale(1.1);
+            opacity: 1;
+        }
+
+        .bg-grid {
+            background-image: radial-gradient(#e5e5e5 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+    </style>
+</head>
+
+<body class="bg-light">
+
+    <nav class="navbar navbar-expand-lg fixed-top shadow-sm custom-nav bg-white">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center gap-2" href="{% url 'index' %}">
+                <img src="{% static 'vision/image/logo.png' %}" alt="TRHvision Logo" class="brand-logo"
+                    onerror="this.style.display='none'">
+                <span class="brand-name fw-bold fs-4">TRHvision<span class="text-orange"></span></span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="menu">
+                <ul class="navbar-nav mx-auto gap-lg-4 fw-semibold">
+                    <li class="nav-item"><a class="nav-link" href="{% url 'index' %}">Home</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="{% url 'services' %}">Services</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'internship' %}">Internships <span
+                                class="badge bg-danger rounded-pill small ms-1"
+                                style="font-size: 0.6em; vertical-align: top;">New</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'about' %}">About</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'contact' %}">Contact</a></li>
+                </ul>
+                <div class="d-flex gap-2">
+                    <a href="{% url 'sigin' %}" class="btn btn-outline-dark rounded-pill px-4">Login</a>
+                    <a href="{% url 'contact' %}"
+                        class="btn btn-orange rounded-pill px-4 text-white hover-up shadow-sm">Get Started</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <header class="services-header text-center">
+        <div class="container position-relative z-1" data-aos="fade-up">
+            <span class="badge rounded-pill bg-orange text-white mb-3 px-3 py-2 fw-bold ls-1">ENTERPRISE
+                SOLUTIONS</span>
+            <h1 class="display-3 fw-800 mb-4">Data Driven. <span class="text-orange">Result Oriented.</span></h1>
+            <p class="lead text-white-50 mx-auto" style="max-width: 800px;">
+                We engineer end-to-end data pipelines, predictive AI models, and executive dashboards that turn raw
+                information into strategic assets.
+            </p>
+            <div class="mt-5">
+                <a href="{% url 'contact' %}"
+                    class="btn btn-light rounded-pill px-5 btn-lg fw-bold hover-up text-dark">Schedule Consultation</a>
+            </div>
+        </div>
+    </header>
+
+    <section class="py-5 bg-grid">
+        <div class="container py-5">
+            <div class="row g-4">
+                <!-- Service 1 -->
+                <div class="col-md-4" data-aos="fade-up">
+                    <div class="service-card p-4 rounded-4" data-bs-toggle="modal" data-bs-target="#dataModal">
+                        <div class="d-flex align-items-center mb-4">
+                            <div class="p-3 bg-light rounded-circle text-orange me-3"><i class="bi bi-search fs-3"></i>
+                            </div>
+                            <h4 class="fw-bold mb-0">Data Analytics</h4>
+                        </div>
+                        <p class="text-muted">Descriptive and diagnostic analytics to understand past performance and
+                            optimize future operations.</p>
+                        <hr class="text-muted opacity-25">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <small class="fw-bold text-orange">LEARN MORE</small>
+                            <i class="bi bi-arrow-right text-orange"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Service 2 -->
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+                    <div class="service-card p-4 rounded-4" data-bs-toggle="modal" data-bs-target="#biModal">
+                        <div class="d-flex align-items-center mb-4">
+                            <div class="p-3 bg-light rounded-circle text-primary me-3"><i
+                                    class="bi bi-grid-3x3-gap fs-3"></i></div>
+                            <h4 class="fw-bold mb-0">BI Dashboards</h4>
+                        </div>
+                        <p class="text-muted">Interactive Power BI & Tableau dashboards designed for C-suite executives
+                            and operational managers.</p>
+                        <hr class="text-muted opacity-25">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <small class="fw-bold text-primary">LEARN MORE</small>
+                            <i class="bi bi-arrow-right text-primary"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Service 3 -->
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+                    <div class="service-card p-4 rounded-4" data-bs-toggle="modal" data-bs-target="#mlModal">
+                        <div class="d-flex align-items-center mb-4">
+                            <div class="p-3 bg-light rounded-circle text-success me-3"><i class="bi bi-cpu fs-3"></i>
+                            </div>
+                            <h4 class="fw-bold mb-0">Predictive AI</h4>
+                        </div>
+                        <p class="text-muted">Custom machine learning models for churn prediction, demand forecasting,
+                            and customer segmentation.</p>
+                        <hr class="text-muted opacity-25">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <small class="fw-bold text-success">LEARN MORE</small>
+                            <i class="bi bi-arrow-right text-success"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Service 4 -->
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
+                    <div class="service-card p-4 rounded-4" data-bs-toggle="modal" data-bs-target="#djangoModal">
+                        <div class="d-flex align-items-center mb-4">
+                            <div class="p-3 bg-light rounded-circle text-info me-3"><i class="bi bi-globe fs-3"></i>
+                            </div>
+                            <h4 class="fw-bold mb-0">Web Development</h4>
+                        </div>
+                        <p class="text-muted">Scalable Django/Python backends and modern React frontends for
+                            data-intensive applications.</p>
+                        <hr class="text-muted opacity-25">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <small class="fw-bold text-info">LEARN MORE</small>
+                            <i class="bi bi-arrow-right text-info"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Service 5 -->
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="400">
+                    <div class="service-card p-4 rounded-4" data-bs-toggle="modal" data-bs-target="#sqlModal">
+                        <div class="d-flex align-items-center mb-4">
+                            <div class="p-3 bg-light rounded-circle text-warning me-3"><i
+                                    class="bi bi-database fs-3"></i></div>
+                            <h4 class="fw-bold mb-0">Cloud Data</h4>
+                        </div>
+                        <p class="text-muted">Secure SQL warehouse architecture on AWS/Azure for reliable data storage
+                            and retrieval.</p>
+                        <hr class="text-muted opacity-25">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <small class="fw-bold text-warning">LEARN MORE</small>
+                            <i class="bi bi-arrow-right text-warning"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contact Card -->
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="500">
+                    <div
+                        class="service-card p-4 rounded-4 bg-dark text-white d-flex flex-column justify-content-center text-center">
+                        <div class="mb-3"><i class="bi bi-chat-square-text fs-2 text-orange"></i></div>
+                        <h4 class="fw-bold">Custom Requirement?</h4>
+                        <p class="text-white-50 small">Our architects can design a solution tailored to your specific
+                            needs.</p>
+                        <a href="{% url 'contact' %}" class="btn btn-orange rounded-pill w-100 fw-bold mt-auto">Speak to
+                            Expert</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-5 bg-white border-top">
+        <div class="container text-center">
+            <h6 class="text-muted fw-bold ls-1 mb-5">POWERED BY MODERN TECH STACK</h6>
+            <div class="row justify-content-center text-secondary opacity-50 grayscale-hover">
+                <div class="col-4 col-md-2 mb-4" data-aos="fade-in"><i
+                        class="bi bi-filetype-py display-4 tech-icon text-warning"></i></div>
+                <div class="col-4 col-md-2 mb-4" data-aos="fade-in" data-aos-delay="100"><i
+                        class="bi bi-database display-4 tech-icon text-primary"></i></div>
+                <div class="col-4 col-md-2 mb-4" data-aos="fade-in" data-aos-delay="200"><i
+                        class="bi bi-bar-chart-fill display-4 tech-icon text-warning"></i></div>
+                <div class="col-4 col-md-2 mb-4" data-aos="fade-in" data-aos-delay="300"><i
+                        class="bi bi-cloud-fill display-4 tech-icon text-info"></i></div>
+                <div class="col-4 col-md-2 mb-4" data-aos="fade-in" data-aos-delay="400"><i
+                        class="bi bi-code-slash display-4 tech-icon text-danger"></i></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modals -->
+    <!-- Data Analytics Modal -->
+    <div class="modal fade" id="dataModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 rounded-4 shadow-lg p-4">
+                <div class="modal-header border-0 pb-0">
+                    <h4 class="fw-bold">Data Analytics Services</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body pt-4">
+                    <p class="text-muted mb-4">We help you make sense of your data by cleaning, structuring, and
+                        analyzing it to reveal actionable insights.</p>
+
+                    <h6 class="fw-bold mb-3">Key Deliverables:</h6>
+                    <ul class="list-unstyled mb-4">
+                        <li class="mb-2"><i class="bi bi-check-circle-fill text-orange me-2"></i> Automated Reporting
+                            Systems</li>
+                        <li class="mb-2"><i class="bi bi-check-circle-fill text-orange me-2"></i> Customer Segmentation
+                            Analysis</li>
+                        <li class="mb-2"><i class="bi bi-check-circle-fill text-orange me-2"></i> Operational Efficiency
+                            Audits</li>
+                    </ul>
+                    <a href="{% url 'contact' %}" class="btn btn-dark w-100 rounded-pill py-3 fw-bold text-white">Get a
+                        Quote</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- BI Dashboards Modal -->
+    <div class="modal fade" id="biModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 rounded-4 shadow-lg p-4">
+                <div class="modal-header border-0 pb-0">
+                    <h4 class="fw-bold">Interactive BI Dashboards</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body pt-4">
+                    <p class="text-muted mb-4">Transform static reports into dynamic, real-time dashboards using Power
+                        BI and Tableau for instant decision-making.</p>
+
+                    <h6 class="fw-bold mb-3">Key Deliverables:</h6>
+                    <ul class="list-unstyled mb-4">
+                        <li class="mb-2"><i class="bi bi-check-circle-fill text-primary me-2"></i> Executive KPI
+                            Dashboards</li>
+                        <li class="mb-2"><i class="bi bi-check-circle-fill text-primary me-2"></i> Real-time Sales
+                            Tracking</li>
+                        <li class="mb-2"><i class="bi bi-check-circle-fill text-primary me-2"></i> Custom Drill-down
+                            Reports</li>
+                    </ul>
+                    <a href="{% url 'contact' %}" class="btn btn-primary w-100 rounded-pill py-3 fw-bold text-white">Get
+                        a Quote</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI/ML Modal -->
+    <div class="modal fade" id="mlModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 rounded-4 shadow-lg p-4">
+                <div class="modal-header border-0 pb-0">
+                    <h4 class="fw-bold">Predictive AI Solutions</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body pt-4">
+                    <p class="text-muted mb-4">Leverage machine learning algorithms to forecast trends, automate complex
+                        decisions, and personalize user experiences.</p>
+
+                    <h6 class="fw-bold mb-3">Key Deliverables:</h6>
+                    <ul class="list-unstyled mb-4">
+                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Churn Prediction
+                            Models</li>
+                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Demand Forecasting
+                        </li>
+                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Recommendation
+                            Engines</li>
+                    </ul>
+                    <a href="{% url 'contact' %}" class="btn btn-success w-100 rounded-pill py-3 fw-bold text-white">Get
+                        a Quote</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Web Development Modal -->
+    <div class="modal fade" id="djangoModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 rounded-4 shadow-lg p-4">
+                <div class="modal-header border-0 pb-0">
+                    <h4 class="fw-bold">Web Development</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body pt-4">
+                    <p class="text-muted mb-4">Build robust, scalable web applications with secure Python/Django
+                        backends and modern React frontends.</p>
+
+                    <h6 class="fw-bold mb-3">Key Deliverables:</h6>
+                    <ul class="list-unstyled mb-4">
+                        <li class="mb-2"><i class="bi bi-check-circle-fill text-info me-2"></i> Custom API Development
+                        </li>
+                        <li class="mb-2"><i class="bi bi-check-circle-fill text-info me-2"></i> SaaS Platform
+                            Architecture</li>
+                        <li class="mb-2"><i class="bi bi-check-circle-fill text-info me-2"></i> Secure User
+                            Authentication</li>
+                    </ul>
+                    <a href="{% url 'contact' %}" class="btn btn-info w-100 rounded-pill py-3 fw-bold text-white">Get a
+                        Quote</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cloud Data Modal -->
+    <div class="modal fade" id="sqlModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 rounded-4 shadow-lg p-4">
+                <div class="modal-header border-0 pb-0">
+                    <h4 class="fw-bold">Cloud Data Architecture</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body pt-4">
+                    <p class="text-muted mb-4">Design and manage high-performance data warehouses on AWS or Azure for
+                        seamless scalability and security.</p>
+
+                    <h6 class="fw-bold mb-3">Key Deliverables:</h6>
+                    <ul class="list-unstyled mb-4">
+                        <li class="mb-2"><i class="bi bi-check-circle-fill text-warning me-2"></i> SQL Schema
+                            Optimization</li>
+                        <li class="mb-2"><i class="bi bi-check-circle-fill text-warning me-2"></i> Cloud Migration
+                            Strategy</li>
+                        <li class="mb-2"><i class="bi bi-check-circle-fill text-warning me-2"></i> Data Governance
+                            Frameworks</li>
+                    </ul>
+                    <a href="{% url 'contact' %}" class="btn btn-warning w-100 rounded-pill py-3 fw-bold text-white">Get
+                        a Quote</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-black text-white py-5 border-top border-secondary">
+        <div class="container text-center">
+            <p class="h4 mb-3">TRHvision<span class="text-orange"></span></p>
+            <p class="text-white-50 mb-1">📞 +91 9548684722 | 📧 support@trhvision.com</p>
+            <hr class="border-secondary my-4">
+            <small class="text-white-50">© 2025 TRHvision Solutions. All Rights Reserved.</small>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({
+            duration: 800,
+            once: true
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,164 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        @page {
+            size: 8.5in 11in;
+            /* Portrait — matches your TRJcertificate */
+            margin: 0;
+        }
+
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            width: 8.5in;
+            height: 11in;
+            overflow: hidden;
+            font-family: 'Georgia', serif;
+        }
+
+        /* Single fixed page — nothing spills outside */
+        .page {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 8.5in;
+            height: 11in;
+            overflow: hidden;
+        }
+
+        /* Background: your TRJcertificate.png */
+        .bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 8.5in;
+            height: 11in;
+        }
+
+        /* ─── Text positioned to align with the template design ─── */
+
+        /* Cert No — top left */
+        .cert-id {
+            position: absolute;
+            top: 0.30in;
+            left: 1.40in;
+            font-size: 9pt;
+            color: #555;
+            font-family: 'Helvetica', sans-serif;
+        }
+
+        /* Date — top right */
+        .cert-date {
+            position: absolute;
+            top: 0.30in;
+            right: 1.30in;
+            font-size: 9pt;
+            color: #555;
+            text-align: right;
+            font-family: 'Helvetica', sans-serif;
+        }
+
+        /* Student name — sits ON the underline in your template (~5.5in from top) */
+        .cert-name {
+            position: absolute;
+            top: 5.4in;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 28pt;
+            font-weight: bold;
+            color: #1a3c6e;
+            /* dark navy, matches template */
+            font-family: 'Georgia', serif;
+        }
+
+        /* Domain + Duration line just below the name */
+        .cert-domain {
+            position: absolute;
+            top: 6.3in;
+            left: 0.6in;
+            right: 0.6in;
+            text-align: center;
+            font-size: 13pt;
+            color: #333;
+            font-family: 'Helvetica', sans-serif;
+        }
+
+        /* Body description */
+        .cert-body {
+            position: absolute;
+            top: 6.85in;
+            left: 0.7in;
+            right: 0.7in;
+            text-align: center;
+            font-size: 11pt;
+            line-height: 1.6;
+            color: #444;
+            font-family: 'Helvetica', sans-serif;
+        }
+
+        /* QR code — bottom right corner */
+        .cert-qr {
+            position: absolute;
+            bottom: 0.1in;
+            /* Pushed lower */
+            right: 0.1in;
+            /* Pushed left to the corner */
+            text-align: center;
+        }
+
+        .cert-qr img {
+            width: 65pt;
+            height: 65pt;
+        }
+
+        .cert-qr-label {
+            font-size: 6.5pt;
+            color: #888;
+            margin-top: 2pt;
+            font-family: 'Helvetica', sans-serif;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="page">
+
+        <!-- Your TRJcertificate as full-page background -->
+        {% if cert_bg %}
+        <img class="bg" src="data:image/png;base64,{{ cert_bg }}">
+        {% endif %}
+
+        <!-- Certificate ID & Date -->
+        <div class="cert-id">Cert No: {{ student_id }}</div>
+        <div class="cert-date">Issue Date: {% now "F d, Y" %}</div>
+
+        <!-- Student Name on the underline in the template -->
+        <div class="cert-name">{{ full_name }}</div>
+
+        <!-- Domain & Duration -->
+        <div class="cert-domain">
+            <strong>{{ period }} {{ domain }} Internship</strong>
+        </div>
+
+        <!-- Description body -->
+        <div class="cert-body">
+            has successfully completed a {{ period }} <strong>{{ domain }}</strong> Internship
+            at <strong>TRHvision</strong>, demonstrating exceptional dedication, technical proficiency, and
+            professional commitment throughout all assigned responsibilities.
+        </div>
+
+        <!-- QR Code -->
+        <div class="cert-qr">
+            <img src="data:image/png;base64,{{ qr_code }}">
+            <div class="cert-qr-label">Verify: {{ student_id }}</div>
+        </div>
+
+    </div>
+</body>
+
+</html>

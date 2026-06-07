@@ -1,0 +1,48 @@
+{% extends 'vision/base.html' %}
+{% load static %}
+
+{% block content %}
+<section class="py-5 bg-light" style="margin-top: 80px; min-height: 80vh; display: flex; align-items: center;">
+    <div class="container text-center">
+        <div class="row justify-content-center">
+            <div class="col-lg-6">
+                <div class="card border-0 shadow-lg rounded-4 p-5">
+                    <div class="mb-4">
+                        <i class="bi bi-check-circle-fill text-success" style="font-size: 5rem;"></i>
+                    </div>
+                    <h2 class="fw-bold mb-3">Enrollment Successful!</h2>
+                    <p class="text-muted mb-4 lead">
+                        Thank you for registering with TRHvision Academy. <br>
+                        We have received your details and payment reference.
+                    </p>
+                    <div class="bg-light p-4 rounded-3 mb-4 text-start">
+                        <h6 class="fw-bold text-dark mb-3">Next Steps:</h6>
+                        <ul class="list-unstyled text-muted mb-0">
+                            <li class="mb-2"><i class="bi bi-1-circle-fill text-orange me-2"></i> Our team will verify
+                                your payment (usually within 2-4 hours).</li>
+                            <li class="mb-2"><i class="bi bi-2-circle-fill text-orange me-2"></i> You will receive a
+                                Welcome Email with your LMS login credentials.</li>
+                            <li class="mb-0"><i class="bi bi-3-circle-fill text-orange me-2"></i> Your internship
+                                dashboard will be activated.</li>
+                        </ul>
+                    </div>
+                    {% if enrollment %}
+                    <div class="bg-light p-4 rounded-3 mb-4 text-start border-start border-4 border-orange">
+                        <h6 class="fw-bold text-dark mb-1">Your Internship Offer Letter is Ready!</h6>
+                        <p class="text-muted small mb-3">As your payment has been successfully completed, you can download your official offer letter below.</p>
+                        <a href="{% url 'download_offer_letter_by_id' enrollment.id %}" target="_blank" class="btn btn-orange text-white rounded-pill px-4 btn-sm fw-bold">
+                            <i class="bi bi-download me-2"></i>Download Offer Letter
+                        </a>
+                    </div>
+                    {% endif %}
+                    <div class="d-flex gap-3 justify-content-center">
+                        <a href="{% url 'index' %}" class="btn btn-outline-dark rounded-pill px-4">Go to Home</a>
+                        <a href="{% url 'contact' %}"
+                            class="btn btn-orange text-white rounded-pill px-4 hover-up">Contact Support</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

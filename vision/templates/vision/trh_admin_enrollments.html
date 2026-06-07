@@ -1,0 +1,150 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enrollments | Admin Panel</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        body { background: #f8fafc; }
+        .admin-sidebar { width: 260px; height: 100vh; position: fixed; top: 0; left: 0; background: #111827; z-index: 1000; padding: 1.5rem; display: flex; flex-direction: column; overflow-y: auto; }
+        .admin-main { margin-left: 260px; padding: 2rem; min-height: 100vh; }
+        @media (max-width: 991px) { .admin-sidebar { transform: translateX(-100%); transition: transform .3s; } .admin-sidebar.show { transform: translateX(0); } .admin-main { margin-left: 0; } }
+        .admin-sidebar .brand { display: flex; align-items: center; gap: 8px; margin-bottom: 2rem; text-decoration: none; }
+        .admin-sidebar .brand span { font-size: 1.1rem; font-weight: 800; color: #fff; }
+        .admin-sidebar .brand .dot { color: #6366f1; }
+        .admin-sidebar .admin-tag { font-size: 0.55rem; background: #6366f1; color: #fff; padding: 2px 8px; border-radius: 4px; font-weight: 700; letter-spacing: 1px; margin-left: 4px; }
+        .admin-sidebar .section-label { font-size: 0.6rem; color: rgba(255,255,255,0.25); font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; margin: 1.5rem 0 0.5rem 0.5rem; }
+        .admin-sidebar .nav-link { color: rgba(255,255,255,0.45); font-weight: 600; font-size: 0.82rem; border-radius: 10px; padding: 9px 12px; margin-bottom: 2px; transition: all 0.2s; }
+        .admin-sidebar .nav-link:hover, .admin-sidebar .nav-link.active { color: #fff; background: rgba(99,102,241,0.15); }
+        .admin-sidebar .nav-link i { width: 20px; text-align: center; }
+        .table-card { background: #fff; border-radius: 16px; padding: 1.5rem; border: 1px solid rgba(0,0,0,0.04); box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+        .table th { font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #94a3b8; border-bottom: 2px solid #f1f5f9; }
+        .table td { font-size: 0.82rem; vertical-align: middle; border-color: #f8fafc; }
+    </style>
+</head>
+<body>
+    <button class="btn btn-dark d-lg-none position-fixed top-0 start-0 m-3 z-3 shadow rounded-3" onclick="document.querySelector('.admin-sidebar').classList.toggle('show')"><i class="bi bi-list fs-4"></i></button>
+
+    <aside class="admin-sidebar">
+        <a href="{% url 'trh_admin_dashboard' %}" class="brand">
+            <img src="{% static 'vision/image/logo.png' %}" alt="" width="28" onerror="this.style.display='none'">
+            <span>TRHvision<span class="dot">.</span></span><span class="admin-tag">ADMIN</span>
+        </a>
+        <div class="section-label">Overview</div>
+        <nav class="nav flex-column"><a href="{% url 'trh_admin_dashboard' %}" class="nav-link"><i class="bi bi-grid-1x2-fill me-2"></i>Dashboard</a></nav>
+        <div class="section-label">Internships</div>
+        <nav class="nav flex-column">
+            <a href="{% url 'trh_admin_students' %}" class="nav-link"><i class="bi bi-mortarboard me-2"></i>Students</a>
+            <a href="{% url 'trh_admin_enrollments' %}" class="nav-link active"><i class="bi bi-credit-card me-2"></i>Enrollments</a>
+        </nav>
+        <div class="section-label">Clients</div>
+        <nav class="nav flex-column"><a href="{% url 'trh_admin_clients' %}" class="nav-link"><i class="bi bi-building me-2"></i>Clients</a></nav>
+        <div class="section-label">Communication</div>
+        <nav class="nav flex-column"><a href="{% url 'trh_admin_contacts' %}" class="nav-link"><i class="bi bi-chat-dots me-2"></i>Messages</a></nav>
+        <div class="mt-auto pt-3 border-top" style="border-color:rgba(255,255,255,0.08)!important;">
+            <a href="{% url 'admin:index' %}" class="nav-link"><i class="bi bi-database me-2"></i>Django Admin</a>
+            <a href="{% url 'index' %}" class="nav-link text-danger"><i class="bi bi-box-arrow-right me-2"></i>Exit</a>
+        </div>
+    </aside>
+
+    <main class="admin-main">
+        <h4 class="fw-bold mb-1">Enrollments</h4>
+        <p class="text-muted small mb-4">All internship enrollment payments.</p>
+
+        {% if messages %}
+        <div class="row mb-3">
+            <div class="col-12">
+                {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show shadow-sm" role="alert" style="border-radius: 12px; font-size: 0.85rem;">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <form method="GET" class="d-flex flex-wrap gap-2 align-items-center mb-4">
+            <input type="text" name="q" class="form-control form-control-sm rounded-pill" placeholder="Search name, email, phone..." value="{{ search }}" style="max-width:250px;">
+            <select name="domain" class="form-select form-select-sm rounded-pill" style="max-width:180px;">
+                <option value="">All Domains</option>
+                <option value="Data Analytics" {% if domain_filter == "Data Analytics" %}selected{% endif %}>Data Analytics</option>
+                <option value="Power BI developer" {% if domain_filter == "Power BI developer" %}selected{% endif %}>Power BI</option>
+                <option value="Web Development" {% if domain_filter == "Web Development" %}selected{% endif %}>Web Development</option>
+                <option value="Machine Learning" {% if domain_filter == "Machine Learning" %}selected{% endif %}>Machine Learning</option>
+                <option value="Data Science" {% if domain_filter == "Data Science" %}selected{% endif %}>Data Science</option>
+                <option value="Artificial Intelligence" {% if domain_filter == "Artificial Intelligence" %}selected{% endif %}>Artificial Intelligence</option>
+            </select>
+            <select name="payment" class="form-select form-select-sm rounded-pill" style="max-width:140px;">
+                <option value="">All Payments</option>
+                <option value="paid" {% if payment_filter == "paid" %}selected{% endif %}>Paid</option>
+                <option value="unpaid" {% if payment_filter == "unpaid" %}selected{% endif %}>Unpaid</option>
+            </select>
+            <button class="btn btn-sm btn-dark rounded-pill px-3"><i class="bi bi-search me-1"></i>Filter</button>
+            <a href="{% url 'trh_admin_enrollments' %}" class="btn btn-sm btn-outline-secondary rounded-pill px-3">Reset</a>
+        </form>
+
+        <div class="table-card">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead><tr><th>Name</th><th>College</th><th>Email</th><th>Phone</th><th>Domain</th><th>Duration</th><th>Amount</th><th>Payment</th><th>Approval Status</th><th>Date</th></tr></thead>
+                    <tbody>
+                        {% for e in enrollments %}
+                        <tr>
+                            <td class="fw-bold">{{ e.name }}</td>
+                            <td class="text-muted">{{ e.college }}</td>
+                            <td>{{ e.email }}</td>
+                            <td>{{ e.phone }}</td>
+                            <td><span class="badge bg-light text-dark border">{{ e.domain }}</span></td>
+                            <td>{{ e.duration }}</td>
+                            <td class="fw-bold">₹{{ e.amount|floatformat:0 }}</td>
+                            <td>
+                                {% if e.is_paid %}
+                                <span class="badge bg-success" style="font-size:0.65rem;">Paid</span>
+                                <br>
+                                <a href="{% url 'download_offer_letter_by_id' e.id %}" target="_blank" class="text-primary small text-decoration-none" style="font-size:0.75rem;">
+                                    <i class="bi bi-file-earmark-pdf me-1"></i>Offer Letter
+                                </a>
+                                {% if e.razorpay_payment_id %}
+                                <br><small class="text-muted" style="font-size:0.6rem;">{{ e.razorpay_payment_id|truncatechars:15 }}</small>
+                                {% endif %}
+                                {% else %}
+                                <span class="badge bg-warning text-dark" style="font-size:0.65rem;">Pending</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if e.is_approved %}
+                                <span class="badge bg-info text-dark" style="font-size:0.65rem;">Approved</span>
+                                {% if e.credentials_sent %}
+                                <br><span class="badge bg-success-subtle text-success mt-1" style="font-size:0.6rem;"><i class="bi bi-envelope-check-fill"></i> Credentials Sent</span>
+                                {% else %}
+                                <br><span class="badge bg-warning-subtle text-warning mt-1" style="font-size:0.6rem;"><i class="bi bi-clock-history"></i> Pending Dispatch (4h)</span>
+                                {% endif %}
+                                {% else %}
+                                {% if e.is_paid %}
+                                <a href="{% url 'trh_admin_approve_enrollment' e.id %}" class="btn btn-sm btn-primary py-1 px-2 fw-semibold" style="font-size:0.7rem; border-radius: 6px;">
+                                    <i class="bi bi-check-circle-fill me-1"></i>Approve
+                                </a>
+                                {% else %}
+                                <span class="text-muted small" style="font-size:0.7rem;">Awaiting Payment</span>
+                                {% endif %}
+                                {% endif %}
+                            </td>
+                            <td class="text-muted">{{ e.created_at|date:"M d, Y" }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr><td colspan="9" class="text-center text-muted py-4">No enrollments found.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

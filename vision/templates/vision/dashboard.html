@@ -1,0 +1,589 @@
+{% load static %}
+{% load custom_filters %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard | TRHvision Academy</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="{% static 'vision/css/style.css' %}">
+
+    <style>
+        body {
+            background-color: #ffffff;
+        }
+
+        .main-content {
+            margin-left: 280px;
+            padding: 2rem;
+        }
+
+        .sidebar {
+            width: 280px;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background: white;
+            border-right: 1px solid rgba(0, 0, 0, 0.05);
+            z-index: 1000;
+            padding: 2rem;
+        }
+
+        @media (max-width: 991px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+
+            .sidebar.show {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+        }
+
+        /* ─── Daily Challenger teaser card ─── */
+        .dc-teaser {
+            background: linear-gradient(135deg, #1e293b 0%, #0f766e 100%);
+            border-radius: 18px;
+            padding: 1.5rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1.25rem;
+            flex-wrap: wrap;
+            box-shadow: 0 8px 32px rgba(15, 118, 110, .25);
+            transition: box-shadow .3s;
+        }
+
+        .dc-teaser:hover {
+            box-shadow: 0 12px 40px rgba(15, 118, 110, .35);
+        }
+
+        .dc-teaser-left {
+            display: flex;
+            align-items: center;
+            gap: 1.1rem;
+        }
+
+        .dc-teaser-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 15px;
+            background: rgba(255, 255, 255, .12);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            flex-shrink: 0;
+        }
+
+        .dc-teaser-title {
+            font-size: 1rem;
+            font-weight: 800;
+            color: #fff;
+            margin: 0 0 2px;
+        }
+
+        .dc-teaser-sub {
+            font-size: .75rem;
+            color: rgba(255, 255, 255, .55);
+            margin: 0;
+        }
+
+        .dc-teaser-pills {
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+        }
+
+        .dc-tpill {
+            text-align: center;
+        }
+
+        .dc-tpill-val {
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: #fff;
+            display: block;
+            line-height: 1;
+        }
+
+        .dc-tpill-lbl {
+            font-size: .58rem;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, .4);
+            display: block;
+            margin-top: 2px;
+        }
+
+        .dc-tpill+.dc-tpill {
+            border-left: 1px solid rgba(255, 255, 255, .15);
+            padding-left: 1.25rem;
+        }
+
+        .dc-teaser-btn {
+            background: #fff;
+            color: #0f766e;
+            font-weight: 800;
+            border: none;
+            border-radius: 12px;
+            padding: 10px 22px;
+            font-size: .85rem;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: transform .15s, box-shadow .15s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .dc-teaser-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, .2);
+            color: #0f766e;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Mobile Toggle -->
+    <button class="btn btn-light d-lg-none position-fixed top-0 start-0 m-3 z-3 shadow-sm"
+        onclick="document.querySelector('.sidebar').classList.toggle('show')">
+        <i class="bi bi-list fs-4"></i>
+    </button>
+
+    <!-- Sidebar -->
+    <aside class="sidebar d-flex flex-column">
+        <a href="{% url 'index' %}" class="d-flex align-items-center gap-2 mb-5 text-decoration-none">
+            <img src="{% static 'vision/image/logo.png' %}" alt="Logo" width="40" onerror="this.style.display='none'">
+            <span class="fs-4 fw-bold text-dark">TRHvision<span class="text-orange">.</span></span>
+        </a>
+
+        <div class="mb-4">
+            <div class="d-flex align-items-center gap-3 p-3 bg-light rounded-4">
+                <div class="rounded-circle bg-orange text-white d-flex align-items-center justify-content-center fw-bold fs-5"
+                    style="width: 45px; height: 45px;">
+                    {{ request.user.first_name|first }}{{ request.user.last_name|first }}
+                </div>
+                <div>
+                    <h6 class="mb-0 fw-bold text-dark">{{ request.user.first_name }}</h6>
+                    <small class="text-muted extra-small">{{ student_id }}</small>
+                </div>
+            </div>
+        </div>
+
+        <nav class="nav flex-column sidebar-nav gap-2">
+            <a href="{% url 'dashboard' %}" class="nav-link active"><i class="bi bi-grid-fill me-3"></i>Dashboard</a>
+            <a href="{% url 'manage_challenges' %}" class="nav-link"><i
+                    class="bi bi-lightning-charge-fill me-3 text-warning"></i>Daily Challenger</a>
+            <a href="#" class="nav-link"><i class="bi bi-journal-check me-3"></i>My Tasks</a>
+            <a href="#" class="nav-link"><i class="bi bi-file-earmark-text me-3"></i>Resources</a>
+            <a href="#" class="nav-link"><i class="bi bi-chat-dots me-3"></i>Mentor Chat</a>
+        </nav>
+
+        <div class="mt-auto">
+            <a href="{% url 'index' %}" class="btn btn-light w-100 rounded-pill text-danger fw-bold">
+                <i class="bi bi-box-arrow-right me-2"></i>Sign Out
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Header -->
+        <header class="d-flex justify-content-between align-items-center mb-5">
+            <div>
+                <h2 class="fw-bold mb-1">Dashboard Overview</h2>
+                <p class="text-muted mb-0">Track your progress for <strong>{{ internship_name }}</strong> internship.
+                </p>
+            </div>
+            <div class="d-none d-md-block">
+                <span class="badge bg-white text-dark shadow-sm px-3 py-2 rounded-pill border">
+                    <i class="bi bi-calendar3 me-2 text-orange"></i>Week {{ current_week }} of {{ period_text }}
+                </span>
+            </div>
+        </header>
+
+        <!-- ════════════════════════════════════
+             DAILY CHALLENGER — Quick Access Teaser
+             ════════════════════════════════════ -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="dc-teaser">
+                    <div class="dc-teaser-left">
+                        <div class="dc-teaser-icon">⚡</div>
+                        <div>
+                            <p class="dc-teaser-title">Daily Challenger</p>
+                            <p class="dc-teaser-sub">
+                                {% if today_done_count == 0 %}Start your challenges for today 💪
+                                {% elif today_done_count == 1 %}1 done — keep the momentum! 🌱
+                                {% elif today_done_count == 2 %}2 done — on fire! 🔥
+                                {% elif today_done_count == 3 %}3 done — unstoppable! 🖤
+                                {% else %}All 4 done — LEGENDARY! 🏆
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+                    <div class="dc-teaser-pills">
+                        <div class="dc-tpill">
+                            <span class="dc-tpill-val">{{ streak.current_streak|default:0 }} 🔥</span>
+                            <span class="dc-tpill-lbl">Streak</span>
+                        </div>
+                        <div class="dc-tpill">
+                            <span class="dc-tpill-val">{{ today_done_count }}/{{ enrollments|length }}</span>
+                            <span class="dc-tpill-lbl">Today</span>
+                        </div>
+                    </div>
+                    <a href="{% url 'manage_challenges' %}" class="dc-teaser-btn">
+                        <i class="bi bi-lightning-charge-fill me-1"></i>Open Challenges
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Row -->
+
+        <div class="row g-4 mb-5">
+            <!-- Progress Card -->
+            <div class="col-md-4">
+                <div class="dashboard-card p-4 h-100 d-flex align-items-center justify-content-between">
+                    <div>
+                        <p class="text-muted text-uppercase fw-bold small mb-1">Course Progress</p>
+                        <h2 class="fw-bold mb-0 text-dark">{{ progress_percent }}%</h2>
+                        <small class="text-success fw-bold"><i class="bi bi-graph-up-arrow me-1"></i> Keep
+                            going!</small>
+                    </div>
+                    <div class="position-relative" style="width: 70px; height: 70px;">
+                        <svg class="w-100 h-100" viewBox="0 0 36 36">
+                            <path class="text-light"
+                                d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                                fill="none" stroke="#e9ecef" stroke-width="3" />
+                            <path class="text-orange" stroke-dasharray="{{ progress_percent }}, 100"
+                                d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                                fill="none" stroke="#0ea5e9" stroke-width="3" stroke-linecap="round" />
+                        </svg>
+                        <i class="bi bi-trophy-fill position-absolute top-50 start-50 translate-middle text-orange"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tasks Card -->
+            <div class="col-md-4">
+                <div class="dashboard-card p-4 h-100">
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <div class="stat-icon-wrapper bg-soft-orange text-orange">
+                            <i class="bi bi-list-check"></i>
+                        </div>
+                        <div>
+                            <p class="text-muted text-uppercase fw-bold small mb-0">Tasks Completed</p>
+                            <h4 class="fw-bold mb-0">{{ completed_count }} / {{ total_count }}</h4>
+                        </div>
+                    </div>
+                    <div class="progress" style="height: 6px;">
+                        <div class="progress-bar bg-orange" style="width: {{ progress_percent }}%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Days Remaining -->
+            <div class="col-md-4">
+                <div class="dashboard-card p-4 h-100 d-flex align-items-center justify-content-between">
+                    <div>
+                        <p class="text-muted text-uppercase fw-bold small mb-1">Time Left</p>
+                        <h2 class="fw-bold mb-0 {% if days_remaining < 10 %}text-danger{% else %}text-dark{% endif %}">
+                            {{ days_remaining }} Days
+                        </h2>
+                        <small class="text-muted">ends in {{ period_text }}</small>
+                    </div>
+                    <div class="stat-icon-wrapper bg-light text-dark">
+                        <i class="bi bi-hourglass-split"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <!-- Task List -->
+            <div class="col-lg-8">
+                <h5 class="fw-bold mb-3">Your Roadmap</h5>
+                <div class="dashboard-list">
+                    {% for task in tasks %}
+                    <div
+                        class="dashboard-card mb-3 p-4 {% if task.is_locked %}opacity-75{% elif request.user in task.users_completed.all %}completed-task{% endif %}">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div class="d-flex align-items-center gap-3">
+                                {% if task.is_locked %}
+                                <i class="bi bi-lock-fill text-muted fs-4"></i>
+                                {% elif request.user in task.users_completed.all %}
+                                <i class="bi bi-check-circle-fill text-success fs-4"></i>
+                                {% else %}
+                                <i class="bi bi-circle text-muted fs-4"></i>
+                                {% endif %}
+                                <div>
+                                    <h6 class="fw-bold mb-1 {% if task.is_locked %}text-muted{% endif %}">
+                                        {{ task.title }}</h6>
+                                    <span class="badge bg-light text-dark border">Module {{ forloop.counter }}</span>
+                                    {% if task.required_period == 1 %}
+                                    <span class="badge bg-success bg-opacity-10 text-success ms-1">1-Month Plan</span>
+                                    {% elif task.required_period == 2 %}
+                                    <span class="badge bg-primary bg-opacity-10 text-primary ms-1">2-Month Plan</span>
+                                    {% elif task.required_period == 3 %}
+                                    <span class="badge bg-warning bg-opacity-10 text-warning ms-1">3-Month Plan</span>
+                                    {% elif task.required_period == 6 %}
+                                    <span class="badge bg-danger bg-opacity-10 text-danger ms-1">6-Month Plan</span>
+                                    {% endif %}
+                                    {% if task.is_locked %}
+                                    <span class="badge bg-secondary bg-opacity-10 text-secondary ms-1">
+                                        <i class="bi bi-lock-fill me-1"></i>Complete previous task to unlock
+                                    </span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% if task.is_locked %}
+                            <button class="btn btn-sm btn-secondary rounded-pill px-3" disabled>
+                                <i class="bi bi-lock-fill me-1"></i>Locked
+                            </button>
+                            {% else %}
+                            <a href="{% url 'task_details' task.id %}" class="btn btn-sm btn-dark rounded-pill px-3">
+                                {% if request.user in task.users_completed.all %}Review{% else %}Start Task{% endif %}
+                            </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="dashboard-card p-5 text-center">
+                        <p class="text-muted">No tasks assigned yet.</p>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Capstone Projects Section -->
+                <h5 class="fw-bold mb-3 mt-5">Capstone Projects</h5>
+                <div class="dashboard-list">
+                    {% for project in projects %}
+                    <div class="dashboard-card mb-3 p-4 border-start border-4 border-primary">
+                        <div class="d-flex align-items-start justify-content-between flex-wrap gap-3 mb-3">
+                            <div>
+                                <h5 class="fw-bold mb-2">{{ project.title }}</h5>
+                                <p class="text-muted small mb-3">{{ project.description|truncatewords:20 }}</p>
+                                <span class="badge bg-primary bg-opacity-10 text-primary">
+                                    <i class="bi bi-briefcase-fill me-1"></i> {{ project.category }}
+                                </span>
+                                <!-- Period badge -->
+                                {% if project.required_period == 1 %}
+                                <span class="badge bg-success bg-opacity-10 text-success ms-1">1-Month Plan</span>
+                                {% elif project.required_period == 2 %}
+                                <span class="badge bg-primary bg-opacity-10 text-primary ms-1">2-Month Plan</span>
+                                {% elif project.required_period == 3 %}
+                                <span class="badge bg-warning bg-opacity-10 text-warning ms-1">3-Month Plan</span>
+                                {% elif project.required_period == 6 %}
+                                <span class="badge bg-danger bg-opacity-10 text-danger ms-1">6-Month Plan</span>
+                                {% endif %}
+                            </div>
+                            <div>
+                                {% if project.problem_statement %}
+                                <a href="{{ project.problem_statement.url }}"
+                                    class="btn btn-outline-primary rounded-pill btn-sm fw-bold" download>
+                                    <i class="bi bi-download me-2"></i>Download Brief
+                                </a>
+                                {% else %}
+                                <button class="btn btn-secondary btn-sm rounded-pill" disabled>No File</button>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Submission Section -->
+                        <div class="bg-light p-3 rounded-3 mt-3">
+                            {% if project.submission %}
+                            <div class="d-flex align-items-center justify-content-between">
+                                <div>
+                                    <h6 class="fw-bold mb-1"><i
+                                            class="bi bi-check-circle-fill text-success me-2"></i>Project Submitted</h6>
+                                    <small class="text-muted">Submitted on: {{ project.submission.submitted_at|date:"M d, Y" }}</small>
+                                </div>
+                                <div>
+                                    {% if project.submission.is_approved %}
+                                    <span class="badge bg-success">Verified <i
+                                            class="bi bi-patch-check-fill ms-1"></i></span>
+                                    {% else %}
+                                    <span class="badge bg-warning text-dark">Verification Pending <i
+                                            class="bi bi-hourglass-split ms-1"></i></span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% else %}
+                            <form action="{% url 'submit_project' project.id %}" method="POST"
+                                enctype="multipart/form-data" class="d-flex flex-column gap-3">
+                                {% csrf_token %}
+                                <h6 class="fw-bold mb-0">Submit Your Work</h6>
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label small text-muted">Upload Document / PDF</label>
+                                        <input type="file" name="project_file" class="form-control form-control-sm">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label small text-muted">Or Drive / GitHub Link</label>
+                                        <input type="url" name="drive_link" class="form-control form-control-sm"
+                                            placeholder="https://...">
+                                    </div>
+                                </div>
+                                <div class="text-end">
+                                    <button type="submit" class="btn btn-dark btn-sm rounded-pill px-4">Submit
+                                        Project</button>
+                                </div>
+                                <small class="text-muted" style="font-size: 0.75rem;">* Ensure all tasks are completed.
+                                    You must submit your project and wait for admin approval (approx. 3 days) to unlock
+                                    your certificate.</small>
+                            </form>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="dashboard-card p-5 text-center">
+                        <div class="mb-3">
+                            <i class="bi bi-folder-x display-4 text-muted opacity-50"></i>
+                        </div>
+                        <h6 class="fw-bold">No Projects Assigned Yet</h6>
+                        <p class="text-muted small">Projects will appear here based on your internship duration.</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Internship Offer Letter Section -->
+            {% if enrollment %}
+            <h5 class="fw-bold mb-3">Internship Offer Letter</h5>
+            <div class="dashboard-card p-4 text-center mb-4">
+                <div class="mb-3">
+                    <i class="bi bi-file-earmark-pdf-fill display-1 text-orange"></i>
+                </div>
+                <h5 class="fw-bold text-dark">Offer Letter Unlocked!</h5>
+                <p class="small text-muted mb-1">
+                    <strong>{{ internship_name }}</strong> Internship<br>
+                    <span class="badge bg-primary bg-opacity-10 text-primary mt-1">{{ period_text }}</span>
+                </p>
+                <p class="small text-muted mb-3">Your official internship offer letter is ready for download.</p>
+                <div class="d-flex gap-2">
+                    <a href="{% url 'download_offer_letter' %}" target="_blank"
+                        class="btn btn-outline-dark w-100 rounded-pill fw-bold shadow-sm">
+                        <i class="bi bi-eye me-2"></i>View
+                    </a>
+                    <a href="{% url 'download_offer_letter' %}?download=true"
+                        class="btn btn-orange w-100 rounded-pill text-white fw-bold shadow-sm">
+                        <i class="bi bi-download me-2"></i>Download
+                    </a>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Certificate Section -->
+            <h5 class="fw-bold mb-3">Certification</h5>
+            <div
+                class="dashboard-card p-4 text-center mb-4 {% if not certificate_unlocked %}certificate-locked{% endif %}">
+                <div class="mb-3">
+                    {% if certificate_unlocked %}
+                    <i class="bi bi-patch-check-fill display-1 text-orange"></i>
+                    {% else %}
+                    <i class="bi bi-patch-check display-1 text-muted opacity-50"></i>
+                    {% endif %}
+                </div>
+
+                {% if certificate_unlocked %}
+                <h5 class="fw-bold text-success">🎓 Certificate Unlocked!</h5>
+                <p class="small text-muted mb-1">
+                    <strong>{{ internship_name }}</strong> Internship<br>
+                    <span class="badge bg-success bg-opacity-10 text-success mt-1">{{ period_text }}</span>
+                </p>
+                <p class="small text-muted mb-3">Congratulations on completing the program!</p>
+                <div class="d-flex gap-2">
+                    <a href="{% url 'generate_certificate' %}" target="_blank"
+                        class="btn btn-outline-dark w-100 rounded-pill fw-bold shadow-sm">
+                        <i class="bi bi-eye me-2"></i>View
+                    </a>
+                    <a href="{% url 'generate_certificate' %}?download=true"
+                        class="btn btn-orange w-100 rounded-pill text-white fw-bold shadow-sm">
+                        <i class="bi bi-download me-2"></i>Download
+                    </a>
+                </div>
+                {% elif validation_pending or not all_projects_cleared %}
+                <h5 class="fw-bold text-warning">Project Under Review</h5>
+                <p class="small text-muted mb-1">
+                    You'll earn your <strong>{{ internship_name }}</strong> certificate<br>
+                    <span class="badge bg-secondary bg-opacity-10 text-secondary mt-1">{{ period_text }}</span>
+                </p>
+                <p class="small text-muted mb-3">Your project is submitted! Your certificate will unlock immediately
+                    upon admin verification or automatically in <strong>{{ days_left_for_cert }} day(s)</strong>.</p>
+                <div class="alert alert-warning py-2 mb-0 small">
+                    <i class="bi bi-hourglass-split me-1"></i> Verification Pending
+                </div>
+                {% else %}
+                <h5 class="fw-bold">Certificate Locked</h5>
+                <p class="small text-muted mb-1">
+                    You'll earn your <strong>{{ internship_name }}</strong> certificate<br>
+                    <span class="badge bg-secondary bg-opacity-10 text-secondary mt-1">{{ period_text }}</span>
+                </p>
+                <p class="small text-muted mb-3">Complete all tasks and submit your capstone project(s) to unlock your
+                    verified certificate.</p>
+                <div class="progress mb-2" style="height: 6px;">
+                    <div class="progress-bar bg-secondary" style="width: {{ progress_percent }}%"></div>
+                </div>
+                <small class="text-muted">{{ completed_count }} / {{ total_count }} tasks completed</small>
+                {% endif %}
+            </div>
+
+            <!-- Announcements Section -->
+            {% if announcements %}
+            <h5 class="fw-bold mb-3">📢 Notices</h5>
+            <div class="mb-4">
+                {% for notice in announcements %}
+                <div class="dashboard-card p-3 mb-2 border-start border-4
+                        {% if notice.min_period == 1 %}border-success
+                        {% elif notice.min_period == 2 %}border-primary
+                        {% elif notice.min_period == 3 %}border-warning
+                        {% else %}border-danger{% endif %}">
+                    <h6 class="fw-bold mb-1 small">{{ notice.title }}</h6>
+                    <p class="text-muted small mb-0">{{ notice.content }}</p>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <!-- Resources / Notices -->
+            <h5 class="fw-bold mb-3">Quick Resources</h5>
+            <div class="dashboard-card p-3">
+                <a href="https://t.me/+iaKYBaRVdD9iMzM9" target="_blank"
+                    class="d-flex align-items-center gap-3 p-3 text-decoration-none text-dark hover-bg-light rounded-3 transition">
+                    <div class="bg-primary bg-opacity-10 p-2 rounded text-primary"><i class="bi bi-telegram"></i>
+                    </div>
+                    <div>
+                        <h6 class="mb-0 fw-bold">Join Community</h6>
+                        <small class="text-muted">Connect with peers on Telegram</small>
+                    </div>
+                </a>
+                <a href="#"
+                    class="d-flex align-items-center gap-3 p-3 text-decoration-none text-dark hover-bg-light rounded-3 transition">
+                    <div class="bg-success bg-opacity-10 p-2 rounded text-success"><i class="bi bi-book"></i></div>
+                    <div>
+                        <h6 class="mb-0 fw-bold">Documentation</h6>
+                        <small class="text-muted">Python & SQL Guides</small>
+                    </div>
+                </a>
+            </div>
+        </div>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

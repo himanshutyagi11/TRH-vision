@@ -1,0 +1,1097 @@
+{% load custom_filters %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ task.title }} | TRHvision Academy</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    
+    <!-- Interactive Study Tools Resources -->
+    <link rel="stylesheet" href="{% static 'vision/css/study_tools.css' %}">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/alasql@4"></script>
+
+    <style>
+        :root {
+            --brand: #0ea5e9;
+            --brand-dark: #0284c7;
+            --brand-soft: rgba(14, 165, 233, 0.08);
+            --sidebar-w: 300px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f0f4f8;
+            color: #1e293b;
+            margin: 0;
+        }
+
+        /* ── Top Navbar ── */
+        .top-nav {
+            background: #fff;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 0.85rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .top-nav .brand {
+            font-weight: 800;
+            font-size: 1.2rem;
+            color: #1e293b;
+            text-decoration: none;
+        }
+
+        .top-nav .brand span {
+            color: var(--brand);
+        }
+
+        .top-nav .exit-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 18px;
+            border-radius: 50px;
+            border: 1.5px solid #e2e8f0;
+            background: #f8fafc;
+            color: #64748b;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .top-nav .exit-btn:hover {
+            background: #fee2e2;
+            border-color: #fca5a5;
+            color: #dc2626;
+        }
+
+        /* ── Layout ── */
+        .lesson-layout {
+            display: flex;
+            min-height: calc(100vh - 60px);
+        }
+
+        /* ── Sidebar ── */
+        .lesson-sidebar {
+            width: var(--sidebar-w);
+            min-width: var(--sidebar-w);
+            background: #fff;
+            border-right: 1px solid #e2e8f0;
+            padding: 1.5rem 0;
+            position: sticky;
+            top: 60px;
+            height: calc(100vh - 60px);
+            overflow-y: auto;
+        }
+
+        .sidebar-header {
+            padding: 0 1.25rem 1rem;
+            border-bottom: 1px solid #f1f5f9;
+            margin-bottom: 0.75rem;
+        }
+
+        .sidebar-header h6 {
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 0;
+        }
+
+        .sidebar-header p {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin: 4px 0 0;
+        }
+
+        .week-group {
+            margin-bottom: 0.25rem;
+        }
+
+        .week-label {
+            padding: 0.5rem 1.25rem;
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .week-label .week-badge {
+            background: var(--brand);
+            color: #fff;
+            border-radius: 4px;
+            padding: 1px 6px;
+            font-size: 0.65rem;
+            font-weight: 700;
+        }
+
+        .week-label .week-badge.locked {
+            background: #cbd5e1;
+            color: #64748b;
+        }
+
+        .material-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            padding: 0.6rem 1.25rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.15s;
+            border-left: 3px solid transparent;
+            color: #475569;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .material-btn:hover {
+            background: var(--brand-soft);
+            color: var(--brand);
+        }
+
+        .material-btn.active {
+            background: var(--brand-soft);
+            color: var(--brand);
+            border-left-color: var(--brand);
+            font-weight: 700;
+        }
+
+        .material-btn.locked-item {
+            color: #94a3b8;
+            cursor: not-allowed;
+        }
+
+        .material-btn .mat-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 0.8rem;
+        }
+
+        .material-btn .mat-icon.unlocked {
+            background: var(--brand-soft);
+            color: var(--brand);
+        }
+
+        .material-btn .mat-icon.locked {
+            background: #f1f5f9;
+            color: #cbd5e1;
+        }
+
+        /* ── Main Content ── */
+        .lesson-main {
+            flex: 1;
+            padding: 2rem 2.5rem;
+            max-width: 900px;
+        }
+
+        @media (max-width: 768px) {
+            .lesson-sidebar {
+                display: none;
+            }
+
+            .lesson-main {
+                padding: 1rem;
+                max-width: 100%;
+            }
+        }
+
+        /* ── Material Panel ── */
+        .material-panel {
+            display: none;
+        }
+
+        .material-panel.active {
+            display: block;
+        }
+
+        .panel-hero {
+            background: linear-gradient(135deg, var(--brand) 0%, var(--brand-dark) 100%);
+            border-radius: 16px;
+            padding: 2rem;
+            color: #fff;
+            margin-bottom: 1.5rem;
+        }
+
+        .panel-hero .week-chip {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50px;
+            padding: 3px 14px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .panel-hero h2 {
+            font-weight: 800;
+            margin: 0;
+            font-size: 1.5rem;
+        }
+
+        .content-card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 2rem 2.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05), 0 4px 16px rgba(0, 0, 0, 0.04);
+            margin-bottom: 1.5rem;
+            line-height: 1.9;
+            font-size: 1rem;
+        }
+
+        .content-card p {
+            margin-bottom: 0.6rem;
+            color: #334155;
+            line-height: 1.75;
+            letter-spacing: -0.01em;
+        }
+
+        .content-card h2 {
+            font-weight: 700;
+            color: #0f172a;
+            margin-top: 1.5rem;
+            margin-bottom: 0.8rem;
+            font-size: 1.25rem;
+            letter-spacing: -0.01em;
+            line-height: 1.4;
+        }
+
+        .content-card h3 {
+            font-weight: 700;
+            color: #0f172a;
+            margin-top: 1.2rem;
+            margin-bottom: 0.6rem;
+            font-size: 1.1rem;
+            line-height: 1.4;
+        }
+
+        .content-card h4 {
+            font-weight: 600;
+            color: #1e293b;
+            margin-top: 1rem;
+            font-size: 1rem;
+        }
+
+        .content-card pre {
+            background: #1e293b;
+            color: #e2e8f0;
+            border-radius: 12px;
+            padding: 1.25rem 1.5rem;
+            overflow-x: auto;
+            font-size: 0.875rem;
+            line-height: 1.7;
+            margin: 1rem 0;
+        }
+
+        .content-card code {
+            background: #f1f5f9;
+            color: #0284c7;
+            padding: 2px 7px;
+            border-radius: 5px;
+            font-size: 0.875em;
+        }
+
+        .content-card pre code {
+            background: none;
+            color: inherit;
+            padding: 0;
+            border-radius: 0;
+        }
+
+        .content-card table {
+            font-size: 0.875rem;
+        }
+
+        .content-card .alert {
+            border-radius: 12px;
+            border: none;
+        }
+
+        .content-card ul,
+        .content-card ol {
+            padding-left: 1.4rem;
+        }
+
+        .content-card li {
+            margin-bottom: 0.35rem;
+        }
+
+        .content-card blockquote {
+            background: #f8fafc;
+            border-left: 4px solid var(--brand);
+            border-radius: 0 8px 8px 0;
+            padding: 1rem 1.5rem;
+        }
+
+        /* ── Image quality improvements ── */
+        .content-card img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 1.5rem auto;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.10);
+            /* Force crisp, high-quality rendering */
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: crisp-edges;
+            image-rendering: high-quality;
+            /* Prevent pixelation on upscaling */
+            -ms-interpolation-mode: bicubic;
+            /* Smooth rendering */
+            -webkit-font-smoothing: antialiased;
+            /* Ensure images never exceed the card */
+            object-fit: contain;
+        }
+
+        /* Larger images get a subtle caption-like frame */
+        .content-card figure {
+            margin: 1.5rem 0;
+            text-align: center;
+        }
+
+        .content-card figure img {
+            margin: 0 auto 0.5rem;
+        }
+
+        .content-card figcaption {
+            font-size: 0.8rem;
+            color: #94a3b8;
+            font-style: italic;
+            margin-top: 0.4rem;
+        }
+
+        /* Make CKEditor-inserted images with inline width still fill properly */
+        .content-card img[width] {
+            max-width: 100% !important;
+            height: auto !important;
+        }
+
+        /* Lightbox hover effect */
+        .content-card img:hover {
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
+            transform: scale(1.01);
+            transition: box-shadow 0.25s ease, transform 0.25s ease;
+            cursor: zoom-in;
+        }
+
+        .content-card img {
+            transition: box-shadow 0.25s ease, transform 0.25s ease;
+        }
+
+        .resource-bar {
+            background: #fff;
+            border-radius: 12px;
+            padding: 1rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            margin-bottom: 1.5rem;
+        }
+
+        .resource-bar .label {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-right: auto;
+        }
+
+        .btn-resource {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 18px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border: 1.5px solid #e2e8f0;
+            background: #f8fafc;
+            color: #475569;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .btn-resource:hover {
+            border-color: var(--brand);
+            color: var(--brand);
+            background: var(--brand-soft);
+        }
+
+        .btn-resource.video {
+            border-color: #fda4af;
+            color: #e11d48;
+            background: #fff1f2;
+        }
+
+        .btn-resource.video:hover {
+            background: #ffe4e6;
+        }
+
+        .locked-panel {
+            background: #fff;
+            border-radius: 16px;
+            padding: 3rem;
+            text-align: center;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .locked-panel .lock-icon {
+            font-size: 3rem;
+            color: #cbd5e1;
+            margin-bottom: 1rem;
+        }
+
+        /* ── Overview card (task description) ── */
+        .overview-card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 2rem 2.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            margin-bottom: 1.5rem;
+        }
+
+        /* ── Assessment ── */
+        .assessment-card {
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            margin-top: 2rem;
+        }
+
+        .assessment-header {
+            background: linear-gradient(135deg, #0ea5e9, #0284c7);
+            padding: 1.5rem 2rem;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .assessment-header h4 {
+            font-weight: 800;
+            margin: 0;
+        }
+
+        .assessment-header p {
+            margin: 0;
+            opacity: 0.85;
+            font-size: 0.875rem;
+        }
+
+        .quiz-option {
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 14px 18px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .quiz-option:hover {
+            border-color: var(--brand);
+            background: var(--brand-soft);
+        }
+
+        .form-check-input:checked+.form-check-label {
+            font-weight: 700;
+            color: var(--brand);
+        }
+
+        /* ── Progress bar ── */
+        .progress-strip {
+            background: #f1f5f9;
+            border-radius: 50px;
+            height: 4px;
+            margin: 0.5rem 1.25rem;
+        }
+
+        .progress-strip-fill {
+            background: var(--brand);
+            border-radius: 50px;
+            height: 4px;
+            transition: width 0.4s ease;
+        }
+
+        /* nav no-underline */
+        .material-btn,
+        .material-btn:focus {
+            outline: none;
+        }
+
+        /* ── Sequential nav bar ── */
+        .seq-nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #fff;
+            border-top: 1px solid #e2e8f0;
+            padding: 0.85rem 1.5rem;
+            position: sticky;
+            bottom: 0;
+            z-index: 50;
+            box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.06);
+            margin-top: 2rem;
+        }
+
+        .seq-indicator {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #94a3b8;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-seq {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 22px;
+            border-radius: 50px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-seq-prev {
+            background: #f1f5f9;
+            color: #475569;
+        }
+
+        .btn-seq-prev:hover {
+            background: #e2e8f0;
+            color: #1e293b;
+        }
+
+        .btn-seq-next {
+            background: var(--brand);
+            color: #fff;
+        }
+
+        .btn-seq-next:hover {
+            background: var(--brand-dark);
+        }
+
+        .btn-seq:disabled {
+            opacity: 0.35;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Focus Ruler -->
+    <div id="focus-ruler" style="display:none; position:fixed; left:0; width:100%; height:40px; background:rgba(14, 165, 233, 0.12); border-top:2px solid var(--brand); border-bottom:2px solid var(--brand); pointer-events:none; z-index:9998;"></div>
+
+    <!-- Floating Highlight Toolbar -->
+    <div id="highlight-toolbar" style="display:none; position:absolute; z-index:10000; background:rgba(255,255,255,0.98); border:1px solid #cbd5e1; box-shadow:0 10px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1); border-radius:50px; padding:6px 12px; align-items:center; gap:8px; backdrop-filter:blur(8px);">
+        <button onclick="applyHighlight('yellow')" class="btn btn-xs rounded-circle p-0" style="background:#fef08a; border:1px solid #facc15; width:22px; height:22px;" title="Yellow"></button>
+        <button onclick="applyHighlight('green')" class="btn btn-xs rounded-circle p-0" style="background:#bbf7d0; border:1px solid #4ade80; width:22px; height:22px;" title="Green"></button>
+        <button onclick="applyHighlight('pink')" class="btn btn-xs rounded-circle p-0" style="background:#fbcfe8; border:1px solid #f472b6; width:22px; height:22px;" title="Pink"></button>
+        <button onclick="applyHighlight('blue')" class="btn btn-xs rounded-circle p-0" style="background:#bfdbfe; border:1px solid #60a5fa; width:22px; height:22px;" title="Blue"></button>
+        <div style="width:1px; height:16px; background:#cbd5e1; display:inline-block; margin:0 2px;"></div>
+        <button onclick="addHighlightNote()" class="btn btn-xs btn-light rounded-pill px-2 py-0 fw-bold text-dark border" style="font-size:0.7rem; height:22px; line-height:20px;"><i class="bi bi-chat-left-text"></i> Note</button>
+        <button onclick="clearSelectionHighlight()" class="btn btn-xs btn-light rounded-pill px-2 py-0 text-danger border" style="font-size:0.7rem; height:22px; line-height:20px;"><i class="bi bi-trash"></i></button>
+    </div>
+
+    <!-- Top Nav -->
+    <nav class="top-nav">
+        <a href="/" class="brand">TRHvision<span>.</span></a>
+        <div class="d-flex align-items-center gap-3">
+            <span class="d-none d-md-inline text-muted small fw-semibold">{{ task.category }}</span>
+            <a href="{% url 'dashboard' %}" class="exit-btn">
+                <i class="bi bi-x-lg"></i> Exit Lesson
+            </a>
+        </div>
+    </nav>
+
+    <div class="lesson-layout">
+
+        <!-- Sidebar -->
+        <aside class="lesson-sidebar">
+            <div class="sidebar-header">
+                <h6>Learning Path</h6>
+                <p>{{ task.title }}</p>
+            </div>
+
+            <!-- Overview link -->
+            <button class="material-btn active" id="btn-overview" onclick="showPanel('overview')">
+                <span class="mat-icon unlocked"><i class="bi bi-house-fill"></i></span>
+                Overview
+            </button>
+
+            <!-- Materials grouped by week -->
+            {% regroup materials by week_number as week_groups %}
+            {% for week in week_groups %}
+            <div class="week-group">
+                <div class="week-label">
+                    <span class="week-badge {% if week.list.0.locked %}locked{% endif %}">
+                        W{{ week.grouper }}
+                    </span>
+                    Week {{ week.grouper }}
+                    {% if week.list.0.locked %}<i class="bi bi-lock-fill" style="color:#cbd5e1;font-size:0.7rem;"></i>{% endif %}
+                </div>
+                {% for material in week.list %}
+                <button class="material-btn {% if material.locked %}locked-item{% endif %}" id="btn-{{ material.id }}"
+                    {% if not material.locked %}onclick="showPanel('mat-{{ material.id }}')" {% endif %} {% if material.locked %}title="Available in Week {{ material.week_number }}" {% endif %}>
+                    <span class="mat-icon {% if material.locked %}locked{% else %}unlocked{% endif %}">
+                        {% if material.locked %}
+                        <i class="bi bi-lock-fill"></i>
+                        {% else %}
+                        <i class="bi bi-book-fill"></i>
+                        {% endif %}
+                    </span>
+                    <span class="text-truncate" style="max-width:180px;">{{ material.title }}</span>
+                </button>
+                {% endfor %}
+            </div>
+            {% endfor %}
+
+            <!-- Assessment link -->
+            <div class="week-group mt-3">
+                <div class="week-label">
+                    <span class="week-badge {% if has_locked_materials %}locked{% endif %}">Quiz</span>
+                    Assessment
+                    {% if has_locked_materials %}<i class="bi bi-lock-fill"
+                        style="color:#cbd5e1;font-size:0.7rem;"></i>{% endif %}
+                </div>
+                <button class="material-btn {% if has_locked_materials %}locked-item{% endif %}" id="btn-assessment" {% if not has_locked_materials %}onclick="showPanel('assessment')" {% endif %}>
+                    <span class="mat-icon {% if has_locked_materials %}locked{% else %}unlocked{% endif %}">
+                        <i class="bi bi-patch-question-fill"></i>
+                    </span>
+                    Task Assessment
+                </button>
+            </div>
+
+        </aside>
+
+        <!-- Main Content -->
+        <main class="lesson-main">
+
+            <!-- ── OVERVIEW panel ── -->
+            <div class="material-panel active" id="panel-overview">
+                <div class="panel-hero">
+                    <span class="week-chip">{{ task.category }}</span>
+                    <h2>{{ task.title }}</h2>
+                </div>
+
+                {% if task.description %}
+                <div class="content-card">
+                    {{ task.description|safe }}
+                    {% if task.task_link %}
+                    <div class="mt-4 pt-4 border-top">
+                        <p class="fw-bold small text-muted text-uppercase mb-2">Helpful Resources</p>
+                        <a href="{{ task.task_link }}" target="_blank" class="btn-resource">
+                            <i class="bi bi-box-arrow-up-right"></i> View Task Materials
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+                {% else %}
+                <div class="overview-card">
+                    <p class="text-muted mb-0">Use the learning materials in the sidebar to start your study. Select
+                        Week 1 to begin.</p>
+                </div>
+                {% endif %}
+
+                <!-- Week summary cards -->
+                <h5 class="fw-bold mb-3 mt-4">What You'll Learn</h5>
+                <div class="row g-3 mb-4">
+                    {% regroup materials by week_number as week_overview_groups %}
+                    {% for week in week_overview_groups %}
+                    <div class="col-md-6">
+                        <div class="card border-0 shadow-sm h-100" style="border-radius:14px;">
+                            <div class="card-body p-3">
+                                <div class="d-flex align-items-center gap-2 mb-2">
+                                    {% if week.list.0.locked %}
+                                    <span class="badge bg-secondary rounded-pill">Week {{ week.grouper }}</span>
+                                    <i class="bi bi-lock-fill text-muted" style="font-size:0.8rem;"></i>
+                                    {% else %}
+                                    <span class="badge rounded-pill" style="background:var(--brand);">Week {{ week.grouper }}</span>
+                                    {% endif %}
+                                </div>
+                                <p class="mb-0 small text-muted">
+                                    {{ week.list|length }} lesson{{ week.list|length|pluralize }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- ── MATERIAL panels ── -->
+            {% for material in materials %}
+            <div class="material-panel" id="panel-mat-{{ material.id }}">
+                {% if material.locked %}
+                <div class="locked-panel">
+                    <div class="lock-icon"><i class="bi bi-lock-fill"></i></div>
+                    <h4 class="fw-bold mb-2">Content Locked</h4>
+                    <p class="text-muted">This material unlocks in <strong>Week {{ material.week_number }}</strong>.<br>
+                        Keep completing your current week's tasks to progress.</p>
+                </div>
+                {% else %}
+                <!-- Hero -->
+                <div class="panel-hero">
+                    <span class="week-chip"><i class="bi bi-calendar3 me-1"></i>Week {{ material.week_number }}</span>
+                    <h2>{{ material.title }}</h2>
+                </div>
+
+                <!-- Smart Study Control Bar -->
+                <div class="study-control-bar mb-3">
+                    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 p-2 rounded-4 shadow-sm bg-white border">
+                        <div class="nav nav-pills gap-1 flex-nowrap overflow-auto" id="study-tabs-{{ material.id }}" role="tablist">
+                            <button class="btn btn-sm btn-light active rounded-3 px-3 py-2 fw-semibold d-flex align-items-center gap-2 study-tab-btn" 
+                                    id="tab-read-{{ material.id }}" onclick="switchStudyMode('{{ material.id }}', 'read')">
+                                <i class="bi bi-book-half text-primary"></i> Read
+                            </button>
+                            <button class="btn btn-sm btn-light rounded-3 px-3 py-2 fw-semibold d-flex align-items-center gap-2 study-tab-btn" 
+                                    id="tab-recall-{{ material.id }}" onclick="switchStudyMode('{{ material.id }}', 'recall')">
+                                <i class="bi bi-eye-slash-fill text-warning"></i> Active Recall
+                            </button>
+                            <button class="btn btn-sm btn-light rounded-3 px-3 py-2 fw-semibold d-flex align-items-center gap-2 study-tab-btn" 
+                                    id="tab-cards-{{ material.id }}" onclick="switchStudyMode('{{ material.id }}', 'cards')">
+                                <i class="bi bi-card-text text-success"></i> Flashcards
+                            </button>
+                            <button class="btn btn-sm btn-light rounded-3 px-3 py-2 fw-semibold d-flex align-items-center gap-2 study-tab-btn d-none" 
+                                    id="tab-sandbox-{{ material.id }}" onclick="switchStudyMode('{{ material.id }}', 'sandbox')">
+                                <i class="bi bi-code-square text-danger"></i> Sandbox
+                            </button>
+                            <button class="btn btn-sm btn-light rounded-3 px-3 py-2 fw-semibold d-flex align-items-center gap-2 study-tab-btn" 
+                                    id="tab-notes-{{ material.id }}" onclick="switchStudyMode('{{ material.id }}', 'notes')">
+                                <i class="bi bi-journal-text text-info"></i> Notes & Highlights
+                            </button>
+                        </div>
+
+                        <div class="d-flex align-items-center gap-2 flex-wrap">
+                            <button class="btn btn-sm btn-outline-secondary rounded-circle p-2 study-action-btn" title="Read Aloud"
+                                    id="btn-tts-{{ material.id }}" onclick="toggleTTS('{{ material.id }}')">
+                                <i class="bi bi-volume-up-fill"></i>
+                            </button>
+                            <button class="btn btn-sm btn-outline-secondary rounded-circle p-2 study-action-btn" title="Focus Ruler"
+                                    id="btn-ruler-{{ material.id }}" onclick="toggleRuler()">
+                                <i class="bi bi-distribute-vertical"></i>
+                            </button>
+                            <div class="dropdown">
+                                <button class="btn btn-sm btn-outline-secondary rounded-circle p-2" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="Format Text">
+                                    <i class="bi bi-type"></i>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end p-3 shadow-lg border-0 rounded-3" style="min-width: 250px; z-index: 1050;">
+                                    <li>
+                                        <label class="form-label small fw-bold text-muted text-uppercase mb-2">Font Style</label>
+                                        <div class="btn-group w-100 mb-3" role="group">
+                                            <button type="button" class="btn btn-sm btn-outline-primary active font-switcher" onclick="setFontFamily('sans')">Sans</button>
+                                            <button type="button" class="btn btn-sm btn-outline-primary font-switcher" onclick="setFontFamily('serif')">Serif</button>
+                                            <button type="button" class="btn btn-sm btn-outline-primary font-switcher" onclick="setFontFamily('dyslexic')">Dyslexic</button>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <label class="form-label small fw-bold text-muted text-uppercase mb-2 d-flex justify-content-between">
+                                            <span>Font Size</span>
+                                            <span id="font-size-val">100%</span>
+                                        </label>
+                                        <input type="range" class="form-range" min="80" max="150" step="5" value="100" id="font-size-slider" oninput="setFontSize(this.value)">
+                                    </li>
+                                    <li class="mt-2">
+                                        <label class="form-label small fw-bold text-muted text-uppercase mb-2">Reading Theme</label>
+                                        <div class="d-flex gap-2">
+                                            <button class="btn btn-sm border flex-grow-1 p-2 rounded-3 bg-white text-dark" onclick="setReadingTheme('light')" style="font-size:0.75rem;">Default</button>
+                                            <button class="btn btn-sm border flex-grow-1 p-2 rounded-3 text-dark" onclick="setReadingTheme('sepia')" style="background:#fcf8f2; border-color:#e4d6c3 !important; font-size:0.75rem;">Sepia</button>
+                                            <button class="btn btn-sm border flex-grow-1 p-2 rounded-3 bg-dark text-light" onclick="setReadingTheme('dark')" style="border-color:#334155 !important; font-size:0.75rem;">Dark</button>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Resource Bar -->
+                {% if material.video_url or material.file %}
+                <div class="resource-bar" id="resource-bar-{{ material.id }}">
+                    <span class="label"><i class="bi bi-paperclip me-1"></i>Resources</span>
+                    {% if material.video_url %}
+                    <a href="{{ material.video_url }}" target="_blank" class="btn-resource video">
+                        <i class="bi bi-play-circle-fill"></i> Watch Video
+                    </a>
+                    {% endif %}
+                    {% if material.file %}
+                    <a href="{{ material.file.url }}" target="_blank" class="btn-resource" download>
+                        <i class="bi bi-file-earmark-arrow-down"></i> Download Resource
+                    </a>
+                    {% endif %}
+                </div>
+                {% endif %}
+
+                <!-- Main content card -->
+                {% if material.content %}
+                <div class="content-card font-sans" id="card-content-{{ material.id }}">
+                    {{ material.content|safe }}
+                </div>
+                {% else %}
+                <div class="content-card text-center text-muted py-5" id="card-content-{{ material.id }}">
+                    <i class="bi bi-hourglass display-4 d-block mb-3 opacity-50"></i>
+                    Detailed notes for this lesson are being prepared.
+                </div>
+                {% endif %}
+
+                <!-- Flashcard View -->
+                <div class="flashcard-container" id="card-flashcards-{{ material.id }}" style="display:none;">
+                    <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-3">
+                        <div class="card-body p-5 text-center d-flex flex-column justify-content-center align-items-center" style="min-height: 350px; background: #fff;">
+                            <div class="study-flashcard" id="flashcard-element-{{ material.id }}" onclick="flipFlashcard('{{ material.id }}')">
+                                <div class="flashcard-inner" id="flashcard-inner-{{ material.id }}">
+                                    <div class="flashcard-front p-4 d-flex flex-column justify-content-between align-items-center">
+                                        <span class="badge bg-secondary-subtle text-secondary small rounded-pill px-3 py-1">Concept Focus</span>
+                                        <div class="flashcard-text my-auto fs-4 fw-bold text-dark"></div>
+                                        <small class="text-muted"><i class="bi bi-arrow-repeat"></i> Click card to flip & reveal details</small>
+                                    </div>
+                                    <div class="flashcard-back p-4 d-flex flex-column justify-content-between align-items-center" style="transform: rotateY(180deg);">
+                                        <span class="badge bg-primary-subtle text-primary small rounded-pill px-3 py-1">Explanation</span>
+                                        <div class="flashcard-text my-auto fs-5 text-dark overflow-auto w-100 px-2" style="max-height: 220px; line-height: 1.6;"></div>
+                                        <small class="text-muted"><i class="bi bi-arrow-repeat"></i> Click card to flip back</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer border-top bg-light p-3 d-flex align-items-center justify-content-between flex-wrap gap-2">
+                            <span class="fw-semibold text-muted small" id="flashcard-count-{{ material.id }}">Card 1 of 5</span>
+                            <div class="d-flex gap-2">
+                                <button class="btn btn-sm btn-outline-secondary rounded-pill px-3" onclick="prevFlashcard('{{ material.id }}')">
+                                    <i class="bi bi-chevron-left"></i> Prev
+                                </button>
+                                <button class="btn btn-sm btn-success rounded-pill px-4" onclick="markCardMastered('{{ material.id }}')">
+                                    <i class="bi bi-check2-circle"></i> Mastered
+                                </button>
+                                <button class="btn btn-sm btn-outline-secondary rounded-pill px-3" onclick="nextFlashcard('{{ material.id }}')">
+                                    Next <i class="bi bi-chevron-right"></i>
+                                </button>
+                            </div>
+                            <span class="badge bg-success rounded-pill px-3 py-1" id="flashcard-mastered-{{ material.id }}">0 Mastered</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sandbox View -->
+                <div class="sandbox-container" id="card-sandbox-{{ material.id }}" style="display:none;">
+                    <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-3">
+                        <div class="row g-0">
+                            <div class="col-md-7 border-end">
+                                <div class="bg-dark text-light px-3 py-2 d-flex justify-content-between align-items-center">
+                                    <span class="fw-bold small text-secondary"><i class="bi bi-pencil-square me-1"></i> Interactive Editor</span>
+                                    <div class="d-flex gap-2">
+                                        <select class="form-select form-select-sm bg-secondary-subtle border-0 py-0 px-2 fw-semibold rounded-pill text-dark" id="sandbox-lang-{{ material.id }}" style="font-size:0.75rem; width:100px;">
+                                            <option value="python">Python</option>
+                                            <option value="sql">SQL</option>
+                                            <option value="web">Web Page</option>
+                                        </select>
+                                        <button class="btn btn-xs btn-success py-0 px-3 fw-bold rounded-pill" onclick="executeSandboxCode('{{ material.id }}')" id="run-sandbox-btn-{{ material.id }}">
+                                            <i class="bi bi-play-circle-fill"></i> Run Code
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="position-relative bg-dark" style="height: 350px;">
+                                    <textarea class="form-control text-light font-monospace border-0 bg-dark w-100 h-100 p-3" 
+                                              id="sandbox-editor-{{ material.id }}" 
+                                              style="resize: none; font-size: 0.9rem; line-height: 1.6; outline: none; box-shadow: none;"
+                                              placeholder="# Write your python code here..."></textarea>
+                                </div>
+                            </div>
+                            <div class="col-md-5 d-flex flex-column bg-light" style="height: 400px; max-height:400px;">
+                                <div class="bg-secondary-subtle text-dark px-3 py-2 d-flex justify-content-between align-items-center border-bottom">
+                                    <span class="fw-bold small text-muted"><i class="bi bi-terminal-fill me-1"></i> Console Output</span>
+                                    <button class="btn btn-xs btn-outline-secondary py-0 px-2 rounded-pill" style="font-size:0.75rem;" onclick="clearSandboxConsole('{{ material.id }}')">Clear</button>
+                                </div>
+                                <div class="p-3 flex-grow-1 overflow-auto font-monospace text-dark bg-white border-bottom position-relative" 
+                                     id="sandbox-console-{{ material.id }}" 
+                                     style="font-size: 0.85rem; line-height: 1.5; white-space: pre-wrap; word-break: break-all;">
+                                    Console is ready. Select a language, paste your code, and click "Run Code".
+                                </div>
+                                <div class="p-2 bg-light border-top flex-shrink-0 d-none" id="web-preview-bar-{{ material.id }}">
+                                    <button class="btn btn-xs btn-outline-primary w-100 py-1 font-semibold rounded-3" onclick="openFullWebPreview('{{ material.id }}')">
+                                        <i class="bi bi-window-fullscreen"></i> Open Web Preview in New Tab
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Notes View -->
+                <div class="notes-container" id="card-notes-{{ material.id }}" style="display:none;">
+                    <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-3">
+                        <div class="card-body p-4 bg-white">
+                            <div class="row">
+                                <div class="col-md-5 border-end mb-3 mb-md-0">
+                                    <h6 class="fw-bold mb-3"><i class="bi bi-pencil-square text-primary"></i> Take a Study Note</h6>
+                                    <div class="mb-3">
+                                        <textarea class="form-control rounded-3" id="note-text-{{ material.id }}" rows="4" placeholder="Write down your key observations, code snippets, or definitions..." style="font-size:0.875rem;"></textarea>
+                                    </div>
+                                    <button class="btn btn-primary btn-sm rounded-pill w-100 fw-semibold" onclick="saveGeneralNote('{{ material.id }}')">
+                                        <i class="bi bi-save me-1"></i> Save Note
+                                    </button>
+                                </div>
+                                <div class="col-md-7">
+                                    <h6 class="fw-bold mb-3 d-flex justify-content-between align-items-center">
+                                        <span><i class="bi bi-journal-bookmark-fill text-success"></i> Saved Notes & Highlights</span>
+                                        <button class="btn btn-xs btn-outline-danger py-0 px-2 rounded-pill" style="font-size:0.7rem;" onclick="clearAllNotes('{{ material.id }}')">Clear All</button>
+                                    </h6>
+                                    <div class="study-notes-list" id="notes-list-{{ material.id }}" style="max-height: 250px; overflow-y: auto;">
+                                        <p class="text-muted small py-4 text-center">No notes or highlights saved yet. Highlight text or write a note to get started!</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                {% endif %}
+            </div>
+            {% endfor %}
+
+            <!-- ── ASSESSMENT panel ── -->
+            <div class="material-panel" id="panel-assessment">
+                {% if has_locked_materials %}
+                <div class="locked-panel">
+                    <div class="lock-icon"><i class="bi bi-lock-fill"></i></div>
+                    <h4 class="fw-bold mb-2">Assessment Locked</h4>
+                    <p class="text-muted">Complete all learning materials to unlock the assessment.<br>
+                        <small class="d-block mt-2"><i class="bi bi-info-circle me-1"></i>Materials unlock week by
+                            week.</small>
+                    </p>
+                </div>
+                {% else %}
+                <div class="assessment-card">
+                    <div class="assessment-header">
+                        <div class="bg-white bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center"
+                            style="width:48px;height:48px;flex-shrink:0;">
+                            <i class="bi bi-patch-question-fill fs-4"></i>
+                        </div>
+                        <div>
+                            <h4>Task Assessment</h4>
+                            <p>Answer all questions below to complete this task.</p>
+                        </div>
+                    </div>
+                    <form method="POST" action="">
+                        {% csrf_token %}
+                        <div class="p-4 p-md-5">
+                            {% if task.questions.all %}
+                            {% for question in task.questions.all %}
+                            <div class="mb-5 quiz-question-block" data-correct="{{ question.correct_option }}" id="q-block-{{ question.id }}">
+                                <h5 class="fw-bold mb-3">
+                                    <span class="text-primary me-2">Q{{ forloop.counter }}.</span>
+                                    {{ question.question_text }}
+                                </h5>
+                                <div class="quiz-option quiz-option-a" onclick="selectOption(this,'q{{ question.id }}_a')">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="q{{ question.id }}"
+                                            id="q{{ question.id }}_a" value="a">
+                                        <label class="form-check-label fw-medium" for="q{{ question.id }}_a">{{
+                                            question.option_a }}</label>
+                                    </div>
+                                </div>
+                                <div class="quiz-option quiz-option-b" onclick="selectOption(this,'q{{ question.id }}_b')">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="q{{ question.id }}"
+                                            id="q{{ question.id }}_b" value="b">
+                                        <label class="form-check-label fw-medium" for="q{{ question.id }}_b">{{
+                                            question.option_b }}</label>
+                                    </div>
+                                </div>
+                                <div class="quiz-option quiz-option-c" onclick="selectOption(this,'q{{ question.id }}_c')">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="q{{ question.id }}"
+                                            id="q{{ question.id }}_c" value="c">
+                                        <label class="form-check-label fw-medium" for="q{{ question.id }}_c">{{
+                                            question.option_c }}</label>
+                                    </div>
+                                </div>
+                                <div class="mt-3 d-flex align-items-center gap-3">
+                                    <button type="button" class="btn btn-sm btn-outline-primary check-answer-btn rounded-pill px-3 py-1" onclick="checkQuizQuestion('{{ question.id }}')">
+                                        <i class="bi bi-check-circle"></i> Check Option
+                                    </button>
+                                    <span class="fw-bold small feedback-text text-uppercase" id="feedback-{{ question.id }}"></span>
+                                </div>
+                            </div>
+                            {% endfor %}
+                            {% else %}
+                            <div class="text-center py-5">
+                                <i class="bi bi-journal-check display-1 text-muted opacity-50"></i>
+                                <p class="mt-3 text-muted">Assessment questions for this task are being prepared.</p>
+                            </div>
+                            {% endif %}
+                        </div>
+                        {% if task.questions.all %}
+                        <div class="p-4 border-top text-center">
+                            <button type="submit" class="btn btn-lg px-5 text-white fw-bold rounded-pill shadow-sm"
+                                style="background:linear-gradient(135deg,#0ea5e9,#0284c7);">
+                                <i class="bi bi-check-circle me-2"></i>Submit Assessment
+                            </button>
+                            <p class="text-muted small mt-2 mb-0">
+                                <i class="bi bi-shield-check me-1"></i>Required for your certificate.
+                            </p>
+                        </div>
+                        {% endif %}
+                    </form>
+                </div>
+                {% endif %}
+            </div>
+
+
+            <!-- ── Sequential Navigation Bar ── -->
+            <div class="seq-nav" id="seq-nav">
+                <button class="btn-seq btn-seq-prev" id="seq-prev" onclick="navigate(-1)">
+                    <i class="bi bi-arrow-left"></i> Previous
+                </button>
+                <span class="seq-indicator" id="seq-indicator"></span>
+                <button class="btn-seq btn-seq-next" id="seq-next" onclick="navigate(1)">
+                    Next <i class="bi bi-arrow-right"></i>
+                </button>
+            </div>
+        </main>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+    <script>
+        // Set global task category context for external script
+        window.TASK_CATEGORY = "{{ task.category }}";
+    </script>
+    <script src="{% static 'vision/js/study_tools.js' %}"></script>
+</body>
+</html>

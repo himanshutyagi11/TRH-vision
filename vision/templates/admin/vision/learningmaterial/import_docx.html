@@ -1,0 +1,54 @@
+{% extends "admin/base_site.html" %}
+{% block content %}
+<h1>Import Study Material from Word Document</h1>
+
+<div class="module aligned" style="max-width: 700px;">
+    {% if messages %}
+    <ul class="messagelist">
+        {% for message in messages %}
+        <li class="{{ message.tags }}">{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    <div class="help" style="margin-bottom: 1em; background: #e8f4fd; border-left: 4px solid #0ea5e9; padding: 1em; border-radius: 4px;">
+        <strong>💡 How to use:</strong> Select the Task and Week for this material, then upload a <code>.docx</code> Word file.
+        The system will automatically extract all the text, headings, and images from the document and populate the study material content.
+    </div>
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <fieldset class="module aligned">
+            <div class="form-row">
+                <label>Task: <span class="required">*</span></label>
+                <select name="task_id" required style="min-width: 300px;">
+                    <option value="">-- Select Task --</option>
+                    {% for task in tasks %}
+                    <option value="{{ task.id }}">{{ task }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-row" style="margin-top: 1em;">
+                <label>Material Title: <span class="required">*</span></label>
+                <input type="text" name="title" placeholder="e.g. Introduction to Python" required style="min-width: 300px;">
+            </div>
+            <div class="form-row" style="margin-top: 1em;">
+                <label>Week Number: <span class="required">*</span></label>
+                <input type="number" name="week_number" value="1" min="1" max="20" required>
+            </div>
+            <div class="form-row" style="margin-top: 1em;">
+                <label>Order (within week):</label>
+                <input type="number" name="order" value="1" min="1">
+            </div>
+            <div class="form-row" style="margin-top: 1em;">
+                <label>Word Document (.docx): <span class="required">*</span></label>
+                <input type="file" name="docx_file" accept=".docx" required>
+            </div>
+        </fieldset>
+        <div class="submit-row" style="margin-top: 1em;">
+            <input type="submit" value="📄 Import from Word" class="default" style="background: #0ea5e9; color: white;">
+            <a href="{% url 'admin:vision_learningmaterial_changelist' %}" class="closelink">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
