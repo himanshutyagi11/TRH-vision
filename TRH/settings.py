@@ -29,7 +29,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'unsafe-fallback-key')
 DEBUG = os.environ.get('DEBUG', 'True').lower() in ('true', '1', 't')
 
 ALLOWED_HOSTS = [host.strip() for host in os.environ.get('ALLOWED_HOSTS', '*').split(',') if host.strip()]
-
+#ALLOWED_HOSTS = ['localhost', '[IP_ADDRESS]', '127.0.0.1', '.trhvision.in', '[IP_ADDRESS]']
 # CSRF Trusted Origins for forms/admin access on HTTPS
 CSRF_TRUSTED_ORIGINS = [origin.strip() for origin in os.environ.get('CSRF_TRUSTED_ORIGINS', '').split(',') if origin.strip()]
 
@@ -68,6 +68,7 @@ CKEDITOR_CONFIGS = {
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',

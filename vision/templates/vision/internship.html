@@ -81,7 +81,7 @@
                 <div class="d-flex gap-2">
                     <a href="{% url 'sigin' %}" class="btn btn-outline-dark rounded-pill px-4">Login</a>
                     <a href="{% url 'contact' %}"
-                        class="btn btn-orange rounded-pill px-4 text-white hover-up shadow-sm">Get Started</a>
+                        class="btn btn-outline-dark rounded-pill px-4 hover-up shadow-sm">Get Started</a>
                 </div>
             </div>
         </div>
@@ -97,7 +97,7 @@
                 mentorship from experts, and earn a verified certificate.
             </p>
             <div class="d-flex justify-content-center gap-3">
-                <a href="#programs" class="btn btn-orange btn-lg rounded-pill px-5 fw-bold hover-up">View Programs</a>
+                <a href="#programs" class="btn btn-outline-light btn-lg rounded-pill px-5 hover-up">View Programs</a>
                 <a href="{% url 'contact' %}" class="btn btn-outline-light btn-lg rounded-pill px-5 hover-up">Talk to
                     Mentor</a>
             </div>
@@ -133,7 +133,7 @@
                     <div class="feature-card p-4 rounded-4 h-100">
                         <div class="mb-3 text-info"><i class="bi bi-people-fill display-5"></i></div>
                         <h5 class="fw-bold">Expert Mentorship</h5>
-                        <p class="text-muted small mb-0">Weekly code reviews and career guidance.</p>
+                        <p class="text-muted small mb-0">Weekly Progress reviews and career guidance.</p>
                     </div>
                 </div>
             </div>
@@ -165,8 +165,8 @@
                                     Excel & Pivot Tables</li>
                                 <li class="mb-2 text-muted small"><i class="bi bi-check2 text-success me-2"></i>SQL Data
                                     Extraction</li>
-                                <li class="mb-2 text-muted small"><i class="bi bi-check2 text-success me-2"></i>Python
-                                    Pandas & Matplotlib</li>
+                                <li class="mb-2 text-muted small"><i class="bi bi-check2 text-success me-2"></i>Python,
+                                    Numpy, Pandas & Matplotlib</li>
                                 <li class="mb-2 text-muted small"><i class="bi bi-check2 text-success me-2"></i>Sales
                                     Dashboard Project</li>
                             </ul>
@@ -184,9 +184,10 @@
                                 </div>-->
                             </div>
                         </div>
-                        <div class="card-footer p-4 bg-white border-top-0">
-                            <button class="btn btn-dark w-100 rounded-pill" data-bs-toggle="modal"
-                                data-bs-target="#dataModal">View Details & Apply</button>
+                        <div class="card-footer p-4 bg-white border-top-0 d-flex gap-2">
+                            <button class="btn btn-outline-dark w-50 rounded-pill" data-bs-toggle="modal"
+                                data-bs-target="#dataModal">Details</button>
+                            <a href="{% url 'enroll' %}" class="btn btn-orange w-50 rounded-pill text-white fw-bold d-flex align-items-center justify-content-center text-decoration-none">Enroll Now</a>
                         </div>
                     </div>
                 </div>
@@ -227,9 +228,10 @@
                                 </div>-->
                             </div>
                         </div>
-                        <div class="card-footer p-4 bg-white border-top-0">
-                            <button class="btn btn-outline-dark w-100 rounded-pill" data-bs-toggle="modal"
-                                data-bs-target="#powerbiModal">View Details & Apply</button>
+                        <div class="card-footer p-4 bg-white border-top-0 d-flex gap-2">
+                            <button class="btn btn-outline-dark w-50 rounded-pill" data-bs-toggle="modal"
+                                data-bs-target="#powerbiModal">Details</button>
+                            <a href="{% url 'enroll' %}" class="btn btn-orange w-50 rounded-pill text-white fw-bold d-flex align-items-center justify-content-center text-decoration-none">Enroll Now</a>
                         </div>
                     </div>
                 </div>
@@ -270,9 +272,10 @@
                                 </div>-->
                             </div>
                         </div>
-                        <div class="card-footer p-4 bg-white border-top-0">
-                            <button class="btn btn-outline-dark w-100 rounded-pill" data-bs-toggle="modal"
-                                data-bs-target="#mlModal">View Details & Apply</button>
+                        <div class="card-footer p-4 bg-white border-top-0 d-flex gap-2">
+                            <button class="btn btn-outline-dark w-50 rounded-pill" data-bs-toggle="modal"
+                                data-bs-target="#mlModal">Details</button>
+                            <a href="{% url 'enroll' %}" class="btn btn-orange w-50 rounded-pill text-white fw-bold d-flex align-items-center justify-content-center text-decoration-none">Enroll Now</a>
                         </div>
                     </div>
                 </div>
@@ -310,9 +313,10 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="card-footer p-4 bg-white border-top-0">
-                            <button class="btn btn-outline-dark w-100 rounded-pill" data-bs-toggle="modal"
-                                data-bs-target="#dsModal">View Details & Apply</button>
+                        <div class="card-footer p-4 bg-white border-top-0 d-flex gap-2">
+                            <button class="btn btn-outline-dark w-50 rounded-pill" data-bs-toggle="modal"
+                                data-bs-target="#dsModal">Details</button>
+                            <a href="{% url 'enroll' %}" class="btn btn-orange w-50 rounded-pill text-white fw-bold d-flex align-items-center justify-content-center text-decoration-none">Enroll Now</a>
                         </div>
                     </div>
                 </div>
@@ -350,9 +354,10 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="card-footer p-4 bg-white border-top-0">
-                            <button class="btn btn-outline-dark w-100 rounded-pill" data-bs-toggle="modal"
-                                data-bs-target="#aiModal">View Details & Apply</button>
+                        <div class="card-footer p-4 bg-white border-top-0 d-flex gap-2">
+                            <button class="btn btn-outline-dark w-50 rounded-pill" data-bs-toggle="modal"
+                                data-bs-target="#aiModal">Details</button>
+                            <a href="{% url 'enroll' %}" class="btn btn-orange w-50 rounded-pill text-white fw-bold d-flex align-items-center justify-content-center text-decoration-none">Enroll Now</a>
                         </div>
                     </div>
                 </div>
@@ -390,9 +395,10 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="card-footer p-4 bg-white border-top-0">
-                            <button class="btn btn-outline-dark w-100 rounded-pill" data-bs-toggle="modal"
-                                data-bs-target="#webdevModal">View Details & Apply</button>
+                        <div class="card-footer p-4 bg-white border-top-0 d-flex gap-2">
+                            <button class="btn btn-outline-dark w-50 rounded-pill" data-bs-toggle="modal"
+                                data-bs-target="#webdevModal">Details</button>
+                            <a href="{% url 'enroll' %}" class="btn btn-orange w-50 rounded-pill text-white fw-bold d-flex align-items-center justify-content-center text-decoration-none">Enroll Now</a>
                         </div>
                     </div>
                 </div>
