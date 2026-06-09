@@ -747,7 +747,7 @@ def _build_certificate_pdf(user, profile):
 
     # ── 1. Open the certificate background ───────────────────────────────
     cert_img_path = os.path.join(
-        settings.BASE_DIR, 'vision', 'static', 'vision', 'image', 'TRJcertificate.png'
+        settings.BASE_DIR, 'vision', 'static', 'vision', 'image', 'TRjcertificate.png'
     )
     if not os.path.exists(cert_img_path):
         return None

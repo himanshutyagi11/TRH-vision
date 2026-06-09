@@ -28,7 +28,12 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'unsafe-fallback-key')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', 'True').lower() in ('true', '1', 't')
 
-ALLOWED_HOSTS = [host.strip() for host in os.environ.get('ALLOWED_HOSTS', '*').split(',') if host.strip()]
+#ALLOWED_HOSTS = [host.strip() for host in os.environ.get('ALLOWED_HOSTS', '*').split(',') if host.strip()]
+ALLOWED_HOSTS = [
+    host.strip() 
+    for host in os.environ.get('ALLOWED_HOSTS', '').split(',') 
+    if host.strip()
+]
 #ALLOWED_HOSTS = ['localhost', '[IP_ADDRESS]', '127.0.0.1', '.trhvision.in', '[IP_ADDRESS]']
 # CSRF Trusted Origins for forms/admin access on HTTPS
 CSRF_TRUSTED_ORIGINS = [origin.strip() for origin in os.environ.get('CSRF_TRUSTED_ORIGINS', '').split(',') if origin.strip()]
@@ -156,8 +161,16 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
-    ]
+    os.path.join(BASE_DIR, 'vision', 'static'),
+]
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# WhiteNoise — serves static files efficiently in production
+# CompressedManifestStaticFilesStorage adds content-hash to filenames
+# so browsers always load the latest version (cache busting)
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+WHITENOISE_USE_FINDERS = True          # works without collectstatic in DEBUG
+WHITENOISE_AUTOREFRESH = DEBUG         # auto-refresh in dev, skip in prod
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
