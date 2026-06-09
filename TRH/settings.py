@@ -28,10 +28,12 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'unsafe-fallback-key')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', 'True').lower() in ('true', '1', 't')
 
-#ALLOWED_HOSTS = [host.strip() for host in os.environ.get('ALLOWED_HOSTS', '*').split(',') if host.strip()]
 ALLOWED_HOSTS = [
-    host.strip() 
-    for host in os.environ.get('ALLOWED_HOSTS', '').split(',') 
+    host.strip()
+    for host in os.environ.get(
+        'ALLOWED_HOSTS',
+        'trhvision.in,www.trhvision.in,localhost,127.0.0.1'
+    ).split(',')
     if host.strip()
 ]
 #ALLOWED_HOSTS = ['localhost', '[IP_ADDRESS]', '127.0.0.1', '.trhvision.in', '[IP_ADDRESS]']
