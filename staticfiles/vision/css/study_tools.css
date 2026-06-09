@@ -1,0 +1,313 @@
+/* study_tools.css - Styling for TRHvision Interactive Study Tools */
+
+/* ── Typography & Reading Adjustments ── */
+.content-card.font-sans {
+    font-family: 'Inter', sans-serif !important;
+}
+.content-card.font-serif {
+    font-family: Georgia, Cambria, "Times New Roman", Times, serif !important;
+}
+.content-card.font-dyslexic {
+    font-family: 'OpenDyslexic', 'Comic Sans MS', sans-serif !important;
+    letter-spacing: 0.05em;
+    word-spacing: 0.1em;
+}
+
+/* ── Reading Themes ── */
+.content-card.theme-sepia {
+    background-color: #fcf8f2 !important;
+    color: #433422 !important;
+    border-color: #e4d6c3 !important;
+}
+.content-card.theme-sepia h2,
+.content-card.theme-sepia h3,
+.content-card.theme-sepia h4 {
+    color: #5c4033 !important;
+}
+.content-card.theme-sepia p,
+.content-card.theme-sepia li {
+    color: #5c4c38 !important;
+}
+.content-card.theme-sepia code {
+    background: #f5ece1 !important;
+    color: #b25e00 !important;
+}
+.content-card.theme-sepia blockquote {
+    background: #f8f1e7 !important;
+    border-left-color: #c99a63 !important;
+}
+
+.content-card.theme-dark {
+    background-color: #0f172a !important;
+    color: #cbd5e1 !important;
+    border-color: #1e293b !important;
+}
+.content-card.theme-dark h2,
+.content-card.theme-dark h3,
+.content-card.theme-dark h4 {
+    color: #f8fafc !important;
+}
+.content-card.theme-dark p,
+.content-card.theme-dark li {
+    color: #cbd5e1 !important;
+}
+.content-card.theme-dark code {
+    background: #1e293b !important;
+    color: #38bdf8 !important;
+}
+.content-card.theme-dark blockquote {
+    background: #1e293b !important;
+    border-left-color: var(--brand) !important;
+    color: #94a3b8 !important;
+}
+
+/* ── Active Recall ── */
+.content-card.active-recall-enabled .active-recall-target {
+    filter: blur(5px);
+    background-color: rgba(226, 232, 240, 0.4);
+    cursor: pointer;
+    transition: filter 0.2s ease, background-color 0.2s ease;
+    border-radius: 4px;
+    padding: 0 4px;
+    display: inline-block;
+}
+.content-card.active-recall-enabled .active-recall-target.revealed {
+    filter: none;
+    background-color: transparent;
+}
+
+/* ── Flashcards 3D ── */
+.study-flashcard {
+    perspective: 1000px;
+    width: 100%;
+    max-width: 500px;
+    height: 280px;
+    cursor: pointer;
+}
+.flashcard-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    transition: transform 0.6s;
+    transform-style: preserve-3d;
+}
+.study-flashcard.flipped .flashcard-inner {
+    transform: rotateY(180deg);
+}
+.flashcard-front, .flashcard-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    border-radius: 16px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+    border: 1px solid #e2e8f0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background: #ffffff;
+    overflow: hidden;
+}
+.flashcard-back {
+    background: #f8fafc;
+}
+
+/* ── Highlights ── */
+.study-highlight {
+    border-radius: 4px;
+    padding: 2px 0;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+.study-highlight.highlight-yellow { background: #fef08a !important; color: #1e293b !important; }
+.study-highlight.highlight-green  { background: #bbf7d0 !important; color: #1e293b !important; }
+.study-highlight.highlight-pink   { background: #fbcfe8 !important; color: #1e293b !important; }
+.study-highlight.highlight-blue   { background: #bfdbfe !important; color: #1e293b !important; }
+
+/* ── Gamified Quiz Options ── */
+.quiz-option {
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.quiz-option:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+.quiz-option.correct {
+    border-color: #10b981 !important;
+    background: rgba(16, 185, 129, 0.08) !important;
+}
+.quiz-option.incorrect {
+    border-color: #ef4444 !important;
+    background: rgba(239, 68, 68, 0.08) !important;
+}
+.check-answer-btn {
+    font-size: 0.8rem;
+    font-weight: 700;
+    border-radius: 50px;
+    padding: 6px 16px;
+    transition: all 0.2s;
+}
+.check-answer-btn:hover {
+    transform: translateY(-1px);
+}
+
+/* ── Scrollbars ── */
+.study-notes-list::-webkit-scrollbar {
+    width: 6px;
+}
+.study-notes-list::-webkit-scrollbar-track {
+    background: #f1f5f9;
+}
+.study-notes-list::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 10px;
+}
+
+/* ── Premium Tables Design ── */
+.content-card table {
+    width: 100% !important;
+    margin: 2rem 0 !important;
+    border-collapse: separate !important;
+    border-spacing: 0 !important;
+    border-radius: 12px !important;
+    overflow: hidden !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03) !important;
+    border: 1px solid #e2e8f0 !important;
+}
+
+.content-card th {
+    background-color: #f8fafc !important;
+    color: #475569 !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    font-size: 0.75rem !important;
+    letter-spacing: 0.5px !important;
+    padding: 12px 18px !important;
+    border-bottom: 2px solid #e2e8f0 !important;
+    text-align: left !important;
+}
+
+.content-card td {
+    padding: 14px 18px !important;
+    font-size: 0.875rem !important;
+    color: #475569 !important;
+    border-bottom: 1px solid #f1f5f9 !important;
+    line-height: 1.6 !important;
+    vertical-align: middle !important;
+}
+
+/* Zebra striping */
+.content-card tr:nth-child(even) td {
+    background-color: #f8fafc !important;
+}
+
+/* Row Hover effect */
+.content-card tr:hover td {
+    background-color: rgba(14, 165, 233, 0.03) !important;
+    color: #0f172a !important;
+}
+
+/* Rounded corners helper */
+.content-card tr:last-child td {
+    border-bottom: none !important;
+}
+
+/* Dark theme overrides for tables */
+.content-card.theme-dark table {
+    border-color: #334155 !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2) !important;
+}
+
+.content-card.theme-dark th {
+    background-color: #1e293b !important;
+    color: #94a3b8 !important;
+    border-bottom-color: #334155 !important;
+}
+
+.content-card.theme-dark td {
+    color: #cbd5e1 !important;
+    border-bottom-color: #1e293b !important;
+}
+
+.content-card.theme-dark tr:nth-child(even) td {
+    background-color: #0f172a !important;
+}
+
+.content-card.theme-dark tr:hover td {
+    background-color: rgba(14, 165, 233, 0.08) !important;
+    color: #f8fafc !important;
+}
+
+/* Sepia theme overrides for tables */
+.content-card.theme-sepia table {
+    border-color: #e8dcce !important;
+}
+
+.content-card.theme-sepia th {
+    background-color: #f5ece1 !important;
+    color: #5c4c38 !important;
+    border-bottom-color: #e8dcce !important;
+}
+
+.content-card.theme-sepia td {
+    color: #5c4c38 !important;
+    border-bottom-color: #f5ece1 !important;
+}
+
+.content-card.theme-sepia tr:nth-child(even) td {
+    background-color: #faf5ee !important;
+}
+
+.content-card.theme-sepia tr:hover td {
+    background-color: rgba(228, 214, 195, 0.3) !important;
+}
+
+/* ── Premium Code Blocks & Playgrounds triggers ── */
+.playground-trigger-bar {
+    border-top-left-radius: 12px !important;
+    border-top-right-radius: 12px !important;
+    margin-top: 1.5rem !important;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.02) !important;
+}
+
+.content-card pre {
+    border-top-left-radius: 0px !important;
+    border-top-right-radius: 0px !important;
+    border-bottom-left-radius: 12px !important;
+    border-bottom-right-radius: 12px !important;
+    margin-bottom: 1.5rem !important;
+}
+
+/* ── Content Card Enhancements ── */
+.content-card {
+    transition: all 0.3s ease !important;
+}
+
+/* Blockquotes */
+.content-card blockquote {
+    padding: 1.25rem 1.75rem !important;
+    margin: 2rem 0 !important;
+    font-style: italic !important;
+    font-size: 1.05rem !important;
+    border-radius: 0 12px 12px 0 !important;
+}
+
+/* Heading animations */
+.content-card h2, .content-card h3, .content-card h4 {
+    position: relative !important;
+    padding-bottom: 6px !important;
+    margin-top: 2rem !important;
+}
+
+.content-card h2::after {
+    content: "" !important;
+    position: absolute !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    width: 40px !important;
+    height: 3px !important;
+    background: var(--brand) !important;
+    border-radius: 2px !important;
+}
