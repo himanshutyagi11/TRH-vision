@@ -1,0 +1,694 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Careers | TRHvision Academy</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="{% static 'vision/css/style.css' %}">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+    <style>
+        .page-header {
+            padding-top: 140px;
+            padding-bottom: 80px;
+            background: linear-gradient(135deg, #111111 0%, #2d2d2d 100%);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header-pattern {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 50%;
+            height: 100%;
+            background-image: radial-gradient(circle at 2px 2px, rgba(255, 255, 255, 0.1) 1px, transparent 0);
+            background-size: 30px 30px;
+            opacity: 0.5;
+        }
+
+        .price-tag {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--accent-color);
+        }
+
+        .feature-card {
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            border-color: var(--accent-color);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        }
+    </style>
+</head>
+
+<body class="bg-light">
+
+    <nav class="navbar navbar-expand-lg fixed-top shadow-sm custom-nav bg-white">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center gap-2" href="{% url 'index' %}">
+                <img src="{% static 'vision/image/logo.png' %}" alt="TRHvision Logo" class="brand-logo"
+                    onerror="this.style.display='none'">
+                <span class="brand-name fw-bold fs-4">TRHvision<span class="text-orange"></span></span>
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="menu">
+                <ul class="navbar-nav mx-auto gap-lg-4 fw-semibold">
+                    <li class="nav-item"><a class="nav-link" href="{% url 'index' %}">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'services' %}">Services</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="{% url 'career' %}">Careers <span
+                                class="badge bg-danger rounded-pill small ms-1"
+                                style="font-size: 0.6em; vertical-align: top;">New</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'about' %}">About</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'contact' %}">Contact</a></li>
+                </ul>
+                <div class="d-flex gap-2">
+                    <a href="{% url 'sigin' %}" class="btn btn-outline-dark rounded-pill px-4">Login</a>
+                    <a href="{% url 'contact' %}" class="btn btn-outline-dark rounded-pill px-4 hover-up shadow-sm">Get
+                        Started</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <div class="header-pattern"></div>
+        <div class="container position-relative z-1 text-center" data-aos="fade-up">
+            <span class="badge rounded-pill bg-orange text-white mb-3 px-3 py-2 fw-bold ls-1">VISION ACADEMY</span>
+            <h1 class="display-3 fw-800 mb-4">Launch Your <span class="text-orange">Tech Career</span></h1>
+            <p class="lead text-white-50 mx-auto mb-5" style="max-width: 700px;">
+                Join our industry-grade career program. Work on real US client projects, receive
+                mentorship from experts, and earn a verified certificate.
+            </p>
+            <div class="d-flex justify-content-center gap-3">
+                <a href="#programs" class="btn btn-outline-light btn-lg rounded-pill px-5 hover-up">View Programs</a>
+                <a href="{% url 'contact' %}" class="btn btn-outline-light btn-lg rounded-pill px-5 hover-up">Talk to
+                    Mentor</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Benefits Section -->
+    <section class="py-5 bg-white">
+        <div class="container py-4">
+            <div class="row g-4 justify-content-center">
+                <div class="col-md-3 text-center" data-aos="fade-up" data-aos-delay="0">
+                    <div class="feature-card p-4 rounded-4 h-100">
+                        <div class="mb-3 text-orange"><i class="bi bi-patch-check-fill display-5"></i></div>
+                        <h5 class="fw-bold">Verified Certificate</h5>
+                        <p class="text-muted small mb-0">Industry recognized certification with unique ID.</p>
+                    </div>
+                </div>
+                <div class="col-md-3 text-center" data-aos="fade-up" data-aos-delay="100">
+                    <div class="feature-card p-4 rounded-4 h-100">
+                        <div class="mb-3 text-primary"><i class="bi bi-briefcase-fill display-5"></i></div>
+                        <h5 class="fw-bold">Live US Projects</h5>
+                        <p class="text-muted small mb-0">Hands-on experience with real client data.</p>
+                    </div>
+                </div>
+                <div class="col-md-3 text-center" data-aos="fade-up" data-aos-delay="200">
+                    <div class="feature-card p-4 rounded-4 h-100">
+                        <div class="mb-3 text-success"><i class="bi bi-cash-coin display-5"></i></div>
+                        <h5 class="fw-bold">Paid Perks</h5>
+                        <p class="text-muted small mb-0">Performance-based stipends for top performers.</p>
+                    </div>
+                </div>
+                <div class="col-md-3 text-center" data-aos="fade-up" data-aos-delay="300">
+                    <div class="feature-card p-4 rounded-4 h-100">
+                        <div class="mb-3 text-info"><i class="bi bi-people-fill display-5"></i></div>
+                        <h5 class="fw-bold">Expert Mentorship</h5>
+                        <p class="text-muted small mb-0">Weekly Progress reviews and career guidance.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="programs" class="py-5 bg-light">
+        <div class="container py-5">
+            <div class="text-center mb-5" data-aos="fade-up">
+                <h6 class="text-orange fw-bold ls-1">AVAILABLE DOMAINS</h6>
+                <h2 class="fw-800 display-5">Select Your Path</h2>
+            </div>
+
+            <div class="row g-4">
+                <!-- Data Analysis -->
+                <div class="col-lg-4" data-aos="fade-up">
+                    <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden hover-up position-relative">
+                        <div class="p-4 bg-white border-bottom">
+                            <div class="d-flex justify-content-between align-items-start mb-4">
+                                <span class="badge bg-soft-orange text-orange">Most Popular</span>
+                                <i class="bi bi-graph-up-arrow fs-2 text-dark"></i>
+                            </div>
+                            <h4 class="fw-bold mb-1">Data Analytics</h4>
+                            <p class="text-muted small">Master the art of insights.</p>
+                        </div>
+                        <div class="card-body p-4 bg-white">
+                            <ul class="list-unstyled mb-4">
+                                <li class="mb-2 text-muted small"><i class="bi bi-check2 text-success me-2"></i>Advanced
+                                    Excel & Pivot Tables</li>
+                                <li class="mb-2 text-muted small"><i class="bi bi-check2 text-success me-2"></i>SQL Data
+                                    Extraction</li>
+                                <li class="mb-2 text-muted small"><i class="bi bi-check2 text-success me-2"></i>Python,
+                                    Numpy, Pandas & Matplotlib</li>
+                                <li class="mb-2 text-muted small"><i class="bi bi-check2 text-success me-2"></i>Sales
+                                    Dashboard Project</li>
+                            </ul>
+                            <div class="d-flex align-items-end justify-content-between">
+                                <div>
+                                    <small class="text-muted d-block mb-2">Duration</small>
+                                    <div class="d-flex gap-2 flex-wrap">
+                                        <span class="badge bg-light text-dark border">1 Month</span>
+                                        <span class="badge bg-light text-dark border">2 Months</span>
+                                        <span class="badge bg-light text-dark border">3 Months</span>
+                                    </div>
+                                </div>
+                                <!--<div class="text-end">
+                                    <span class="price-tag">₹199</span>
+                                </div>-->
+                            </div>
+                        </div>
+                        <div class="card-footer p-4 bg-white border-top-0 d-flex gap-2">
+                            <button class="btn btn-outline-dark w-50 rounded-pill" data-bs-toggle="modal"
+                                data-bs-target="#dataModal">Details</button>
+                            <a href="{% url 'enroll' %}"
+                                class="btn btn-orange w-50 rounded-pill text-white fw-bold d-flex align-items-center justify-content-center text-decoration-none">Enroll
+                                Now</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Power BI -->
+                <div class="col-lg-4" data-aos="fade-up" data-aos-delay="100">
+                    <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden hover-up">
+                        <div class="p-4 bg-white border-bottom">
+                            <div class="d-flex justify-content-between align-items-start mb-4">
+                                <span class="badge bg-light text-dark border">Intermediate</span>
+                                <i class="bi bi-pie-chart fs-2 text-warning"></i>
+                            </div>
+                            <h4 class="fw-bold mb-1">Power BI Expert</h4>
+                            <p class="text-muted small">Visualize data like a pro.</p>
+                        </div>
+                        <div class="card-body p-4 bg-white">
+                            <ul class="list-unstyled mb-4">
+                                <li class="mb-2 text-muted small"><i class="bi bi-check2 text-success me-2"></i>Data
+                                    Modeling & DAX</li>
+                                <li class="mb-2 text-muted small"><i
+                                        class="bi bi-check2 text-success me-2"></i>Interactive Reports</li>
+                                <li class="mb-2 text-muted small"><i class="bi bi-check2 text-success me-2"></i>Power
+                                    Query ETL</li>
+                                <li class="mb-2 text-muted small"><i class="bi bi-check2 text-success me-2"></i>Retail
+                                    Analytics Project</li>
+                            </ul>
+                            <div class="d-flex align-items-end justify-content-between">
+                                <div>
+                                    <small class="text-muted d-block mb-2">Duration</small>
+                                    <div class="d-flex gap-2 flex-wrap">
+                                        <span class="badge bg-light text-dark border">1 Month</span>
+                                        <span class="badge bg-light text-dark border">2 Months</span>
+                                        <span class="badge bg-light text-dark border">3 Months</span>
+                                    </div>
+                                </div>
+                                <!--<div class="text-end">
+                                    <span class="price-tag">₹299</span>
+                                </div>-->
+                            </div>
+                        </div>
+                        <div class="card-footer p-4 bg-white border-top-0 d-flex gap-2">
+                            <button class="btn btn-outline-dark w-50 rounded-pill" data-bs-toggle="modal"
+                                data-bs-target="#powerbiModal">Details</button>
+                            <a href="{% url 'enroll' %}"
+                                class="btn btn-orange w-50 rounded-pill text-white fw-bold d-flex align-items-center justify-content-center text-decoration-none">Enroll
+                                Now</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Machine Learning -->
+                <div class="col-lg-4" data-aos="fade-up" data-aos-delay="200">
+                    <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden hover-up">
+                        <div class="p-4 bg-white border-bottom">
+                            <div class="d-flex justify-content-between align-items-start mb-4">
+                                <span class="badge bg-primary text-white">Advanced</span>
+                                <i class="bi bi-cpu fs-2 text-primary"></i>
+                            </div>
+                            <h4 class="fw-bold mb-1">Machine Learning</h4>
+                            <p class="text-muted small">Build predictive AI models.</p>
+                        </div>
+                        <div class="card-body p-4 bg-white">
+                            <ul class="list-unstyled mb-4">
+                                <li class="mb-2 text-muted small"><i
+                                        class="bi bi-check2 text-success me-2"></i>Supervised Learning</li>
+                                <li class="mb-2 text-muted small"><i
+                                        class="bi bi-check2 text-success me-2"></i>Scikit-Learn & TensorFlow</li>
+                                <li class="mb-2 text-muted small"><i class="bi bi-check2 text-success me-2"></i>Model
+                                    Deployment</li>
+                                <li class="mb-2 text-muted small"><i class="bi bi-check2 text-success me-2"></i>Churn
+                                    Prediction Project</li>
+                            </ul>
+                            <div class="d-flex align-items-end justify-content-between">
+                                <div>
+                                    <small class="text-muted d-block mb-2">Duration</small>
+                                    <div class="d-flex gap-2 flex-wrap">
+                                        <span class="badge bg-light text-dark border">1 Month</span>
+                                        <span class="badge bg-light text-dark border">2 Months</span>
+                                        <span class="badge bg-light text-dark border">3 Months</span>
+                                    </div>
+                                </div>
+                                <!--<div class="text-end">
+                                    <span class="price-tag">₹399</span>
+                                </div>-->
+                            </div>
+                        </div>
+                        <div class="card-footer p-4 bg-white border-top-0 d-flex gap-2">
+                            <button class="btn btn-outline-dark w-50 rounded-pill" data-bs-toggle="modal"
+                                data-bs-target="#mlModal">Details</button>
+                            <a href="{% url 'enroll' %}"
+                                class="btn btn-orange w-50 rounded-pill text-white fw-bold d-flex align-items-center justify-content-center text-decoration-none">Enroll
+                                Now</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Data Science -->
+                <div class="col-lg-4" data-aos="fade-up" data-aos-delay="300">
+                    <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden hover-up">
+                        <div class="p-4 bg-white border-bottom">
+                            <div class="d-flex justify-content-between align-items-start mb-4">
+                                <span class="badge bg-success text-white">Trending</span>
+                                <i class="bi bi-bar-chart-line fs-2 text-success"></i>
+                            </div>
+                            <h4 class="fw-bold mb-1">Data Science</h4>
+                            <p class="text-muted small">Turn data into powerful insights.</p>
+                        </div>
+                        <div class="card-body p-4 bg-white">
+                            <ul class="list-unstyled mb-4">
+                                <li class="mb-2 text-muted small"><i
+                                        class="bi bi-check2 text-success me-2"></i>Statistics & Probability</li>
+                                <li class="mb-2 text-muted small"><i class="bi bi-check2 text-success me-2"></i>Python
+                                    for Data Science</li>
+                                <li class="mb-2 text-muted small"><i class="bi bi-check2 text-success me-2"></i>EDA &
+                                    Feature Engineering</li>
+                                <li class="mb-2 text-muted small"><i
+                                        class="bi bi-check2 text-success me-2"></i>Real-World DS Project</li>
+                            </ul>
+                            <div class="d-flex align-items-end justify-content-between">
+                                <div>
+                                    <small class="text-muted d-block mb-2">Duration</small>
+                                    <div class="d-flex gap-2 flex-wrap">
+                                        <span class="badge bg-light text-dark border">1 Month</span>
+                                        <span class="badge bg-light text-dark border">2 Months</span>
+                                        <span class="badge bg-light text-dark border">3 Months</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer p-4 bg-white border-top-0 d-flex gap-2">
+                            <button class="btn btn-outline-dark w-50 rounded-pill" data-bs-toggle="modal"
+                                data-bs-target="#dsModal">Details</button>
+                            <a href="{% url 'enroll' %}"
+                                class="btn btn-orange w-50 rounded-pill text-white fw-bold d-flex align-items-center justify-content-center text-decoration-none">Enroll
+                                Now</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Artificial Intelligence -->
+                <div class="col-lg-4" data-aos="fade-up" data-aos-delay="400">
+                    <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden hover-up">
+                        <div class="p-4 bg-white border-bottom">
+                            <div class="d-flex justify-content-between align-items-start mb-4">
+                                <span class="badge bg-warning text-dark">Future-Ready</span>
+                                <i class="bi bi-robot fs-2 text-warning"></i>
+                            </div>
+                            <h4 class="fw-bold mb-1">Artificial Intelligence</h4>
+                            <p class="text-muted small">Build intelligent AI-powered systems.</p>
+                        </div>
+                        <div class="card-body p-4 bg-white">
+                            <ul class="list-unstyled mb-4">
+                                <li class="mb-2 text-muted small"><i class="bi bi-check2 text-success me-2"></i>Deep
+                                    Learning & NLP</li>
+                                <li class="mb-2 text-muted small"><i
+                                        class="bi bi-check2 text-success me-2"></i>TensorFlow & PyTorch</li>
+                                <li class="mb-2 text-muted small"><i class="bi bi-check2 text-success me-2"></i>Computer
+                                    Vision</li>
+                                <li class="mb-2 text-muted small"><i
+                                        class="bi bi-check2 text-success me-2"></i>End-to-End AI Project</li>
+                            </ul>
+                            <div class="d-flex align-items-end justify-content-between">
+                                <div>
+                                    <small class="text-muted d-block mb-2">Duration</small>
+                                    <div class="d-flex gap-2 flex-wrap">
+                                        <span class="badge bg-light text-dark border">1 Month</span>
+                                        <span class="badge bg-light text-dark border">2 Months</span>
+                                        <span class="badge bg-light text-dark border">3 Months</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer p-4 bg-white border-top-0 d-flex gap-2">
+                            <button class="btn btn-outline-dark w-50 rounded-pill" data-bs-toggle="modal"
+                                data-bs-target="#aiModal">Details</button>
+                            <a href="{% url 'enroll' %}"
+                                class="btn btn-orange w-50 rounded-pill text-white fw-bold d-flex align-items-center justify-content-center text-decoration-none">Enroll
+                                Now</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Web Development -->
+                <div class="col-lg-4" data-aos="fade-up" data-aos-delay="400">
+                    <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden hover-up">
+                        <div class="p-4 bg-white border-bottom">
+                            <div class="d-flex justify-content-between align-items-start mb-4">
+                                <span class="badge bg-info text-white">In Demand</span>
+                                <i class="bi bi-code-slash fs-2 text-info"></i>
+                            </div>
+                            <h4 class="fw-bold mb-1">Web Development</h4>
+                            <p class="text-muted small">Build modern, responsive web apps.</p>
+                        </div>
+                        <div class="card-body p-4 bg-white">
+                            <ul class="list-unstyled mb-4">
+                                <li class="mb-2 text-muted small"><i class="bi bi-check2 text-success me-2"></i>HTML,
+                                    CSS & JavaScript</li>
+                                <li class="mb-2 text-muted small"><i class="bi bi-check2 text-success me-2"></i>React /
+                                    Django Framework</li>
+                                <li class="mb-2 text-muted small"><i class="bi bi-check2 text-success me-2"></i>REST
+                                    APIs & Databases</li>
+                                <li class="mb-2 text-muted small"><i
+                                        class="bi bi-check2 text-success me-2"></i>Full-Stack Portfolio Project</li>
+                            </ul>
+                            <div class="d-flex align-items-end justify-content-between">
+                                <div>
+                                    <small class="text-muted d-block mb-2">Duration</small>
+                                    <div class="d-flex gap-2 flex-wrap">
+                                        <span class="badge bg-light text-dark border">1 Month</span>
+                                        <span class="badge bg-light text-dark border">2 Months</span>
+                                        <span class="badge bg-light text-dark border">3 Months</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer p-4 bg-white border-top-0 d-flex gap-2">
+                            <button class="btn btn-outline-dark w-50 rounded-pill" data-bs-toggle="modal"
+                                data-bs-target="#webdevModal">Details</button>
+                            <a href="{% url 'enroll' %}"
+                                class="btn btn-orange w-50 rounded-pill text-white fw-bold d-flex align-items-center justify-content-center text-decoration-none">Enroll
+                                Now</a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Modals (Simplified for brevity, but styled) -->
+    <div class="modal fade" id="dataModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 rounded-4 shadow-lg p-4">
+                <div class="modal-header border-0 pb-0">
+                    <div>
+                        <h4 class="fw-bold mb-1">Data Analytics Program</h4>
+                        <span class="badge bg-soft-orange text-orange">Best Seller</span>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body pt-4">
+                    <p class="text-muted mb-4">Join 500+ students in mastering the basics of data science. Perfect for
+                        beginners looking to break into the industry.</p>
+
+                    <h6 class="fw-bold mb-3">What you'll learn:</h6>
+                    <div class="row g-2 mb-4">
+                        <div class="col-6"><small class="bg-light p-2 rounded d-block"><i
+                                    class="bi bi-file-earmark-excel text-success me-2"></i> Advanced Excel</small></div>
+                        <div class="col-6"><small class="bg-light p-2 rounded d-block"><i
+                                    class="bi bi-database text-primary me-2"></i> SQL Queries</small></div>
+                        <div class="col-6"><small class="bg-light p-2 rounded d-block"><i
+                                    class="bi bi-filetype-py text-warning me-2"></i> Python</small></div>
+                        <div class="col-6"><small class="bg-light p-2 rounded d-block"><i
+                                    class="bi bi-bar-chart text-info me-2"></i> Visualization</small></div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center bg-light p-3 rounded-3 mb-4">
+                        <!--<div>
+                            <small class="text-muted d-block">Program Fee</small>
+                            <span class="fs-4 fw-bold text-dark">₹199</span>
+                        </div>-->
+                        <span class="text-success small fw-bold"><i class="bi bi-patch-check-fill"></i> Certificate
+                            Included</span>
+                    </div>
+
+                    <a href="{% url 'enroll' %}"
+                        class="btn btn-orange w-100 rounded-pill py-3 fw-bold text-white shadow-sm hover-up">Enroll
+                        Now</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Power BI Modal -->
+    <div class="modal fade" id="powerbiModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 rounded-4 shadow-lg p-4">
+                <div class="modal-header border-0 pb-0">
+                    <div>
+                        <h4 class="fw-bold mb-1">Power BI Expert</h4>
+                        <span class="badge bg-soft-orange text-orange">Career Accelerator</span>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body pt-4">
+                    <p class="text-muted mb-4">Learn to transform raw data into stunning interactive dashboards. Master
+                        the tools used by top business analysts.</p>
+
+                    <h6 class="fw-bold mb-3">What you'll learn:</h6>
+                    <div class="row g-2 mb-4">
+                        <div class="col-6"><small class="bg-light p-2 rounded d-block"><i
+                                    class="bi bi-diagram-3 text-success me-2"></i> Data Modeling</small></div>
+                        <div class="col-6"><small class="bg-light p-2 rounded d-block"><i
+                                    class="bi bi-calculator text-primary me-2"></i> DAX Functions</small></div>
+                        <div class="col-6"><small class="bg-light p-2 rounded d-block"><i
+                                    class="bi bi-lightning text-warning me-2"></i> Power Query</small></div>
+                        <div class="col-6"><small class="bg-light p-2 rounded d-block"><i
+                                    class="bi bi-graph-up text-info me-2"></i> Storytelling</small></div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center bg-light p-3 rounded-3 mb-4">
+                        <!--<div>
+                            <small class="text-muted d-block">Program Fee</small>
+                            <span class="fs-4 fw-bold text-dark">₹299</span>
+                        </div>-->
+                        <span class="text-success small fw-bold"><i class="bi bi-patch-check-fill"></i> Certificate
+                            Included</span>
+                    </div>
+
+                    <a href="{% url 'enroll' %}"
+                        class="btn btn-orange w-100 rounded-pill py-3 fw-bold text-white shadow-sm hover-up">Enroll
+                        Now</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Machine Learning Modal -->
+    <div class="modal fade" id="mlModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 rounded-4 shadow-lg p-4">
+                <div class="modal-header border-0 pb-0">
+                    <div>
+                        <h4 class="fw-bold mb-1">Machine Learning & AI</h4>
+                        <span class="badge bg-soft-orange text-orange">High Demand</span>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body pt-4">
+                    <p class="text-muted mb-4">Dive deep into algorithms and predictive modeling. Build your own AI
+                        projects from scratch.</p>
+
+                    <h6 class="fw-bold mb-3">What you'll learn:</h6>
+                    <div class="row g-2 mb-4">
+                        <div class="col-6"><small class="bg-light p-2 rounded d-block"><i
+                                    class="bi bi-cpu text-success me-2"></i> Supervised Learning</small></div>
+                        <div class="col-6"><small class="bg-light p-2 rounded d-block"><i
+                                    class="bi bi-code-square text-primary me-2"></i> Scikit-Learn</small></div>
+                        <div class="col-6"><small class="bg-light p-2 rounded d-block"><i
+                                    class="bi bi-robot text-warning me-2"></i> Neural Networks</small></div>
+                        <div class="col-6"><small class="bg-light p-2 rounded d-block"><i
+                                    class="bi bi-rocket text-info me-2"></i> Deployment</small></div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center bg-light p-3 rounded-3 mb-4">
+                        <!--<div>
+                            <small class="text-muted d-block">Program Fee</small>
+                            <span class="fs-4 fw-bold text-dark">₹399</span>
+                        </div>-->
+                        <span class="text-success small fw-bold"><i class="bi bi-patch-check-fill"></i> Certificate
+                            Included</span>
+                    </div>
+
+                    <a href="{% url 'enroll' %}"
+                        class="btn btn-orange w-100 rounded-pill py-3 fw-bold text-white shadow-sm hover-up">Enroll
+                        Now</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Data Science Modal -->
+    <div class="modal fade" id="dsModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 rounded-4 shadow-lg p-4">
+                <div class="modal-header border-0 pb-0">
+                    <div>
+                        <h4 class="fw-bold mb-1">Data Science</h4>
+                        <span class="badge bg-soft-orange text-orange">Trending</span>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body pt-4">
+                    <p class="text-muted mb-4">Master the complete data science pipeline — from raw data collection to
+                        delivering actionable insights with confidence.</p>
+
+                    <h6 class="fw-bold mb-3">What you'll learn:</h6>
+                    <div class="row g-2 mb-4">
+                        <div class="col-6"><small class="bg-light p-2 rounded d-block"><i
+                                    class="bi bi-bar-chart-line text-success me-2"></i> Statistics</small></div>
+                        <div class="col-6"><small class="bg-light p-2 rounded d-block"><i
+                                    class="bi bi-filetype-py text-primary me-2"></i> Python DS</small></div>
+                        <div class="col-6"><small class="bg-light p-2 rounded d-block"><i
+                                    class="bi bi-search text-warning me-2"></i> EDA</small></div>
+                        <div class="col-6"><small class="bg-light p-2 rounded d-block"><i
+                                    class="bi bi-tools text-info me-2"></i> Feature Eng.</small></div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center bg-light p-3 rounded-3 mb-4">
+                        <span class="text-success small fw-bold"><i class="bi bi-patch-check-fill"></i> Certificate
+                            Included</span>
+                    </div>
+
+                    <a href="{% url 'enroll' %}"
+                        class="btn btn-orange w-100 rounded-pill py-3 fw-bold text-white shadow-sm hover-up">Enroll
+                        Now</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Artificial Intelligence Modal -->
+    <div class="modal fade" id="aiModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 rounded-4 shadow-lg p-4">
+                <div class="modal-header border-0 pb-0">
+                    <div>
+                        <h4 class="fw-bold mb-1">Artificial Intelligence</h4>
+                        <span class="badge bg-soft-orange text-orange">Future-Ready</span>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body pt-4">
+                    <p class="text-muted mb-4">Dive deep into AI — from neural networks to deploying production-ready
+                        intelligent systems using the latest frameworks.</p>
+
+                    <h6 class="fw-bold mb-3">What you'll learn:</h6>
+                    <div class="row g-2 mb-4">
+                        <div class="col-6"><small class="bg-light p-2 rounded d-block"><i
+                                    class="bi bi-robot text-success me-2"></i> Deep Learning</small></div>
+                        <div class="col-6"><small class="bg-light p-2 rounded d-block"><i
+                                    class="bi bi-fire text-primary me-2"></i> PyTorch</small></div>
+                        <div class="col-6"><small class="bg-light p-2 rounded d-block"><i
+                                    class="bi bi-eye text-warning me-2"></i> Computer Vision</small></div>
+                        <div class="col-6"><small class="bg-light p-2 rounded d-block"><i
+                                    class="bi bi-chat-square-text text-info me-2"></i> NLP</small></div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center bg-light p-3 rounded-3 mb-4">
+                        <span class="text-success small fw-bold"><i class="bi bi-patch-check-fill"></i> Certificate
+                            Included</span>
+                    </div>
+
+                    <a href="{% url 'enroll' %}"
+                        class="btn btn-orange w-100 rounded-pill py-3 fw-bold text-white shadow-sm hover-up">Enroll
+                        Now</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Web Development Modal -->
+    <div class="modal fade" id="webdevModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 rounded-4 shadow-lg p-4">
+                <div class="modal-header border-0 pb-0">
+                    <div>
+                        <h4 class="fw-bold mb-1">Web Development</h4>
+                        <span class="badge bg-soft-orange text-orange">In Demand</span>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body pt-4">
+                    <p class="text-muted mb-4">Learn to build stunning, responsive websites and full-stack web
+                        applications used by real clients around the world.</p>
+
+                    <h6 class="fw-bold mb-3">What you'll learn:</h6>
+                    <div class="row g-2 mb-4">
+                        <div class="col-6"><small class="bg-light p-2 rounded d-block"><i
+                                    class="bi bi-filetype-html text-success me-2"></i> HTML & CSS</small></div>
+                        <div class="col-6"><small class="bg-light p-2 rounded d-block"><i
+                                    class="bi bi-filetype-js text-primary me-2"></i> JavaScript</small></div>
+                        <div class="col-6"><small class="bg-light p-2 rounded d-block"><i
+                                    class="bi bi-layers text-warning me-2"></i> React / Django</small></div>
+                        <div class="col-6"><small class="bg-light p-2 rounded d-block"><i
+                                    class="bi bi-hdd-network text-info me-2"></i> REST APIs</small></div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center bg-light p-3 rounded-3 mb-4">
+                        <span class="text-success small fw-bold"><i class="bi bi-patch-check-fill"></i> Certificate
+                            Included</span>
+                    </div>
+
+                    <a href="{% url 'enroll' %}"
+                        class="btn btn-orange w-100 rounded-pill py-3 fw-bold text-white shadow-sm hover-up">Enroll
+                        Now</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-black text-white py-5 border-top border-secondary">
+        <div class="container text-center">
+            <p class="h4 mb-3">TRHvision<span class="text-orange"></span></p>
+            <p class="text-white-50 mb-1">📞 +91 9548684722 | 📧 support@trhvision.com</p>
+            <hr class="border-secondary my-4">
+            <small class="text-white-50">© 2025 TRHvision Academy. All Rights Reserved.</small>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({
+            duration: 800,
+            once: true
+        });
+    </script>
+</body>
+
+</html>
