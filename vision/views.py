@@ -333,7 +333,11 @@ def services(request):
     return render(request, 'vision/services.html')
 
 def internship(request):
-    return render(request,"vision/internship.html")
+    # Kept for backward compatibility — redirects to the career page
+    return redirect('career')
+
+def career(request):
+    return render(request, "vision/career.html")
 
 # You mentioned you want to be the only one creating users. 
 # You can keep this view but I recommend using the Django Admin instead.
@@ -1197,9 +1201,9 @@ def _build_offer_letter_pdf(enrollment):
     y_cursor = draw_wrapped_text(draw, body_p6, 200, y_cursor, 1300, font_regular) + 15
 
     # 6. Warm regards + CEO signature (flows with content via y_cursor)
-    y_cursor += 100
+    y_cursor += 130
     draw.text((200, y_cursor), "Warm regards,", font=font_regular, fill="#222222")
-    y_cursor += 50
+    y_cursor += 110
 
     sig_path = os.path.join(settings.BASE_DIR, 'vision', 'static', 'vision', 'image', 'ceo_signature.png')
     if os.path.exists(sig_path):
