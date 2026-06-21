@@ -937,9 +937,9 @@ def _build_certificate_pdf(user, profile, enrollment=None):
 
     draw.line([(sig2_x1, sig_y_line), (sig2_x2, sig_y_line)], fill=NAVY, width=3)
     
-    draw_sig_text("Nishant Sharma", sig2_center_x, 1250, font_small, DARK)
-    draw_sig_text("Operations Manager",  sig2_center_x, 1285, font_small, GRAY)
-    paste_sign_image("hr_signature.png", sig2_center_x, sig_y_line)
+    draw_sig_text("Harshit Dubey", sig2_center_x, 1250, font_small, DARK)
+    draw_sig_text("Human Resource",  sig2_center_x, 1285, font_small, GRAY)
+    paste_sign_image("HR signature.png", sig2_center_x, sig_y_line)
 
     # ── 4. Generate & paste QR code — bottom right, above footer ─────────
     qr = qrcode_lib.QRCode(version=1, box_size=8, border=3)
