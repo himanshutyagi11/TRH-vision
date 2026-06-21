@@ -724,6 +724,30 @@ except ImportError:
     qrcode_lib = None
 
 
+def _generate_unid(enrollment):
+    """Generate a consistent Unique ID from an Enrollment record.
+    Format: TRH-{domain_prefix}-{YYMM}-{zero_padded_id}
+    Example: TRH-DA-2606-001
+    """
+    from django.utils import timezone as tz
+    DOMAIN_PREFIX_MAP = {
+        'Artificial Intelligence': 'AI',
+        'Machine Learning': 'ML',
+        'Data Science': 'DS',
+        'Data Analytics': 'DA',
+        'Web Development': 'WD',
+        'Web development': 'WD',
+        'Power BI developer': 'PB',
+    }
+    domain_prefix = DOMAIN_PREFIX_MAP.get(enrollment.domain, enrollment.domain[:2].upper())
+    date_part = (
+        enrollment.created_at.strftime('%y%m')
+        if hasattr(enrollment, 'created_at') and enrollment.created_at
+        else tz.now().strftime('%y%m')
+    )
+    return f"TRH-{domain_prefix}-{date_part}-{enrollment.id:03d}"
+
+
 def _load_font(path, size):
     """Try to load a TrueType font, fall back to PIL default."""
     try:
@@ -740,7 +764,7 @@ def _draw_centered_text(draw, y, text, font, color, img_width):
     draw.text((x, y), text, font=font, fill=color)
 
 
-def _build_certificate_pdf(user, profile):
+def _build_certificate_pdf(user, profile, enrollment=None):
     """
     Draws student details directly onto TRJcertificate.png using Pillow,
     then saves the result as a single-page PDF.
@@ -777,9 +801,12 @@ def _build_certificate_pdf(user, profile):
     from django.utils import timezone
     issue_date   = timezone.now().strftime("%B %d, %Y")
 
+    # Use the same UNID from the offer letter if enrollment is available
+    cert_id = _generate_unid(enrollment) if enrollment else profile.student_id
+
     # ── 3. Draw text on the certificate ──────────────────────────────────
     # Cert ID — pushed right and slightly down (sweet spot)
-    draw.text((220, 40), f"Cert No: {profile.student_id}", font=font_small, fill=GRAY)
+    draw.text((220, 40), f"Cert No: {cert_id}", font=font_small, fill=GRAY)
 
     # Issue Date — top right corner, pushed left
     date_text = f"Issue Date: {issue_date}"
@@ -916,7 +943,7 @@ def _build_certificate_pdf(user, profile):
 
     # ── 4. Generate & paste QR code — bottom right, above footer ─────────
     qr = qrcode_lib.QRCode(version=1, box_size=8, border=3)
-    qr.add_data(f"https://trhvision.in/verify/{profile.student_id}")
+    qr.add_data(f"https://trhvision.in/verify/{cert_id}")
     qr.make(fit=True)
     qr_img  = qr.make_image(fill_color="black", back_color="white").convert('RGBA')
     qr_size = 160
@@ -941,7 +968,7 @@ def _build_certificate_pdf(user, profile):
     pdf_bytes = pdf_buffer.getvalue()
 
     # ── 6. Save to profile ────────────────────────────────────────────────
-    file_name = f"Certificate_{profile.student_id}.pdf"
+    file_name = f"Certificate_{cert_id}.pdf"
     profile.certificate.save(file_name, ContentFile(pdf_bytes), save=True)
 
     return pdf_bytes
@@ -1006,14 +1033,21 @@ def generate_certificate(request):
             messages.error(request, f"Please wait {3 - diff.days} more day(s) for verification before downloading your certificate.")
             return redirect('dashboard')
 
-    pdf_bytes = _build_certificate_pdf(request.user, profile)
+    # Look up the student's enrollment to use the same UNID as the offer letter
+    from .models import Enrollment
+    enrollment = Enrollment.objects.filter(email=request.user.email, is_paid=True).first()
+
+    pdf_bytes = _build_certificate_pdf(request.user, profile, enrollment=enrollment)
+
+    # Use the same UNID for the filename
+    cert_id = _generate_unid(enrollment) if enrollment else profile.student_id
 
     if pdf_bytes:
         response = HttpResponse(pdf_bytes, content_type='application/pdf')
         if request.GET.get('download') == 'true':
-            response['Content-Disposition'] = f'attachment; filename="Certificate_{profile.student_id}.pdf"'
+            response['Content-Disposition'] = f'attachment; filename="Certificate_{cert_id}.pdf"'
         else:
-            response['Content-Disposition'] = f'inline; filename="Certificate_{profile.student_id}.pdf"'
+            response['Content-Disposition'] = f'inline; filename="Certificate_{cert_id}.pdf"'
         return response
     return HttpResponse("Error generating certificate PDF.", status=500)
 
@@ -1066,8 +1100,8 @@ def _build_offer_letter_pdf(enrollment):
     # Format Date
     issue_date = enrollment.created_at.strftime("%B %d, %Y") if hasattr(enrollment, 'created_at') and enrollment.created_at else timezone.now().strftime("%B %d, %Y")
     
-    # UNID (use Enrollment ID with a custom format)
-    unid = f"TRH-{enrollment.domain[:2].upper()}-{enrollment.created_at.strftime('%y%m') if hasattr(enrollment, 'created_at') and enrollment.created_at else timezone.now().strftime('%y%m')}-{enrollment.id:03d}"
+    # UNID (use the shared helper for consistency with certificate)
+    unid = _generate_unid(enrollment)
 
     # 1. Fill in Date and UNID — aligned to exact label positions in TRHo-1.png
     # Template labels detected at: DATE y=482, UNID y=526, both ending at x≈1180
@@ -1200,26 +1234,47 @@ def _build_offer_letter_pdf(enrollment):
     y_cursor = draw_wrapped_text(draw, body_p5, 200, y_cursor, 1300, font_regular) + 22
     y_cursor = draw_wrapped_text(draw, body_p6, 200, y_cursor, 1300, font_regular) + 15
 
-    # 6. Warm regards + CEO signature (flows with content via y_cursor)
-    y_cursor += 130
+    # 6. Warm regards + CEO & HR signatures side by side (flows with content via y_cursor)
+    y_cursor += 125
     draw.text((200, y_cursor), "Warm regards,", font=font_regular, fill="#222222")
-    y_cursor += 110
+    y_cursor += 70
 
-    sig_path = os.path.join(settings.BASE_DIR, 'vision', 'static', 'vision', 'image', 'ceo_signature.png')
-    if os.path.exists(sig_path):
+    sig_y = y_cursor  # Track the signature row y position
+
+    # ── Fixed signature box size (same for both CEO and HR) ──
+    SIG_BOX_W = 200
+    SIG_BOX_H = 80
+
+    def paste_signature(img, path, x, y, box_w, box_h):
+        """Paste a signature image fitted into a fixed bounding box."""
+        if not os.path.exists(path):
+            return
         try:
-            sig_img = Image.open(sig_path).convert("RGBA")
+            sig_img = Image.open(path).convert("RGBA")
             alpha = sig_img.split()[-1]
             bbox = alpha.getbbox()
             if bbox:
                 sig_img = sig_img.crop(bbox)
             sig_w, sig_h = sig_img.size
-            new_w = 200
-            new_h = int(sig_h * (new_w / sig_w))
+            # Scale to fit within the box while preserving aspect ratio
+            scale = min(box_w / sig_w, box_h / sig_h)
+            new_w = int(sig_w * scale)
+            new_h = int(sig_h * scale)
             sig_img = sig_img.resize((new_w, new_h), Image.LANCZOS)
-            img.paste(sig_img, (200, y_cursor), sig_img)
+            # Center vertically within the box
+            offset_y = (box_h - new_h) // 2
+            img.paste(sig_img, (x, y + offset_y), sig_img)
         except Exception:
             pass
+
+    # ── CEO Signature (Left side) ──
+    ceo_sig_path = os.path.join(settings.BASE_DIR, 'vision', 'static', 'vision', 'image', 'ceo_signature.png')
+    paste_signature(img, ceo_sig_path, 200, sig_y, SIG_BOX_W, SIG_BOX_H)
+
+    # ── HR Signature (Right side) ──
+    hr_sig_x = int(W * 0.45)  # Shifted left
+    hr_sig_path = os.path.join(settings.BASE_DIR, 'vision', 'static', 'vision', 'image', 'HR signature.png')
+    paste_signature(img, hr_sig_path, hr_sig_x, sig_y, SIG_BOX_W, SIG_BOX_H)
 
     # Convert to RGB and save as single-page PDF
     img_rgb = img.convert('RGB')
@@ -2228,11 +2283,15 @@ def process_approved_enrollments():
                 }
                 normalized_domain = domain_mapping.get(enrollment.domain, enrollment.domain)
 
-                # Create profile
+                # Compute UNID from enrollment (same format as offer letter)
+                unid = f"TRH-{enrollment.domain[:2].upper()}-{enrollment.created_at.strftime('%y%m') if enrollment.created_at else timezone.now().strftime('%y%m')}-{enrollment.id:03d}"
+
+                # Create profile with the enrollment UNID as student_id
                 Profile.objects.create(
                     user=user,
                     Intren=normalized_domain,
-                    period=enrollment.duration
+                    period=enrollment.duration,
+                    student_id=unid
                 )
 
             # Generate PDF offer letter

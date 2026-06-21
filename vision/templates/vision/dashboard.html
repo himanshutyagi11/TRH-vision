@@ -166,7 +166,7 @@
     <aside class="sidebar d-flex flex-column">
         <a href="{% url 'index' %}" class="d-flex align-items-center gap-2 mb-5 text-decoration-none">
             <img src="{% static 'vision/image/logo.png' %}" alt="Logo" width="40" onerror="this.style.display='none'">
-            <span class="fs-4 fw-bold text-dark">TRHvision<span class="text-orange">.</span></span>
+            <span class="fs-4 fw-bold text-dark">TRHvision<span class="text-orange"></span></span>
         </a>
 
         <div class="mb-4">
@@ -409,7 +409,8 @@
                                 <div>
                                     <h6 class="fw-bold mb-1"><i
                                             class="bi bi-check-circle-fill text-success me-2"></i>Project Submitted</h6>
-                                    <small class="text-muted">Submitted on: {{ project.submission.submitted_at|date:"M d, Y" }}</small>
+                                    <small class="text-muted">Submitted on: {{ project.submission.submitted_at|date:"M
+                                        d, Y" }}</small>
                                 </div>
                                 <div>
                                     {% if project.submission.is_approved %}
