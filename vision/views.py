@@ -604,9 +604,9 @@ def dashboard(request):
     # Milestone achievements
     user_milestones = MilestoneAchievement.objects.filter(user=request.user).select_related('track')
 
-    # Fetch student enrollment for offer letter download
+    # Fetch student enrollment for offer letter download (only if admin-approved)
     from .models import Enrollment
-    enrollment = Enrollment.objects.filter(email=request.user.email, is_paid=True).first()
+    enrollment = Enrollment.objects.filter(email=request.user.email, is_paid=True, is_approved=True).first()
 
     context = {
         'tasks': all_tasks,
@@ -1323,6 +1323,11 @@ def download_offer_letter(request, enrollment_id=None):
     if not enrollment:
         messages.error(request, "Enrollment record not found or unauthorized.")
         return redirect('dashboard' if request.user.is_authenticated else 'index')
+
+    # Block offer letter download until admin has approved the enrollment
+    if not enrollment.is_approved:
+        messages.error(request, "Your offer letter is pending admin approval. Please check back later.")
+        return redirect('dashboard' if request.user.is_authenticated else 'enroll_success')
 
     pdf_bytes = _build_offer_letter_pdf(enrollment)
 
