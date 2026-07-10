@@ -18,7 +18,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ task.title }} | TRHvision Academy</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@400;600;700;800;900&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     
     <!-- Interactive Study Tools Resources -->
@@ -32,6 +32,8 @@
             --brand-dark: #0284c7;
             --brand-soft: rgba(14, 165, 233, 0.08);
             --sidebar-w: 300px;
+            --purple: #6366f1;
+            --violet: #8b5cf6;
         }
 
         * {
@@ -243,38 +245,95 @@
             display: block;
         }
 
+        /* ── Panel Hero — Premium Gradient Header ── */
         .panel-hero {
-            background: linear-gradient(135deg, var(--brand) 0%, var(--brand-dark) 100%);
-            border-radius: 16px;
-            padding: 2rem;
+            background: linear-gradient(135deg, #0ea5e9 0%, #6366f1 60%, #8b5cf6 100%);
+            border-radius: 20px;
+            padding: 2.5rem 2.25rem;
             color: #fff;
-            margin-bottom: 1.5rem;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(14, 165, 233, 0.3);
+        }
+
+        /* Decorative circles */
+        .panel-hero::before {
+            content: "";
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.08);
+        }
+        .panel-hero::after {
+            content: "";
+            position: absolute;
+            bottom: -60px;
+            left: 40px;
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.05);
         }
 
         .panel-hero .week-chip {
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
             background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255,255,255,0.25);
             border-radius: 50px;
-            padding: 3px 14px;
+            padding: 4px 16px;
             font-size: 0.75rem;
             font-weight: 700;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.75rem;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
         }
 
         .panel-hero h2 {
-            font-weight: 800;
+            font-family: 'Outfit', 'Inter', sans-serif;
+            font-weight: 900;
             margin: 0;
-            font-size: 1.5rem;
+            font-size: 1.75rem;
+            letter-spacing: -0.03em;
+            line-height: 1.25;
+            text-shadow: 0 2px 12px rgba(0,0,0,0.15);
+            position: relative;
+            z-index: 1;
         }
 
+        .panel-hero .hero-meta {
+            margin-top: 0.75rem;
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.7);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            position: relative;
+            z-index: 1;
+        }
+        .panel-hero .hero-meta span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* content-card base — see study_tools.css for full rich styling */
         .content-card {
             background: #fff;
-            border-radius: 16px;
-            padding: 2rem 2.5rem;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05), 0 4px 16px rgba(0, 0, 0, 0.04);
-            margin-bottom: 1.5rem;
+            border-radius: 20px;
+            padding: 2.5rem 3rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04), 0 8px 32px rgba(0,0,0,0.06);
+            margin-bottom: 2rem;
             line-height: 1.9;
-            font-size: 1rem;
+            font-size: 1.02rem;
+            border: 1px solid rgba(226,232,240,0.8);
         }
 
         .content-card p {
@@ -417,15 +476,16 @@
         }
 
         .resource-bar {
-            background: #fff;
-            border-radius: 12px;
+            background: linear-gradient(135deg, #f8fafc, #f0f9ff);
+            border: 1px solid #e0f2fe;
+            border-radius: 14px;
             padding: 1rem 1.5rem;
             display: flex;
             align-items: center;
             gap: 1rem;
             flex-wrap: wrap;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 8px rgba(14,165,233,0.08);
+            margin-bottom: 1.75rem;
         }
 
         .resource-bar .label {
@@ -565,13 +625,14 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            background: #fff;
+            background: rgba(255,255,255,0.96);
+            backdrop-filter: blur(12px);
             border-top: 1px solid #e2e8f0;
-            padding: 0.85rem 1.5rem;
+            padding: 1rem 1.75rem;
             position: sticky;
             bottom: 0;
             z-index: 50;
-            box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.06);
+            box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.08);
             margin-top: 2rem;
         }
 
@@ -606,17 +667,69 @@
         }
 
         .btn-seq-next {
-            background: var(--brand);
+            background: linear-gradient(135deg, var(--brand), var(--purple));
             color: #fff;
+            box-shadow: 0 4px 14px rgba(14, 165, 233, 0.35);
         }
 
         .btn-seq-next:hover {
-            background: var(--brand-dark);
+            background: linear-gradient(135deg, var(--brand-dark), #4f46e5);
+            box-shadow: 0 6px 20px rgba(14, 165, 233, 0.45);
+            transform: translateY(-1px);
         }
 
         .btn-seq:disabled {
             opacity: 0.35;
             cursor: not-allowed;
+        }
+
+        /* ── Learning progress chip ── */
+        .learning-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: linear-gradient(135deg, rgba(99,102,241,0.1), rgba(139,92,246,0.1));
+            border: 1px solid rgba(99,102,241,0.2);
+            border-radius: 50px;
+            padding: 4px 14px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #6366f1;
+        }
+
+        /* ── Content section number chips ── */
+        .section-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #0ea5e9, #6366f1);
+            color: #fff;
+            font-size: 0.75rem;
+            font-weight: 800;
+            flex-shrink: 0;
+        }
+
+        /* ── Study control bar ── */
+        .study-control-bar .btn.active {
+            background: linear-gradient(135deg, #0ea5e9, #6366f1) !important;
+            color: #fff !important;
+            border: none !important;
+            box-shadow: 0 4px 12px rgba(14,165,233,0.25);
+        }
+
+        /* Smooth page transitions */
+        .material-panel {
+            animation: none;
+        }
+        .material-panel.active {
+            animation: slideIn 0.3s ease;
+        }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(8px); }
+            to   { opacity: 1; transform: translateX(0); }
         }
     </style>
 </head>
@@ -776,8 +889,12 @@
                 {% else %}
                 <!-- Hero -->
                 <div class="panel-hero">
-                    <span class="week-chip"><i class="bi bi-calendar3 me-1"></i>Week {{ material.week_number }}</span>
+                    <span class="week-chip">📅 Week {{ material.week_number }}</span>
                     <h2>{{ material.title }}</h2>
+                    <div class="hero-meta">
+                        <span><i class="bi bi-book-half"></i> Learning Material</span>
+                        <span><i class="bi bi-clock"></i> ~{{ material.content|wordcount|divisibleby:200|yesno:'10,5' }} min read</span>
+                    </div>
                 </div>
 
                 <!-- Smart Study Control Bar -->
@@ -1102,5 +1219,92 @@
         window.TASK_CATEGORY = "{{ task.category }}";
     </script>
     <script src="{% static 'vision/js/study_tools.js' %}"></script>
+
+    <!-- ── Content Enhancer: Auto-upgrades CKEditor plain HTML ── -->
+    <script>
+    (function() {
+        'use strict';
+
+        function enhanceContentCards() {
+            const cards = document.querySelectorAll('.content-card');
+            cards.forEach(function(card) {
+                const children = Array.from(card.children);
+
+                children.forEach(function(el) {
+                    // ── 1. Standalone <p> with only <strong> → Section Header ──
+                    if (el.tagName === 'P') {
+                        const text = el.textContent.trim();
+                        const innerHTML = el.innerHTML.trim();
+
+                        // Check if entire paragraph is bold (section title pattern)
+                        const onlyStrong = el.querySelectorAll('strong, b');
+                        const totalTextLen = text.length;
+                        let boldTextLen = 0;
+                        onlyStrong.forEach(function(s) { boldTextLen += s.textContent.length; });
+
+                        if (totalTextLen > 0 && boldTextLen === totalTextLen && totalTextLen < 120 && !text.includes('=')) {
+                            el.classList.add('content-section-header');
+                        }
+
+                        // ── 2. <p> with only <em> → Syntax/Formula chip (only if looks like a formula) ──
+                        const onlyEm = el.querySelectorAll('em');
+                        let emTextLen = 0;
+                        onlyEm.forEach(function(e) { emTextLen += e.textContent.length; });
+
+                        // Only treat as syntax if it contains formula-like patterns: =, (, ), or uppercase function names
+                        const isSyntaxPattern = /[=\(\)]/.test(text) || /\b[A-Z]{2,}\b/.test(text);
+                        if (totalTextLen > 0 && emTextLen === totalTextLen && totalTextLen < 300 && isSyntaxPattern) {
+                            el.classList.add('content-syntax-line');
+                            onlyEm.forEach(function(e) {
+                                e.classList.add('syntax-chip');
+                            });
+                        }
+                    }
+
+                    // ── 3. Wrap <figure> images with a nice frame ──
+                    if (el.tagName === 'FIGURE') {
+                        el.classList.add('content-figure-frame');
+                    }
+                });
+
+                // ── 4. Add reading progress indicator ──
+                if (!card.querySelector('.reading-progress-bar')) {
+                    const bar = document.createElement('div');
+                    bar.className = 'reading-progress-bar';
+                    bar.innerHTML = '<div class="reading-progress-fill"></div>';
+                    card.insertBefore(bar, card.firstChild);
+
+                    // Track reading progress
+                    const observer = new IntersectionObserver(function(entries) {
+                        entries.forEach(function(entry) {
+                            if (entry.isIntersecting) {
+                                const ratio = Math.min(entry.intersectionRatio * 2, 1);
+                                const fill = bar.querySelector('.reading-progress-fill');
+                                if (fill) fill.style.width = (ratio * 100) + '%';
+                            }
+                        });
+                    }, { threshold: Array.from({length: 21}, function(_, i) { return i / 20; }) });
+                    observer.observe(card);
+                }
+            });
+        }
+
+        // Run on DOM ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', enhanceContentCards);
+        } else {
+            enhanceContentCards();
+        }
+
+        // Also run when panels switch (showPanel called)
+        const origShowPanel = window.showPanel;
+        if (typeof origShowPanel === 'function') {
+            window.showPanel = function(id) {
+                origShowPanel(id);
+                setTimeout(enhanceContentCards, 50);
+            };
+        }
+    })();
+    </script>
 </body>
 </html>

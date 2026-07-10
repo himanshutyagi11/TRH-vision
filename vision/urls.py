@@ -40,6 +40,7 @@ urlpatterns = [
     path('trhadmin/login/', views.trh_admin_login, name='trh_admin_login'),
     path('trhadmin/students/', views.trh_admin_students, name='trh_admin_students'),
     path('trhadmin/students/<int:user_id>/', views.trh_admin_student_detail, name='trh_admin_student_detail'),
+    path('trhadmin/students/<int:user_id>/edit-id/', views.trh_admin_edit_student_id, name='trh_admin_edit_student_id'),
     path('trhadmin/clients/', views.trh_admin_clients, name='trh_admin_clients'),
     path('trhadmin/clients/create/', views.trh_admin_create_client, name='trh_admin_create_client'),
     path('trhadmin/clients/project/create/', views.trh_admin_create_project, name='trh_admin_create_project'),

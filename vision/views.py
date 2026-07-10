@@ -1856,6 +1856,9 @@ def trh_admin_student_detail(request, user_id):
     enrollment = Enrollment.objects.filter(email=student_user.email, is_paid=True).first()
     enrollment_id = enrollment.id if enrollment else None
 
+    # Compute the UNID that matches the offer letter
+    enrollment_unid = _generate_unid(enrollment) if enrollment else None
+
     context = {
         'student_user': student_user,
         'profile': profile,
@@ -1865,9 +1868,33 @@ def trh_admin_student_detail(request, user_id):
         'progress': progress,
         'projects': projects,
         'enrollment_id': enrollment_id,
+        'enrollment_unid': enrollment_unid,
     }
     return render(request, 'vision/trh_admin_student_detail.html', context)
 
+
+@staff_required
+def trh_admin_edit_student_id(request, user_id):
+    """Allow admin to edit a student's ID (UNID)."""
+    if request.method != 'POST':
+        return redirect('trh_admin_student_detail', user_id=user_id)
+
+    profile = get_object_or_404(Profile, user_id=user_id)
+    new_id = request.POST.get('student_id', '').strip()
+
+    if not new_id:
+        messages.error(request, "Student ID cannot be empty.")
+        return redirect('trh_admin_student_detail', user_id=user_id)
+
+    # Validate uniqueness (exclude current profile)
+    if Profile.objects.filter(student_id=new_id).exclude(pk=profile.pk).exists():
+        messages.error(request, f"Student ID '{new_id}' is already in use by another student.")
+        return redirect('trh_admin_student_detail', user_id=user_id)
+
+    profile.student_id = new_id
+    profile.save()
+    messages.success(request, f"Student ID updated to '{new_id}' successfully.")
+    return redirect('trh_admin_student_detail', user_id=user_id)
 
 @staff_required
 def trh_admin_clients(request):
@@ -2289,7 +2316,7 @@ def process_approved_enrollments():
                 normalized_domain = domain_mapping.get(enrollment.domain, enrollment.domain)
 
                 # Compute UNID from enrollment (same format as offer letter)
-                unid = f"TRH-{enrollment.domain[:2].upper()}-{enrollment.created_at.strftime('%y%m') if enrollment.created_at else timezone.now().strftime('%y%m')}-{enrollment.id:03d}"
+                unid = _generate_unid(enrollment)
 
                 # Create profile with the enrollment UNID as student_id
                 Profile.objects.create(

@@ -482,7 +482,6 @@ class ProfileInline(admin.StackedInline):
     model             = Profile
     can_delete        = False
     verbose_name_plural = 'Student Profile'
-    readonly_fields   = ('student_id',)
 
 class UserAdmin(BaseUserAdmin):
     inlines      = (ProfileInline,)
@@ -508,7 +507,6 @@ class ProfileAdmin(admin.ModelAdmin):
     list_display = ('user', 'student_id', 'Intren', 'period', 'has_certificate')
     list_filter = ('Intren', 'period')
     search_fields = ('user__username', 'user__email', 'student_id')
-    readonly_fields = ('student_id',)
 
     def has_certificate(self, obj):
         return bool(obj.certificate)
