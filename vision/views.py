@@ -801,8 +801,8 @@ def _build_certificate_pdf(user, profile, enrollment=None):
     from django.utils import timezone
     issue_date   = timezone.now().strftime("%B %d, %Y")
 
-    # Use the same UNID from the offer letter if enrollment is available
-    cert_id = _generate_unid(enrollment) if enrollment else profile.student_id
+    # Use profile.student_id as the single source of truth for UNID
+    cert_id = profile.student_id
 
     # ── 3. Draw text on the certificate ──────────────────────────────────
     # Cert ID — pushed right and slightly down (sweet spot)
@@ -819,9 +819,14 @@ def _build_certificate_pdf(user, profile, enrollment=None):
 
     # ── Calculate internship dates ────────────────────────────────────────
     from dateutil.relativedelta import relativedelta
-    period_months_map = {'1-Month': 1, '2-Months': 2, '3-Months': 3, '6-Months': 6}
+    period_months_map = {'1-Month': 1, '2-Months': 2, '3-Months': 3, '6-Months': 6,
+                         '1 Month': 1, '2 Months': 2, '3 Months': 3, '6 Months': 6}
     duration_months   = period_months_map.get(profile.period, 1)
-    start_date      = user.date_joined.date()
+    # Use admin-set start_date from enrollment, fall back to user.date_joined
+    if enrollment and enrollment.start_date:
+        start_date = enrollment.start_date
+    else:
+        start_date = user.date_joined.date()
     end_date        = start_date + relativedelta(months=duration_months)
     start_str       = start_date.strftime("%d %b %Y")
     end_str         = end_date.strftime("%d %b %Y")
@@ -1039,8 +1044,8 @@ def generate_certificate(request):
 
     pdf_bytes = _build_certificate_pdf(request.user, profile, enrollment=enrollment)
 
-    # Use the same UNID for the filename
-    cert_id = _generate_unid(enrollment) if enrollment else profile.student_id
+    # Use profile.student_id as the single source of truth
+    cert_id = profile.student_id
 
     if pdf_bytes:
         response = HttpResponse(pdf_bytes, content_type='application/pdf')
@@ -1097,11 +1102,23 @@ def _build_offer_letter_pdf(enrollment):
         font_regular = ImageFont.load_default()
         font_small = ImageFont.load_default()
 
-    # Format Date
-    issue_date = enrollment.created_at.strftime("%B %d, %Y") if hasattr(enrollment, 'created_at') and enrollment.created_at else timezone.now().strftime("%B %d, %Y")
+    # Format Date — use admin-set start_date, fall back to created_at
+    if enrollment.start_date:
+        issue_date = enrollment.start_date.strftime("%B %d, %Y")
+    elif hasattr(enrollment, 'created_at') and enrollment.created_at:
+        issue_date = enrollment.created_at.strftime("%B %d, %Y")
+    else:
+        issue_date = timezone.now().strftime("%B %d, %Y")
     
-    # UNID (use the shared helper for consistency with certificate)
-    unid = _generate_unid(enrollment)
+    # UNID — use profile.student_id as the single source of truth
+    # Look up the student's profile (if it exists) to get the authoritative ID
+    from .models import Profile as _Profile
+    try:
+        _student_profile = _Profile.objects.get(user__email=enrollment.email)
+        unid = _student_profile.student_id
+    except _Profile.DoesNotExist:
+        # Profile not yet created (first-time generation during auto-approval)
+        unid = _generate_unid(enrollment)
 
     # 1. Fill in Date and UNID — aligned to exact label positions in TRHo-1.png
     # Template labels detected at: DATE y=482, UNID y=526, both ending at x≈1180
@@ -1189,7 +1206,13 @@ def _build_offer_letter_pdf(enrollment):
     period_months_map = {'1-Month': 1, '2-Months': 2, '3-Months': 3, '6-Months': 6,
                          '1 Month': 1, '2 Months': 2, '3 Months': 3, '6 Months': 6}
     duration_months = period_months_map.get(enrollment.duration, 1)
-    start_date = enrollment.created_at.date() if hasattr(enrollment, 'created_at') and enrollment.created_at else timezone.now().date()
+    # Use admin-set start_date, fall back to created_at
+    if enrollment.start_date:
+        start_date = enrollment.start_date
+    elif hasattr(enrollment, 'created_at') and enrollment.created_at:
+        start_date = enrollment.created_at.date()
+    else:
+        start_date = timezone.now().date()
     end_date = start_date + relativedelta(months=duration_months)
     start_str = start_date.strftime("%B %Y")
     end_str = end_date.strftime("%B %Y")
@@ -2234,6 +2257,11 @@ def trh_admin_approve_enrollment(request, enrollment_id):
     from .models import Enrollment
     import random
     from django.utils import timezone
+    from datetime import datetime
+
+    if request.method != 'POST':
+        messages.error(request, "Invalid request method.")
+        return redirect('trh_admin_enrollments')
 
     enrollment = get_object_or_404(Enrollment, id=enrollment_id)
     if not enrollment.is_paid:
@@ -2243,6 +2271,18 @@ def trh_admin_approve_enrollment(request, enrollment_id):
     if enrollment.is_approved:
         messages.warning(request, "Enrollment is already approved.")
         return redirect('trh_admin_enrollments')
+
+    # Parse the admin-set start date
+    start_date_str = request.POST.get('start_date', '').strip()
+    if start_date_str:
+        try:
+            enrollment.start_date = datetime.strptime(start_date_str, '%Y-%m-%d').date()
+        except ValueError:
+            messages.error(request, "Invalid start date format. Please use the date picker.")
+            return redirect('trh_admin_enrollments')
+    else:
+        # Default to today if no date provided
+        enrollment.start_date = timezone.now().date()
 
     # Generate a user-friendly, secure password based on student's name
     first_name = enrollment.name.strip().split()[0] if enrollment.name.strip() else "Student"
@@ -2258,6 +2298,7 @@ def trh_admin_approve_enrollment(request, enrollment_id):
     messages.success(
         request,
         f"Enrollment for {enrollment.name} approved successfully! "
+        f"Internship starts on {enrollment.start_date.strftime('%B %d, %Y')}. "
         f"Login credentials and offer letter will be emailed automatically after 4 hours of their enrollment time."
     )
     return redirect('trh_admin_enrollments')

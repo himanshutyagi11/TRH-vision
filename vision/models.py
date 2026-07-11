@@ -223,6 +223,7 @@ class Enrollment(models.Model):
     approved_at = models.DateTimeField(null=True, blank=True)
     generated_password = models.CharField(max_length=128, blank=True, null=True)
     credentials_sent = models.BooleanField(default=False)
+    start_date = models.DateField(null=True, blank=True, help_text="Admin-set internship start date (used on offer letter & certificate)")
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

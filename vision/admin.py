@@ -676,4 +676,4 @@ class ClientInvoiceAdmin(admin.ModelAdmin):
     list_display = ('invoice_number', 'project', 'amount', 'status', 'issued_date', 'due_date', 'paid_date')
     list_filter = ('status',)
     search_fields = ('invoice_number', 'project__title', 'project__client__company_name')
-    list_editable = ('status',)
+    list_editable = ('status',)

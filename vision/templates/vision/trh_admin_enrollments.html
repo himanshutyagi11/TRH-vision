@@ -136,9 +136,16 @@
                                 {% endif %}
                                 {% else %}
                                 {% if e.is_paid %}
-                                <a href="{% url 'trh_admin_approve_enrollment' e.id %}" class="btn btn-sm btn-primary py-1 px-2 fw-semibold" style="font-size:0.7rem; border-radius: 6px;">
-                                    <i class="bi bi-check-circle-fill me-1"></i>Approve
-                                </a>
+                                <form method="POST" action="{% url 'trh_admin_approve_enrollment' e.id %}" class="d-inline" onsubmit="return confirm('Approve enrollment for {{ e.name }}?')">
+                                    {% csrf_token %}
+                                    <div class="d-flex flex-column gap-1">
+                                        <label class="text-muted" style="font-size:0.6rem;font-weight:600;">Start Date</label>
+                                        <input type="date" name="start_date" class="form-control form-control-sm" style="font-size:0.7rem;border-radius:6px;max-width:140px;" required>
+                                        <button type="submit" class="btn btn-sm btn-primary py-1 px-2 fw-semibold" style="font-size:0.7rem; border-radius: 6px;">
+                                            <i class="bi bi-check-circle-fill me-1"></i>Approve
+                                        </button>
+                                    </div>
+                                </form>
                                 {% else %}
                                 <span class="text-muted small" style="font-size:0.7rem;">Awaiting Payment</span>
                                 {% endif %}
