@@ -80,8 +80,6 @@ class ProjectSubmission(models.Model):
         return f"{self.user.username} - {self.project.title}"
 
 
-# models.py
-# models.py
 class Profile(models.Model):
     # Options for Internship Domains
     DOMAIN_CHOICES = [
@@ -100,6 +98,7 @@ class Profile(models.Model):
         ('3 Months', '3 Months'),
         ('6 Months', '6 Months')
     ]
+
     def get_period_integer(self):
         # Extracts the first digit from '1 Month', '2 Months', etc.
         try:
@@ -109,20 +108,21 @@ class Profile(models.Model):
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     student_id = models.CharField(max_length=20, unique=True, blank=True)
-    
+
     # Use choices here for dropdowns
-    Intren = models.CharField(max_length=50, choices=DOMAIN_CHOICES) 
-    period = models.CharField(max_length=20, choices=PERIOD_CHOICES) 
-    
+    Intren = models.CharField(max_length=50, choices=DOMAIN_CHOICES)
+    period = models.CharField(max_length=20, choices=PERIOD_CHOICES)
+
     def save(self, *args, **kwargs):
         if not self.student_id:
             # Generates: TRH20-26-001, TRH20-26-002, etc.
             self.student_id = f"TRH20-26-{self.user.id:03d}"
         super().save(*args, **kwargs)
+
     certificate = models.FileField(upload_to='certificates/', null=True, blank=True)
+
     def __str__(self):
         return f"{self.user.username} - {self.student_id}"
-    
 
 
 class Question(models.Model):
@@ -137,23 +137,19 @@ class Question(models.Model):
         return f"Q for {self.task.title}"
 
 
-
-
 from ckeditor_uploader.fields import RichTextUploadingField
 
 class LearningMaterial(models.Model):
     task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name='materials')
     title = models.CharField(max_length=200)
-    # content = models.TextField(max_length=10000, null=True, blank=True)
     content = RichTextUploadingField(blank=True, null=True)
     video_url = models.URLField(null=True, blank=True)
     file = models.FileField(upload_to='materials/', null=True, blank=True)
     week_number = models.IntegerField(default=1, help_text="Week number (1, 2, 3...)")
     order = models.IntegerField(default=1, help_text="Order within the week")
-    
+
     class Meta:
         ordering = ['week_number', 'order']
-
 
     def __str__(self):
         return f"{self.task.title} - Week {self.week_number} - {self.title}"
@@ -181,7 +177,7 @@ class ClientRequest(models.Model):
     ]
 
     name = models.CharField(max_length=200)
-    company_name = models.CharField(max_length=200, blank=True, null=True) # Optional company name
+    company_name = models.CharField(max_length=200, blank=True, null=True)
     email = models.EmailField()
     phone = models.CharField(max_length=20)
     service_type = models.CharField(max_length=100, choices=SERVICE_CHOICES, default='Other')
@@ -223,6 +219,7 @@ class Enrollment(models.Model):
     approved_at = models.DateTimeField(null=True, blank=True)
     generated_password = models.CharField(max_length=128, blank=True, null=True)
     credentials_sent = models.BooleanField(default=False)
+    offer_letter_sent = models.BooleanField(default=False, help_text="Set to True after offer letter has been emailed to the student")
     start_date = models.DateField(null=True, blank=True, help_text="Admin-set internship start date (used on offer letter & certificate)")
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -269,24 +266,24 @@ class InternshipPricing(models.Model):
         ('3 Months', '3 Months'),
         ('6 Months', '6 Months'),
     ]
-    
+
     duration = models.CharField(max_length=50, choices=DURATION_CHOICES, unique=True)
     price = models.DecimalField(max_digits=8, decimal_places=2, help_text="Amount in INR (e.g. 199.00)")
     is_active = models.BooleanField(default=True, help_text="Show this duration option on the enrollment page")
-    
+
     class Meta:
         ordering = ['duration']
         verbose_name = 'Internship Pricing'
         verbose_name_plural = 'Internship Pricing'
 
     def __str__(self):
-        return f"{self.duration} - ₹{self.price}"
+        return f"{self.duration} - Rs.{self.price}"
 
 
-# ═══════════════════════════════════════════════════════════════
-#  DAILY CHALLENGER SYSTEM  —  Multi-track, LeetCode-style
+# =================================================================
+#  DAILY CHALLENGER SYSTEM  -  Multi-track, LeetCode-style
 #  Up to 4 simultaneous challenge tracks per user
-# ═══════════════════════════════════════════════════════════════
+# =================================================================
 
 class ChallengeTrack(models.Model):
     """
@@ -321,12 +318,12 @@ class UserChallengeEnrollment(models.Model):
     Maximum 4 active enrollments per user.
     """
     TARGET_CHOICES = [
-        (30,  '30 Days  — Starter'),
-        (50,  '50 Days  — Committed'),
-        (100, '100 Days — Dedicated'),
-        (200, '200 Days — Elite'),
-        (300, '300 Days — Master'),
-        (500, '500 Days — Legend  🎁 ₹500 Gift Card'),
+        (30,  '30 Days  - Starter'),
+        (50,  '50 Days  - Committed'),
+        (100, '100 Days - Dedicated'),
+        (200, '200 Days - Elite'),
+        (300, '300 Days - Master'),
+        (500, '500 Days - Legend  Rs.500 Gift Card'),
     ]
 
     user        = models.ForeignKey(User, on_delete=models.CASCADE, related_name='challenge_enrollments')
@@ -341,7 +338,7 @@ class UserChallengeEnrollment(models.Model):
         verbose_name_plural = 'User Challenge Enrollments'
 
     def __str__(self):
-        return f"{self.user.username} → {self.track.name} ({self.target_days}d)"
+        return f"{self.user.username} -> {self.track.name} ({self.target_days}d)"
 
 
 class DailyTrackCheckIn(models.Model):
@@ -359,7 +356,7 @@ class DailyTrackCheckIn(models.Model):
         verbose_name_plural = 'Daily Track Check-Ins'
 
     def __str__(self):
-        return f"{self.user.username} ✓ {self.track.name} on {self.date}"
+        return f"{self.user.username} - {self.track.name} on {self.date}"
 
 
 class MilestoneAchievement(models.Model):
@@ -370,13 +367,13 @@ class MilestoneAchievement(models.Model):
         (100, '100 Days'),
         (200, '200 Days'),
         (300, '300 Days'),
-        (500, '500 Days — Legend 🎁'),
+        (500, '500 Days - Legend'),
     ]
     user          = models.ForeignKey(User, on_delete=models.CASCADE, related_name='milestones')
     track         = models.ForeignKey(ChallengeTrack, on_delete=models.CASCADE, related_name='milestones')
     milestone_days = models.IntegerField(choices=MILESTONE_CHOICES)
     achieved_at   = models.DateTimeField(auto_now_add=True)
-    reward_sent   = models.BooleanField(default=False, help_text="Mark true when ₹500 gift card is sent (500-day only)")
+    reward_sent   = models.BooleanField(default=False, help_text="Mark true when Rs.500 gift card is sent (500-day only)")
 
     class Meta:
         unique_together = ('user', 'track', 'milestone_days')
@@ -384,21 +381,21 @@ class MilestoneAchievement(models.Model):
         verbose_name_plural = 'Milestone Achievements'
 
     def __str__(self):
-        return f"{self.user.username} — {self.track.name} — {self.milestone_days} Days"
+        return f"{self.user.username} - {self.track.name} - {self.milestone_days} Days"
 
 
 class UserStreak(models.Model):
-    """Overall daily streak: consecutive days with ≥1 track checked in."""
+    """Overall daily streak: consecutive days with >=1 track checked in."""
     user                 = models.OneToOneField(User, on_delete=models.CASCADE, related_name='streak')
     current_streak       = models.IntegerField(default=0)
     longest_streak       = models.IntegerField(default=0)
     last_completion_date = models.DateField(null=True, blank=True)
 
     def __str__(self):
-        return f"{self.user.username} — Streak: {self.current_streak}"
+        return f"{self.user.username} - Streak: {self.current_streak}"
 
 
-# ── Keep old models (no longer used) for backwards-compat with migrations ──
+# Keep old models (no longer used) for backwards-compat with migrations
 class DailyChallengeTask(models.Model):
     DOMAIN_CHOICES = Task.DOMAIN_CHOICES
     date       = models.DateField()
@@ -428,10 +425,10 @@ class DailyCheckIn(models.Model):
         return f"{self.user.username}"
 
 
-# ═══════════════════════════════════════════════════════════════
+# =================================================================
 #  CLIENT DASHBOARD SYSTEM
 #  Separate portal for business clients to track project progress
-# ═══════════════════════════════════════════════════════════════
+# =================================================================
 
 class ClientProfile(models.Model):
     """Links a Django User to a client account (created by admin)."""
@@ -469,7 +466,7 @@ class ClientProject(models.Model):
     description = models.TextField(blank=True)
     service_type = models.CharField(max_length=100, choices=SERVICE_CHOICES, default='Other')
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='discovery')
-    progress = models.IntegerField(default=0, help_text="Overall progress 0–100%")
+    progress = models.IntegerField(default=0, help_text="Overall progress 0-100%")
     start_date = models.DateField(null=True, blank=True)
     deadline = models.DateField(null=True, blank=True)
     budget = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True,
@@ -482,7 +479,7 @@ class ClientProject(models.Model):
         verbose_name_plural = 'Client Projects'
 
     def __str__(self):
-        return f"{self.title} — {self.client.company_name}"
+        return f"{self.title} - {self.client.company_name}"
 
     @property
     def completed_milestones(self):
@@ -509,8 +506,8 @@ class ClientProjectMilestone(models.Model):
         verbose_name_plural = 'Project Milestones'
 
     def __str__(self):
-        status = '✅' if self.is_completed else '⏳'
-        return f"{status} {self.title} — {self.project.title}"
+        status = 'Done' if self.is_completed else 'Pending'
+        return f"{status} {self.title} - {self.project.title}"
 
 
 class ClientProjectDeliverable(models.Model):
@@ -527,7 +524,7 @@ class ClientProjectDeliverable(models.Model):
         verbose_name_plural = 'Project Deliverables'
 
     def __str__(self):
-        return f"{self.title} — {self.project.title}"
+        return f"{self.title} - {self.project.title}"
 
 
 class ClientProjectUpdate(models.Model):
@@ -543,7 +540,7 @@ class ClientProjectUpdate(models.Model):
         verbose_name_plural = 'Project Updates'
 
     def __str__(self):
-        return f"Update on {self.project.title} — {self.created_at:%b %d}"
+        return f"Update on {self.project.title} - {self.created_at:%b %d}"
 
 
 class ClientInvoice(models.Model):
@@ -570,4 +567,127 @@ class ClientInvoice(models.Model):
         verbose_name_plural = 'Client Invoices'
 
     def __str__(self):
-        return f"INV-{self.invoice_number} — ₹{self.amount} ({self.status})"
+        return f"INV-{self.invoice_number} - Rs.{self.amount} ({self.status})"
+
+
+# =================================================================
+#  PUBLIC REVIEW / RATING MODEL
+#  Anyone can submit; admin must approve before it shows on the
+#  index page.
+# =================================================================
+
+class Review(models.Model):
+    RATING_CHOICES = [
+        (1, '1 Star'),
+        (2, '2 Stars'),
+        (3, '3 Stars'),
+        (4, '4 Stars'),
+        (5, '5 Stars'),
+    ]
+
+    name    = models.CharField(max_length=100, help_text="Reviewer full name")
+    role    = models.CharField(max_length=150, blank=True,
+                               help_text="Title / Company (e.g. Intern - Data Science)")
+    message = models.TextField(help_text="Review / testimonial text")
+    rating  = models.PositiveSmallIntegerField(choices=RATING_CHOICES, default=5)
+    is_approved = models.BooleanField(
+        default=False,
+        help_text="Tick to show this review on the public homepage"
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+        verbose_name = 'Review'
+        verbose_name_plural = 'Reviews'
+
+    def __str__(self):
+        status = 'approved' if self.is_approved else 'pending'
+        return f"{self.name} - {self.rating}star ({status})"
+
+    @property
+    def initials(self):
+        parts = self.name.strip().split()
+        return ''.join(p[0].upper() for p in parts[:2])
+
+
+# =================================================================
+#  EMAIL TEMPLATE MODEL
+#  Allows admin to configure email subject/body for:
+#    - Offer Letter emails   (name='offer_letter')
+#    - Credentials emails    (name='login_credentials')
+#  Only editable via admin panel; records cannot be deleted.
+# =================================================================
+
+OFFER_LETTER_PLACEHOLDERS = """
+Available placeholders for the offer letter email:
+  {name}       - Student full name
+  {domain}     - Internship domain (e.g. Data Science)
+  {duration}   - Internship duration (e.g. 3 Months)
+  {start_date} - Internship start date (e.g. July 01, 2026)
+  {email}      - Student email address
+"""
+
+CREDENTIALS_PLACEHOLDERS = """
+Available placeholders for the credentials email:
+  {name}       - Student full name
+  {domain}     - Internship domain (e.g. Data Science)
+  {duration}   - Internship duration (e.g. 3 Months)
+  {email}      - Student email address
+  {student_id} - Student portal ID (e.g. TRH20-26-001)
+  {password}   - Student login password
+  {portal_url} - Portal login URL
+"""
+
+
+class EmailTemplate(models.Model):
+    """
+    Stores editable email templates for admin-triggered emails.
+    Two records are pre-seeded via migration:
+      - name='offer_letter'      - sent with the PDF offer letter
+      - name='login_credentials' - sent with portal login details
+    """
+    TEMPLATE_CHOICES = [
+        ('offer_letter', 'Offer Letter Email'),
+        ('login_credentials', 'Login Credentials Email'),
+    ]
+
+    name = models.CharField(
+        max_length=50,
+        unique=True,
+        choices=TEMPLATE_CHOICES,
+        help_text="Internal identifier. Do not change.",
+    )
+    label = models.CharField(
+        max_length=200,
+        help_text="Friendly name shown in admin.",
+    )
+    subject = models.CharField(
+        max_length=500,
+        help_text="Email subject line. Use {name}, {domain}, {duration} as placeholders.",
+    )
+    body = models.TextField(
+        help_text="Email body text. See the placeholder reference for available variables.",
+    )
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = 'Email Template'
+        verbose_name_plural = 'Email Templates'
+
+    def __str__(self):
+        return self.label
+
+    def get_rendered(self, context):
+        """
+        Returns (subject, body) with all {placeholder} variables replaced.
+        Unrecognised keys are left as-is so a typo does not crash the send.
+        """
+        class SafeDict(dict):
+            def __missing__(self, key):
+                return '{' + key + '}'
+
+        safe_ctx = SafeDict(context)
+        rendered_subject = self.subject.format_map(safe_ctx)
+        rendered_body = self.body.format_map(safe_ctx)
+        return rendered_subject, rendered_body

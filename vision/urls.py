@@ -47,6 +47,8 @@ urlpatterns = [
     path('trhadmin/projects/<int:project_id>/', views.trh_admin_client_project, name='trh_admin_client_project'),
     path('trhadmin/enrollments/', views.trh_admin_enrollments, name='trh_admin_enrollments'),
     path('trhadmin/enrollments/<int:enrollment_id>/approve/', views.trh_admin_approve_enrollment, name='trh_admin_approve_enrollment'),
+    path('trhadmin/enrollments/<int:enrollment_id>/send-offer/', views.trh_admin_send_offer_letter, name='trh_admin_send_offer_letter'),
+    path('trhadmin/enrollments/<int:enrollment_id>/send-credentials/', views.trh_admin_send_credentials, name='trh_admin_send_credentials'),
     path('trhadmin/contacts/', views.trh_admin_contacts, name='trh_admin_contacts'),
 
     # Password Reset URLs

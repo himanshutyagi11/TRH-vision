@@ -192,13 +192,14 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # For Production: Send real emails via Hostinger SMTP
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.hostinger.com'  # Hostinger SMTP server
-EMAIL_PORT = 587  # TLS port
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')  # Loaded from .env
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')  # Loaded from .env
-DEFAULT_FROM_EMAIL = 'TRHvision <noreply@trhvision.in>'  # Display name + email
-SERVER_EMAIL = 'noreply@trhvision.in'  # For error emails
+EMAIL_HOST = 'smtp.hostinger.com'   # Hostinger SMTP server
+EMAIL_PORT = 465                    # Hostinger requires SSL on port 465
+EMAIL_USE_SSL = True                # Use SSL (not TLS) for Hostinger
+EMAIL_USE_TLS = False               # TLS and SSL are mutually exclusive
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')        # Loaded from .env
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '') # Loaded from .env
+DEFAULT_FROM_EMAIL = 'TRHvision <contact@trhvision.in>'
+SERVER_EMAIL = 'contact@trhvision.in'
 
 # SECURITY NOTE: For production deployment, move these to environment variables:
 # EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')

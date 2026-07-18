@@ -128,27 +128,71 @@
                             </td>
                             <td>
                                 {% if e.is_approved %}
-                                <span class="badge bg-info text-dark" style="font-size:0.65rem;">Approved</span>
-                                {% if e.credentials_sent %}
-                                <br><span class="badge bg-success-subtle text-success mt-1" style="font-size:0.6rem;"><i class="bi bi-envelope-check-fill"></i> Credentials Sent</span>
-                                {% else %}
-                                <br><span class="badge bg-warning-subtle text-warning mt-1" style="font-size:0.6rem;"><i class="bi bi-clock-history"></i> Pending Dispatch (4h)</span>
-                                {% endif %}
-                                {% else %}
-                                {% if e.is_paid %}
-                                <form method="POST" action="{% url 'trh_admin_approve_enrollment' e.id %}" class="d-inline" onsubmit="return confirm('Approve enrollment for {{ e.name }}?')">
-                                    {% csrf_token %}
-                                    <div class="d-flex flex-column gap-1">
-                                        <label class="text-muted" style="font-size:0.6rem;font-weight:600;">Start Date</label>
-                                        <input type="date" name="start_date" class="form-control form-control-sm" style="font-size:0.7rem;border-radius:6px;max-width:140px;" required>
-                                        <button type="submit" class="btn btn-sm btn-primary py-1 px-2 fw-semibold" style="font-size:0.7rem; border-radius: 6px;">
-                                            <i class="bi bi-check-circle-fill me-1"></i>Approve
+                                    {# --- STEP 1 DONE --- #}
+                                    <span class="badge bg-info text-dark d-block mb-1" style="font-size:0.6rem;">
+                                        <i class="bi bi-check-circle-fill me-1"></i>Approved
+                                    </span>
+
+                                    {% if not e.offer_letter_sent %}
+                                    {# --- STEP 2: Send Offer Letter --- #}
+                                    <form method="POST" action="{% url 'trh_admin_send_offer_letter' e.id %}"
+                                          class="mt-1"
+                                          onsubmit="return confirm('Send Offer Letter to {{ e.name }}?')">
+                                        {% csrf_token %}
+                                        <button type="submit"
+                                                class="btn btn-sm btn-warning py-1 px-2 fw-semibold w-100"
+                                                style="font-size:0.7rem;border-radius:6px;">
+                                            <i class="bi bi-envelope-paper-fill me-1"></i>Send Offer Letter
                                         </button>
-                                    </div>
-                                </form>
+                                    </form>
+
+                                    {% elif not e.credentials_sent %}
+                                    {# --- STEP 3: Send Credentials (only after offer letter) --- #}
+                                    <span class="badge bg-success-subtle text-success d-block mb-1" style="font-size:0.6rem;">
+                                        <i class="bi bi-envelope-check-fill me-1"></i>Offer Letter Sent
+                                    </span>
+                                    <form method="POST" action="{% url 'trh_admin_send_credentials' e.id %}"
+                                          class="mt-1"
+                                          onsubmit="return confirm('Send Login Credentials to {{ e.name }}?')">
+                                        {% csrf_token %}
+                                        <button type="submit"
+                                                class="btn btn-sm btn-success py-1 px-2 fw-semibold w-100"
+                                                style="font-size:0.7rem;border-radius:6px;">
+                                            <i class="bi bi-key-fill me-1"></i>Send Credentials
+                                        </button>
+                                    </form>
+
+                                    {% else %}
+                                    {# --- STEP 4: ALL DONE --- #}
+                                    <span class="badge bg-success-subtle text-success d-block" style="font-size:0.6rem;">
+                                        <i class="bi bi-envelope-check-fill me-1"></i>Offer Letter Sent
+                                    </span>
+                                    <span class="badge bg-primary-subtle text-primary d-block mt-1" style="font-size:0.6rem;">
+                                        <i class="bi bi-key-fill me-1"></i>Credentials Sent
+                                    </span>
+                                    {% endif %}
+
                                 {% else %}
-                                <span class="text-muted small" style="font-size:0.7rem;">Awaiting Payment</span>
-                                {% endif %}
+                                    {% if e.is_paid %}
+                                    {# --- STEP 1: Approve --- #}
+                                    <form method="POST" action="{% url 'trh_admin_approve_enrollment' e.id %}"
+                                          class="d-inline"
+                                          onsubmit="return confirm('Approve enrollment for {{ e.name }}?')">
+                                        {% csrf_token %}
+                                        <div class="d-flex flex-column gap-1">
+                                            <label class="text-muted" style="font-size:0.6rem;font-weight:600;">Start Date</label>
+                                            <input type="date" name="start_date" class="form-control form-control-sm"
+                                                   style="font-size:0.7rem;border-radius:6px;max-width:140px;" required>
+                                            <button type="submit"
+                                                    class="btn btn-sm btn-primary py-1 px-2 fw-semibold"
+                                                    style="font-size:0.7rem;border-radius:6px;">
+                                                <i class="bi bi-check-circle-fill me-1"></i>Approve
+                                            </button>
+                                        </div>
+                                    </form>
+                                    {% else %}
+                                    <span class="text-muted small" style="font-size:0.7rem;">Awaiting Payment</span>
+                                    {% endif %}
                                 {% endif %}
                             </td>
                             <td class="text-muted">{{ e.created_at|date:"M d, Y" }}</td>

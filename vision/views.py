@@ -8,7 +8,51 @@ from .models import Task, Profile # Import Profile from models
 import base64
 
 def index(request):
-    return render(request, "vision/index.html")
+    from .models import Review
+    reviews = Review.objects.filter(is_approved=True).order_by('-created_at')
+    return render(request, "vision/index.html", {'reviews': reviews})
+
+
+def submit_review(request):
+    """Public endpoint: anyone can submit a review; it awaits admin approval."""
+    from .models import Review
+    if request.method == 'POST':
+        name    = request.POST.get('name', '').strip()
+        role    = request.POST.get('role', '').strip()
+        message = request.POST.get('message', '').strip()
+        rating  = request.POST.get('rating', '5').strip()
+
+        errors = []
+        if not name:
+            errors.append('Name is required.')
+        if not message:
+            errors.append('Review message is required.')
+        try:
+            rating = int(rating)
+            if rating < 1 or rating > 5:
+                raise ValueError
+        except ValueError:
+            errors.append('Rating must be between 1 and 5.')
+            rating = 5
+
+        if not errors:
+            Review.objects.create(
+                name=name,
+                role=role,
+                message=message,
+                rating=rating,
+                is_approved=False,
+            )
+            messages.success(
+                request,
+                "Thank you for your review! It will appear on the homepage after approval."
+            )
+        else:
+            for e in errors:
+                messages.error(request, e)
+
+    return redirect('index')
+
 
 def about(request):
     return render(request,"vision/about.html")
@@ -725,11 +769,15 @@ except ImportError:
 
 
 def _generate_unid(enrollment):
-    """Generate a consistent Unique ID from an Enrollment record.
-    Format: TRH-{domain_prefix}-{YYMM}-{zero_padded_id}
-    Example: TRH-DA-2606-001
+    """Generate a strictly sequential Unique ID from an Enrollment record.
+    Format: TRH-{domain_prefix}-{YYMM}-{sequential_number}
+    Sequence resets per domain per month.
+    Example: TRH-DA-2607-001, TRH-DA-2607-002, TRH-AI-2607-001
     """
     from django.utils import timezone as tz
+    from .models import Profile
+    import re
+
     DOMAIN_PREFIX_MAP = {
         'Artificial Intelligence': 'AI',
         'Machine Learning': 'ML',
@@ -745,7 +793,25 @@ def _generate_unid(enrollment):
         if hasattr(enrollment, 'created_at') and enrollment.created_at
         else tz.now().strftime('%y%m')
     )
-    return f"TRH-{domain_prefix}-{date_part}-{enrollment.id:03d}"
+    prefix_pattern = f"TRH-{domain_prefix}-{date_part}-"
+
+    # Find the highest existing sequential number for this domain+month
+    existing_ids = Profile.objects.filter(
+        student_id__startswith=prefix_pattern
+    ).values_list('student_id', flat=True)
+
+    max_seq = 0
+    for sid in existing_ids:
+        try:
+            seq_part = sid.replace(prefix_pattern, '')
+            num = int(seq_part)
+            if num > max_seq:
+                max_seq = num
+        except (ValueError, AttributeError):
+            pass
+
+    next_seq = max_seq + 1
+    return f"TRH-{domain_prefix}-{date_part}-{next_seq:03d}"
 
 
 def _load_font(path, size):
@@ -2254,7 +2320,7 @@ def trh_admin_contacts(request):
 @staff_required
 def trh_admin_approve_enrollment(request, enrollment_id):
     """Admin view to approve a student's enrollment and generate their credentials."""
-    from .models import Enrollment
+    from .models import Enrollment, Profile
     import random
     from django.utils import timezone
     from datetime import datetime
@@ -2281,7 +2347,6 @@ def trh_admin_approve_enrollment(request, enrollment_id):
             messages.error(request, "Invalid start date format. Please use the date picker.")
             return redirect('trh_admin_enrollments')
     else:
-        # Default to today if no date provided
         enrollment.start_date = timezone.now().date()
 
     # Generate a user-friendly, secure password based on student's name
@@ -2295,13 +2360,255 @@ def trh_admin_approve_enrollment(request, enrollment_id):
     enrollment.generated_password = temp_password
     enrollment.save()
 
+    # --- Immediately create User + Profile with sequential student ID ---
+    username = enrollment.email.strip()
+    user = User.objects.filter(username=username).first()
+    if not user:
+        name_parts = enrollment.name.strip().split()
+        user = User.objects.create_user(
+            username=username,
+            email=username,
+            password=temp_password,
+            first_name=name_parts[0] if name_parts else "",
+            last_name=" ".join(name_parts[1:]) if len(name_parts) > 1 else ""
+        )
+
+        # Map domains to match Profile model choices
+        domain_mapping = {
+            'Web Development': 'Web development',
+            'Webdevlopment': 'Web development',
+            'ML': 'Machine Learning',
+            'Artificial Intelligence': 'Artificial Intelligence',
+            'data science': 'Data Science',
+        }
+        normalized_domain = domain_mapping.get(enrollment.domain, enrollment.domain)
+
+        # Generate sequential student ID
+        unid = _generate_unid(enrollment)
+
+        Profile.objects.create(
+            user=user,
+            Intren=normalized_domain,
+            period=enrollment.duration,
+            student_id=unid
+        )
+
     messages.success(
         request,
-        f"Enrollment for {enrollment.name} approved successfully! "
-        f"Internship starts on {enrollment.start_date.strftime('%B %d, %Y')}. "
-        f"Login credentials and offer letter will be emailed automatically after 4 hours of their enrollment time."
+        f"✅ Enrollment for {enrollment.name} approved! "
+        f"Student ID generated. "
+        f"Now you can send the Offer Letter, and then dispatch Login Credentials."
     )
     return redirect('trh_admin_enrollments')
+
+
+# ──────────────────────────────────────────────────────────────────
+#  STEP 1: Admin sends Offer Letter email (one-click)
+# ──────────────────────────────────────────────────────────────────
+@staff_required
+def trh_admin_send_offer_letter(request, enrollment_id):
+    """Admin one-click view: generate and email the offer letter to the student."""
+    from .models import Enrollment, EmailTemplate
+    from django.core.mail import EmailMessage
+    from django.conf import settings as django_settings
+
+    if request.method != 'POST':
+        messages.error(request, "Invalid request method.")
+        return redirect('trh_admin_enrollments')
+
+    enrollment = get_object_or_404(Enrollment, id=enrollment_id)
+
+    if not enrollment.is_approved:
+        messages.error(request, "Cannot send offer letter for an unapproved enrollment.")
+        return redirect('trh_admin_enrollments')
+
+    if enrollment.offer_letter_sent:
+        messages.warning(request, f"Offer letter was already sent to {enrollment.name}.")
+        return redirect('trh_admin_enrollments')
+
+    # Generate the offer letter PDF
+    pdf_bytes = _build_offer_letter_pdf(enrollment)
+
+    try:
+        from_email = getattr(django_settings, 'EMAIL_HOST_USER', None) or \
+                     getattr(django_settings, 'DEFAULT_FROM_EMAIL', 'noreply@trhvision.in')
+
+        # Build template context
+        start_date_str = (
+            enrollment.start_date.strftime('%B %d, %Y')
+            if enrollment.start_date else 'your confirmed start date'
+        )
+        template_ctx = {
+            'name':       enrollment.name,
+            'domain':     enrollment.domain,
+            'duration':   enrollment.duration,
+            'start_date': start_date_str,
+            'email':      enrollment.email,
+        }
+
+        # Load subject/body from DB (with safe fallback)
+        tpl = EmailTemplate.objects.filter(name='offer_letter').first()
+        if tpl:
+            email_subject, email_body = tpl.get_rendered(template_ctx)
+        else:
+            # Hardcoded fallback in case migration has not run yet
+            email_subject = (
+                f"\U0001f389 Internship Offer Letter \u2013 {enrollment.domain} | TRHvision Academy"
+            )
+            email_body = (
+                f"Dear {enrollment.name},\n\n"
+                "Greetings from TRHvision Academy! \U0001f389\n\n"
+                f"We are delighted to officially welcome you to our internship programme. "
+                f"Your enrollment in the {enrollment.domain} internship programme for a duration of "
+                f"{enrollment.duration} has been reviewed and approved by our academic team.\n\n"
+                "Please find your official Internship Offer Letter attached to this email.\n\n"
+                f"Your internship journey begins on {start_date_str}. "
+                "We will soon send you your portal login credentials.\n\n"
+                "With warm regards,\nTRHvision Academy Team\n"
+                "\U0001f4e7 info@trhvision.in | \U0001f310 www.trhvision.in"
+            )
+
+        email_message = EmailMessage(
+            subject=email_subject,
+            body=email_body,
+            from_email=from_email,
+            to=[enrollment.email],
+        )
+
+        if pdf_bytes:
+            email_message.attach(
+                f"Offer_Letter_{enrollment.name.replace(' ', '_')}.pdf",
+                pdf_bytes,
+                "application/pdf"
+            )
+
+        email_message.send(fail_silently=False)
+
+        enrollment.offer_letter_sent = True
+        enrollment.save()
+
+        messages.success(
+            request,
+            f"\U0001f4e9 Offer letter successfully sent to {enrollment.name} ({enrollment.email}). "
+            f"You may now send the login credentials."
+        )
+
+    except Exception as e:
+        messages.error(request, f"Failed to send offer letter: {e}")
+
+    return redirect('trh_admin_enrollments')
+
+
+
+# ──────────────────────────────────────────────────────────────────
+#  STEP 2: Admin sends Login Credentials email (one-click)
+#  Only available after offer letter has been sent.
+# ──────────────────────────────────────────────────────────────────
+@staff_required
+def trh_admin_send_credentials(request, enrollment_id):
+    """Admin one-click view: email login credentials to the student.
+    Only allowed after the offer letter has been sent."""
+    from .models import Enrollment, EmailTemplate
+    from django.core.mail import EmailMessage
+    from django.conf import settings as django_settings
+
+    if request.method != 'POST':
+        messages.error(request, "Invalid request method.")
+        return redirect('trh_admin_enrollments')
+
+    enrollment = get_object_or_404(Enrollment, id=enrollment_id)
+
+    if not enrollment.is_approved:
+        messages.error(request, "Cannot send credentials for an unapproved enrollment.")
+        return redirect('trh_admin_enrollments')
+
+    if not enrollment.offer_letter_sent:
+        messages.error(
+            request,
+            "\u26a0\ufe0f Please send the Offer Letter first before dispatching credentials."
+        )
+        return redirect('trh_admin_enrollments')
+
+    if enrollment.credentials_sent:
+        messages.warning(request, f"Credentials were already sent to {enrollment.name}.")
+        return redirect('trh_admin_enrollments')
+
+    # Fetch student profile to get the student ID
+    try:
+        profile = User.objects.get(email=enrollment.email).profile
+        student_id = profile.student_id
+    except Exception:
+        student_id = _generate_unid(enrollment)
+
+    try:
+        from_email = getattr(django_settings, 'EMAIL_HOST_USER', None) or \
+                     getattr(django_settings, 'DEFAULT_FROM_EMAIL', 'noreply@trhvision.in')
+
+        # Build template context
+        template_ctx = {
+            'name':       enrollment.name,
+            'domain':     enrollment.domain,
+            'duration':   enrollment.duration,
+            'email':      enrollment.email,
+            'student_id': student_id,
+            'password':   enrollment.generated_password or '(see welcome email)',
+            'portal_url': 'http://trhvision.com/sigin/',
+        }
+
+        # Load subject/body from DB (with safe fallback)
+        tpl = EmailTemplate.objects.filter(name='login_credentials').first()
+        if tpl:
+            email_subject, email_body = tpl.get_rendered(template_ctx)
+        else:
+            # Hardcoded fallback in case migration has not run yet
+            email_subject = (
+                f"\U0001f511 Your TRHvision Academy Login Credentials"
+                f" \u2013 {enrollment.domain} Internship"
+            )
+            email_body = (
+                f"Dear {enrollment.name},\n\n"
+                "We hope you have received your Offer Letter and are excited to begin "
+                "your internship at TRHvision Academy!\n\n"
+                "Your student account on the TRHvision Academy Portal is now active.\n\n"
+                "\u2501" * 28 + "\n"
+                "\U0001f393 Your Login Credentials\n"
+                "\u2501" * 28 + "\n"
+                f"  Portal URL : http://trhvision.com/sigin/\n"
+                f"  Student ID : {student_id}\n"
+                f"  Username   : {enrollment.email}\n"
+                f"  Password   : {enrollment.generated_password}\n"
+                "\u2501" * 28 + "\n\n"
+                "\U0001f4cc Important Notes:\n"
+                "  \u2022 Please log in immediately and change your password for security.\n"
+                "  \u2022 Complete your profile setup once you log in.\n"
+                "  \u2022 Follow the module guidelines sequentially for best results.\n\n"
+                "Warm regards,\nTRHvision Academy Team\n"
+                "\U0001f4e7 info@trhvision.in | \U0001f310 www.trhvision.in"
+            )
+
+        email_message = EmailMessage(
+            subject=email_subject,
+            body=email_body,
+            from_email=from_email,
+            to=[enrollment.email],
+        )
+        email_message.send(fail_silently=False)
+
+        enrollment.credentials_sent = True
+        enrollment.save()
+
+        messages.success(
+            request,
+            f"\U0001f511 Login credentials successfully sent to {enrollment.name} ({enrollment.email}). "
+            f"Onboarding complete!"
+        )
+
+    except Exception as e:
+        messages.error(request, f"Failed to send credentials: {e}")
+
+    return redirect('trh_admin_enrollments')
+
+
 
 
 def process_approved_enrollments():

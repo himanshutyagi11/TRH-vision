@@ -14,7 +14,9 @@ from .models import (
     DailyChallengeTask, DailyCheckIn, UserStreak,
     ChallengeTrack, UserChallengeEnrollment, DailyTrackCheckIn, MilestoneAchievement,
     ClientProfile, ClientProject, ClientProjectMilestone,
-    ClientProjectDeliverable, ClientProjectUpdate, ClientInvoice
+    ClientProjectDeliverable, ClientProjectUpdate, ClientInvoice,
+    EmailTemplate, OFFER_LETTER_PLACEHOLDERS, CREDENTIALS_PLACEHOLDERS,
+    Review,
 )
 
 # ===========================================================
@@ -677,3 +679,68 @@ class ClientInvoiceAdmin(admin.ModelAdmin):
     list_filter = ('status',)
     search_fields = ('invoice_number', 'project__title', 'project__client__company_name')
     list_editable = ('status',)
+
+
+# ===========================================================
+# Email Template Admin
+# Only admin-staff can edit; templates cannot be deleted.
+# ===========================================================
+@admin.register(EmailTemplate)
+class EmailTemplateAdmin(admin.ModelAdmin):
+    list_display  = ('label', 'name', 'short_subject', 'updated_at')
+    readonly_fields = ('name', 'updated_at', 'placeholder_reference')
+    fields = ('name', 'label', 'subject', 'placeholder_reference', 'body', 'updated_at')
+
+    def short_subject(self, obj):
+        return obj.subject[:80] + '…' if len(obj.subject) > 80 else obj.subject
+    short_subject.short_description = 'Subject'
+
+    def placeholder_reference(self, obj):
+        """Shows the available {placeholder} variables directly in the change form."""
+        if obj.name == 'offer_letter':
+            ref = OFFER_LETTER_PLACEHOLDERS
+        else:
+            ref = CREDENTIALS_PLACEHOLDERS
+        return format_html(
+            '<div style="background:#f8f9fa;border:1px solid #dee2e6;border-radius:6px;'
+            'padding:12px 16px;font-family:monospace;white-space:pre-wrap;'
+            'font-size:0.85em;color:#212529;">{}\n</div>',
+            ref
+        )
+    placeholder_reference.short_description = '📋 Available Placeholders'
+
+    # Prevent admins from accidentally deleting the seeded templates
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+    # Prevent adding new templates beyond the two seeded ones
+    def has_add_permission(self, request):
+        return EmailTemplate.objects.count() < len(EmailTemplate.TEMPLATE_CHOICES)
+
+
+# ===========================================================
+# Review Admin — approve/reject public reviews from admin
+# ===========================================================
+@admin.register(Review)
+class ReviewAdmin(admin.ModelAdmin):
+    list_display  = ('name', 'role', 'star_display', 'is_approved', 'created_at', 'short_message')
+    list_filter   = ('is_approved', 'rating')
+    search_fields = ('name', 'role', 'message')
+    list_editable = ('is_approved',)
+    readonly_fields = ('created_at',)
+    ordering = ('-created_at',)
+
+    def star_display(self, obj):
+        filled = '★' * obj.rating
+        empty  = '☆' * (5 - obj.rating)
+        return format_html(
+            '<span style="color:#f59e0b;font-size:1.1em;">{}</span>'
+            '<span style="color:#d1d5db;">{}</span>',
+            filled, empty
+        )
+    star_display.short_description = 'Rating'
+
+    def short_message(self, obj):
+        return obj.message[:60] + '…' if len(obj.message) > 60 else obj.message
+    short_message.short_description = 'Message'
+
