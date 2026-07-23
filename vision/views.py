@@ -2473,6 +2473,7 @@ def trh_admin_send_offer_letter(request, enrollment_id):
             body=email_body,
             from_email=from_email,
             to=[enrollment.email],
+            cc=['rachit.tyagi@trhvision.in'],
         )
 
         if pdf_bytes:
@@ -2533,12 +2534,73 @@ def trh_admin_send_credentials(request, enrollment_id):
         messages.warning(request, f"Credentials were already sent to {enrollment.name}.")
         return redirect('trh_admin_enrollments')
 
-    # Fetch student profile to get the student ID
-    try:
-        profile = User.objects.get(email=enrollment.email).profile
-        student_id = profile.student_id
-    except Exception:
+    # Ensure generated_password exists on enrollment
+    if not enrollment.generated_password:
+        first_name = enrollment.name.strip().split()[0] if enrollment.name.strip() else "Student"
+        cleaned_name = ''.join(c for c in first_name if c.isalnum())
+        import random
+        rand_num = random.randint(100, 999)
+        enrollment.generated_password = f"TRH@{cleaned_name.capitalize()}{rand_num}"
+        enrollment.save()
+
+    # Ensure Django User exists and has correct password
+    username = enrollment.email.strip()
+    user = User.objects.filter(username=username).first()
+    if user:
+        # Sync password to match the one sent in the email
+        user.set_password(enrollment.generated_password)
+        user.save()
+        
+        # Ensure Profile exists and has a valid, corrected student_id
+        try:
+            profile = user.profile
+            if not profile.student_id or profile.student_id == enrollment.name or ' ' in profile.student_id or not profile.student_id.startswith('TRH'):
+                profile.student_id = _generate_unid(enrollment)
+                profile.save()
+            student_id = profile.student_id
+        except Exception:
+            from .models import Profile
+            domain_mapping = {
+                'Web Development': 'Web development',
+                'Webdevlopment': 'Web development',
+                'ML': 'Machine Learning',
+                'Artificial Intelligence': 'Artificial Intelligence',
+                'data science': 'Data Science',
+            }
+            normalized_domain = domain_mapping.get(enrollment.domain, enrollment.domain)
+            student_id = _generate_unid(enrollment)
+            profile = Profile.objects.create(
+                user=user,
+                Intren=normalized_domain,
+                period=enrollment.duration,
+                student_id=student_id
+            )
+    else:
+        # Create user
+        name_parts = enrollment.name.strip().split()
+        user = User.objects.create_user(
+            username=username,
+            email=username,
+            password=enrollment.generated_password,
+            first_name=name_parts[0] if name_parts else "",
+            last_name=" ".join(name_parts[1:]) if len(name_parts) > 1 else ""
+        )
+        from .models import Profile
+        domain_mapping = {
+            'Web Development': 'Web development',
+            'Webdevlopment': 'Web development',
+            'ML': 'Machine Learning',
+            'Artificial Intelligence': 'Artificial Intelligence',
+            'data science': 'Data Science',
+        }
+        normalized_domain = domain_mapping.get(enrollment.domain, enrollment.domain)
         student_id = _generate_unid(enrollment)
+        profile = Profile.objects.create(
+            user=user,
+            Intren=normalized_domain,
+            period=enrollment.duration,
+            student_id=student_id
+        )
 
     try:
         from_email = getattr(django_settings, 'EMAIL_HOST_USER', None) or \
@@ -2551,7 +2613,7 @@ def trh_admin_send_credentials(request, enrollment_id):
             'duration':   enrollment.duration,
             'email':      enrollment.email,
             'student_id': student_id,
-            'password':   enrollment.generated_password or '(see welcome email)',
+            'password':   enrollment.generated_password,
             'portal_url': 'http://trhvision.com/sigin/',
         }
 
@@ -2591,6 +2653,7 @@ def trh_admin_send_credentials(request, enrollment_id):
             body=email_body,
             from_email=from_email,
             to=[enrollment.email],
+            cc=['rachit.tyagi@trhvision.in'],
         )
         email_message.send(fail_silently=False)
 
