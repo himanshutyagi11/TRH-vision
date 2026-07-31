@@ -87,6 +87,132 @@
             font-size:1.25rem; flex-shrink:0;
         }
 
+        /* ── Why Choose Us Premium ────────────────────────── */
+        .why-choose-section {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0c1a2e 100%);
+            position: relative; overflow: hidden;
+        }
+        .why-choose-section::before {
+            content: ''; position: absolute; inset: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%230ea5e9' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+        .why-card-premium {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 20px;
+            padding: 2rem 1.6rem;
+            transition: all 0.4s ease;
+            position: relative; overflow: hidden;
+        }
+        .why-card-premium::before {
+            content: ''; position: absolute;
+            top: 0; left: 0; right: 0; height: 3px;
+            background: linear-gradient(90deg, #0ea5e9, #8b5cf6, #f97316);
+            opacity: 0; transition: opacity 0.3s;
+        }
+        .why-card-premium:hover { background: rgba(255,255,255,0.08); transform: translateY(-8px); border-color: rgba(14,165,233,0.3); }
+        .why-card-premium:hover::before { opacity: 1; }
+        .why-icon-lg {
+            width: 64px; height: 64px; border-radius: 18px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.7rem; margin-bottom: 1.2rem;
+        }
+        .glow-badge {
+            display: inline-block; padding: 4px 12px;
+            border-radius: 50px; font-size: .65rem; font-weight: 800;
+            letter-spacing: 1.5px; text-transform: uppercase;
+            margin-bottom: .6rem;
+        }
+
+        /* ── Future Vision / AI Section ──────────────────── */
+        .ai-vision-section {
+            background: #fff;
+            position: relative; overflow: hidden;
+        }
+        .ai-card {
+            border-radius: 22px; padding: 2.2rem;
+            position: relative; overflow: hidden;
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+            height: 100%;
+        }
+        .ai-card:hover { transform: translateY(-10px); box-shadow: 0 30px 60px rgba(0,0,0,0.15); }
+        .ai-card-ai { background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%); color: #fff; }
+        .ai-card-agents { background: linear-gradient(135deg, #064e3b 0%, #065f46 100%); color: #fff; }
+        .ai-card-data { background: linear-gradient(135deg, #1e3a5f 0%, #1e40af 100%); color: #fff; }
+        .ai-card-ml { background: linear-gradient(135deg, #4a1942 0%, #7c3aed 100%); color: #fff; }
+        .ai-icon-circle {
+            width: 56px; height: 56px; border-radius: 16px;
+            background: rgba(255,255,255,0.15);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem; margin-bottom: 1rem;
+        }
+        .ai-tag {
+            display: inline-block; padding: 3px 10px;
+            border-radius: 50px; font-size: .6rem; font-weight: 800;
+            letter-spacing: 1px; text-transform: uppercase;
+            background: rgba(255,255,255,0.15); color: rgba(255,255,255,0.9);
+            margin-bottom: .7rem;
+        }
+        .ai-feature-list { list-style: none; padding: 0; margin: 0; }
+        .ai-feature-list li {
+            display: flex; align-items: center; gap: .6rem;
+            color: rgba(255,255,255,0.8); font-size: .85rem;
+            margin-bottom: .5rem;
+        }
+        .ai-feature-list li::before {
+            content: '→'; color: rgba(255,255,255,0.5); font-weight: 700;
+        }
+        .future-badge {
+            display: inline-flex; align-items: center; gap: .5rem;
+            background: linear-gradient(135deg, rgba(139,92,246,0.1), rgba(14,165,233,0.1));
+            border: 1px solid rgba(139,92,246,0.3);
+            border-radius: 50px; padding: 6px 16px;
+            font-size: .75rem; font-weight: 700; color: #8b5cf6;
+            margin-bottom: 1rem;
+        }
+
+        /* ── Industries We Serve ─────────────────────────── */
+        .industry-chip {
+            display: flex; align-items: center; gap: .7rem;
+            padding: .9rem 1.3rem; background: #fff;
+            border: 1px solid #e8ecf0; border-radius: 14px;
+            font-weight: 600; font-size: .9rem;
+            transition: all 0.3s ease; cursor: default;
+        }
+        .industry-chip:hover {
+            border-color: #0ea5e9; background: rgba(14,165,233,0.05);
+            transform: scale(1.04);
+        }
+        .industry-chip-icon {
+            width: 40px; height: 40px; border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.1rem; flex-shrink: 0;
+        }
+
+        /* ── Animated Stats Strip ────────────────────────── */
+        .stats-strip {
+            background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 50%, #0369a1 100%);
+            position: relative; overflow: hidden;
+        }
+        .stats-strip::before {
+            content: ''; position: absolute; inset: 0;
+            background: radial-gradient(ellipse at 20% 50%, rgba(255,255,255,0.1) 0%, transparent 60%),
+                        radial-gradient(ellipse at 80% 50%, rgba(255,255,255,0.07) 0%, transparent 60%);
+        }
+        .stat-pill {
+            text-align: center; padding: 2rem 1rem;
+            border-right: 1px solid rgba(255,255,255,0.15);
+        }
+        .stat-pill:last-child { border-right: none; }
+        .stat-pill-num {
+            font-size: 2.8rem; font-weight: 900; color: #fff; line-height: 1;
+            font-family: 'Inter', sans-serif;
+        }
+        .stat-pill-label {
+            font-size: .75rem; font-weight: 700; color: rgba(255,255,255,0.7);
+            letter-spacing: 1.5px; text-transform: uppercase; margin-top: .4rem;
+        }
+
         /* ── Tech stack ───────────────────────────────────── */
         .tech-stack-icon { font-size:2.5rem; opacity:.6; transition:.3s; }
         .tech-stack-icon:hover { opacity:1; transform:scale(1.1); }
@@ -303,9 +429,13 @@
         <span class="ticker-item"><i class="bi bi-code-slash text-orange"></i> Web Development</span>
         <span class="ticker-item"><i class="bi bi-graph-up-arrow text-info"></i> Data Analytics</span>
         <span class="ticker-item"><i class="bi bi-laptop text-warning"></i> Custom Dashboards</span>
+        <span class="ticker-item"><i class="bi bi-cpu-fill" style="color:#a78bfa;"></i> AI & Agentic AI</span>
         <span class="ticker-item"><i class="bi bi-server text-success"></i> Backend APIs</span>
+        <span class="ticker-item"><i class="bi bi-robot" style="color:#34d399;"></i> AI Agents</span>
+        <span class="ticker-item"><i class="bi bi-bar-chart-line-fill text-info"></i> Data Science</span>
         <span class="ticker-item"><i class="bi bi-shield-check text-primary"></i> 85% Client Retention</span>
         <span class="ticker-item"><i class="bi bi-buildings text-white"></i> 15+ Projects Delivered</span>
+        <span class="ticker-item"><i class="bi bi-lightbulb-fill text-warning"></i> Machine Learning</span>
         {% endfor %}
     </div>
 </div>
@@ -478,52 +608,213 @@
 </section>
 
 <!-- ══════════════════════════════════════════════
-     WHY CHOOSE US
+     WHY CHOOSE US — PREMIUM DARK
      ══════════════════════════════════════════════ -->
-<section class="py-5 bg-white" id="why-us">
-    <div class="container py-5">
-        <div class="row align-items-center g-5">
-            <div class="col-lg-5" data-aos="fade-right">
-                <h6 class="text-orange fw-bold ls-1">WHY TRHVISION</h6>
-                <h2 class="fw-800 display-5 mb-4">Built Different.<br>Proven Results.</h2>
-                <p class="text-muted mb-4">We combine enterprise-grade digital solutions with modern technology expertise. Everything we build is measurable, scalable, and built to last — with 24/7 support.</p>
-                <a href="{% url 'about' %}" class="btn btn-dark rounded-pill px-5">Learn More <i class="bi bi-arrow-right ms-2"></i></a>
-            </div>
-            <div class="col-lg-7" data-aos="fade-left">
-                <div class="d-flex flex-column gap-3">
-                    <div class="why-item">
-                        <div class="why-icon" style="background:#f0fdf4;"><i class="bi bi-shield-check text-success fs-4"></i></div>
-                        <div>
-                            <h6 class="fw-bold mb-1">Reliable & Secure Delivery</h6>
-                            <p class="text-muted small mb-0">Every project is delivered with clean code, security best practices, and thorough QA testing.</p>
-                        </div>
-                    </div>
-                    <div class="why-item">
-                        <div class="why-icon" style="background:#fff7ed;"><i class="bi bi-graph-up-arrow text-orange fs-4"></i></div>
-                        <div>
-                            <h6 class="fw-bold mb-1">Data-Driven Solutions</h6>
-                            <p class="text-muted small mb-0">We turn complex data into clear, actionable insights that drive business decisions.</p>
-                        </div>
-                    </div>
-                    <div class="why-item">
-                        <div class="why-icon" style="background:#eff6ff;"><i class="bi bi-lightning-charge-fill text-primary fs-4"></i></div>
-                        <div>
-                            <h6 class="fw-bold mb-1">Fast Turnaround, 24/7 Support</h6>
-                            <p class="text-muted small mb-0">We meet deadlines and provide round-the-clock global support for all our clients.</p>
-                        </div>
-                    </div>
-                    <div class="why-item">
-                        <div class="why-icon" style="background:#fdf4ff;"><i class="bi bi-people-fill fs-4" style="color:#8b5cf6;"></i></div>
-                        <div>
-                            <h6 class="fw-bold mb-1">Dedicated Expert Team</h6>
-                            <p class="text-muted small mb-0">Work directly with senior developers and data specialists on every engagement.</p>
-                        </div>
-                    </div>
+<section class="py-5 why-choose-section" id="why-us">
+    <div class="container py-5 position-relative" style="z-index:1;">
+        <div class="text-center mb-5" data-aos="fade-up">
+            <span class="glow-badge" style="background:rgba(14,165,233,0.12);color:#38bdf8;border:1px solid rgba(14,165,233,0.25);">✦ WHY TRHVISION</span>
+            <h2 class="fw-800 display-4 text-white mt-2 mb-3">Why <span style="background:linear-gradient(90deg,#0ea5e9,#8b5cf6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Choose Us</span>?</h2>
+            <p class="text-white-50 mx-auto" style="max-width:580px;font-size:1.05rem;">We don't just build products — we craft experiences powered by cutting-edge technology, human expertise, and a relentless commitment to results.</p>
+        </div>
+
+        <div class="row g-4 mb-5">
+            <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="0">
+                <div class="why-card-premium">
+                    <div class="why-icon-lg" style="background:rgba(14,165,233,0.15);"><i class="bi bi-shield-fill-check" style="color:#38bdf8;"></i></div>
+                    <span class="glow-badge" style="background:rgba(14,165,233,0.1);color:#38bdf8;border:1px solid rgba(14,165,233,0.2);">RELIABILITY</span>
+                    <h5 class="fw-bold text-white mb-2">Enterprise-Grade Security</h5>
+                    <p class="text-white-50 small mb-0">Every project is delivered with battle-tested code, industry-standard security practices, and comprehensive QA. Your data is always safe.</p>
                 </div>
+            </div>
+            <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="100">
+                <div class="why-card-premium">
+                    <div class="why-icon-lg" style="background:rgba(249,115,22,0.15);"><i class="bi bi-graph-up-arrow" style="color:#fb923c;"></i></div>
+                    <span class="glow-badge" style="background:rgba(249,115,22,0.1);color:#fb923c;border:1px solid rgba(249,115,22,0.2);">DATA-FIRST</span>
+                    <h5 class="fw-bold text-white mb-2">Data-Driven Decisions</h5>
+                    <p class="text-white-50 small mb-0">We transform raw data into intelligent insights — from real-time dashboards to predictive analytics — helping you outpace competition.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="200">
+                <div class="why-card-premium">
+                    <div class="why-icon-lg" style="background:rgba(139,92,246,0.15);"><i class="bi bi-cpu-fill" style="color:#a78bfa;"></i></div>
+                    <span class="glow-badge" style="background:rgba(139,92,246,0.1);color:#a78bfa;border:1px solid rgba(139,92,246,0.2);">AI POWERED</span>
+                    <h5 class="fw-bold text-white mb-2">AI-First Engineering</h5>
+                    <p class="text-white-50 small mb-0">From agentic AI workflows to smart automation, we embed intelligence into every solution — future-proofing your business today.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="300">
+                <div class="why-card-premium">
+                    <div class="why-icon-lg" style="background:rgba(16,185,129,0.15);"><i class="bi bi-lightning-charge-fill" style="color:#34d399;"></i></div>
+                    <span class="glow-badge" style="background:rgba(16,185,129,0.1);color:#34d399;border:1px solid rgba(16,185,129,0.2);">SPEED</span>
+                    <h5 class="fw-bold text-white mb-2">Fast Delivery, Always</h5>
+                    <p class="text-white-50 small mb-0">Agile methodology, dedicated sprints, and a 24/7 support team ensure your projects are delivered on time — every single time.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="400">
+                <div class="why-card-premium">
+                    <div class="why-icon-lg" style="background:rgba(251,191,36,0.15);"><i class="bi bi-people-fill" style="color:#fbbf24;"></i></div>
+                    <span class="glow-badge" style="background:rgba(251,191,36,0.1);color:#fbbf24;border:1px solid rgba(251,191,36,0.2);">EXPERTISE</span>
+                    <h5 class="fw-bold text-white mb-2">Senior Expert Team</h5>
+                    <p class="text-white-50 small mb-0">You get direct access to experienced developers, data scientists, and AI engineers — not juniors. Real experts on your project.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="500">
+                <div class="why-card-premium">
+                    <div class="why-icon-lg" style="background:rgba(236,72,153,0.15);"><i class="bi bi-globe-americas" style="color:#f472b6;"></i></div>
+                    <span class="glow-badge" style="background:rgba(236,72,153,0.1);color:#f472b6;border:1px solid rgba(236,72,153,0.2);">GLOBAL</span>
+                    <h5 class="fw-bold text-white mb-2">Global Reach & Support</h5>
+                    <p class="text-white-50 small mb-0">Serving clients across India, USA, UK, and beyond. Timezone-flexible communication and 24/7 support wherever you are.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center" data-aos="fade-up">
+            <a href="{% url 'about' %}" class="btn btn-lg px-5 rounded-pill fw-bold" style="background:linear-gradient(90deg,#0ea5e9,#8b5cf6);color:#fff;box-shadow:0 8px 30px rgba(14,165,233,0.4);">Discover Our Story <i class="bi bi-arrow-right ms-2"></i></a>
+        </div>
+    </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     NUMBERS THAT SPEAK — ANIMATED STATS STRIP
+     ══════════════════════════════════════════════ -->
+<section class="stats-strip py-0" id="stats-strip">
+    <div class="container-fluid position-relative" style="z-index:1;">
+        <div class="row g-0">
+            <div class="col-6 col-md-3 stat-pill" data-aos="fade-up" data-aos-delay="0">
+                <div class="stat-pill-num"><span class="counter2" data-target="15">0</span>+</div>
+                <div class="stat-pill-label">Projects Delivered</div>
+            </div>
+            <div class="col-6 col-md-3 stat-pill" data-aos="fade-up" data-aos-delay="100">
+                <div class="stat-pill-num"><span class="counter2" data-target="250">0</span>+</div>
+                <div class="stat-pill-label">Students Trained</div>
+            </div>
+            <div class="col-6 col-md-3 stat-pill" data-aos="fade-up" data-aos-delay="200">
+                <div class="stat-pill-num"><span class="counter2" data-target="85">0</span>%</div>
+                <div class="stat-pill-label">Client Retention Rate</div>
+            </div>
+            <div class="col-6 col-md-3 stat-pill" data-aos="fade-up" data-aos-delay="300">
+                <div class="stat-pill-num">24<span style="font-size:1.8rem;">/7</span></div>
+                <div class="stat-pill-label">Global Support</div>
             </div>
         </div>
     </div>
 </section>
+
+<!-- ══════════════════════════════════════════════
+     FUTURE VISION — AI & TECHNOLOGY
+     ══════════════════════════════════════════════ -->
+<section class="py-5 ai-vision-section" id="ai-future">
+    <div class="container py-5">
+        <div class="text-center mb-5" data-aos="fade-up">
+            <span class="future-badge"><i class="bi bi-stars"></i> THE FUTURE WE'RE BUILDING</span>
+            <h2 class="fw-800 display-4 mb-3">Powered by <span style="background:linear-gradient(90deg,#7c3aed,#0ea5e9);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">AI & Intelligence</span></h2>
+            <p class="text-muted mx-auto" style="max-width:620px;font-size:1.05rem;">We're not just a software company — we're building the intelligent future. From autonomous AI agents to deep data science, we're already working on tomorrow's technology today.</p>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="0">
+                <div class="ai-card ai-card-ai">
+                    <div class="ai-icon-circle"><i class="bi bi-robot"></i></div>
+                    <span class="ai-tag">🚀 Coming Soon</span>
+                    <h5 class="fw-bold text-white mb-2">Agentic AI Systems</h5>
+                    <p style="color:rgba(255,255,255,0.7);font-size:.85rem;margin-bottom:1rem;">Autonomous AI agents that think, plan, and execute tasks independently — transforming how businesses operate at scale.</p>
+                    <ul class="ai-feature-list">
+                        <li>Multi-agent workflows</li>
+                        <li>Task automation pipelines</li>
+                        <li>Intelligent decision loops</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="100">
+                <div class="ai-card ai-card-agents">
+                    <div class="ai-icon-circle"><i class="bi bi-cpu-fill"></i></div>
+                    <span class="ai-tag">⚡ In Development</span>
+                    <h5 class="fw-bold text-white mb-2">Custom AI Agents</h5>
+                    <p style="color:rgba(255,255,255,0.7);font-size:.85rem;margin-bottom:1rem;">Tailored AI agents built for your business — from intelligent customer support to smart data processors and workflow assistants.</p>
+                    <ul class="ai-feature-list">
+                        <li>LLM-powered agents</li>
+                        <li>RAG-based knowledge systems</li>
+                        <li>Real-time API integration</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="200">
+                <div class="ai-card ai-card-data">
+                    <div class="ai-icon-circle"><i class="bi bi-bar-chart-line-fill"></i></div>
+                    <span class="ai-tag">📊 Active Service</span>
+                    <h5 class="fw-bold text-white mb-2">Data Science</h5>
+                    <p style="color:rgba(255,255,255,0.7);font-size:.85rem;margin-bottom:1rem;">Advanced statistical modeling, predictive analytics, and data engineering to turn your data into real competitive advantage.</p>
+                    <ul class="ai-feature-list">
+                        <li>Predictive modeling (ML)</li>
+                        <li>Data pipelines & ETL</li>
+                        <li>Statistical analysis</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="300">
+                <div class="ai-card ai-card-ml">
+                    <div class="ai-icon-circle"><i class="bi bi-lightning-charge-fill"></i></div>
+                    <span class="ai-tag">🔬 Research Phase</span>
+                    <h5 class="fw-bold text-white mb-2">Machine Learning</h5>
+                    <p style="color:rgba(255,255,255,0.7);font-size:.85rem;margin-bottom:1rem;">Custom ML models trained on your data — classification, forecasting, NLP, computer vision, and beyond.</p>
+                    <ul class="ai-feature-list">
+                        <li>Custom model training</li>
+                        <li>NLP & text processing</li>
+                        <li>Model deployment & MLOps</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-5 p-4 p-md-5 rounded-4 text-center" style="background:linear-gradient(135deg,rgba(124,58,237,0.08),rgba(14,165,233,0.08));border:1px solid rgba(124,58,237,0.2);" data-aos="fade-up">
+            <i class="bi bi-stars fs-2 mb-3" style="color:#8b5cf6;display:block;"></i>
+            <h4 class="fw-bold mb-2">We're Building the Intelligent Future — <span style="color:#0ea5e9;">Right Now</span></h4>
+            <p class="text-muted mb-4" style="max-width:600px;margin:0 auto 1.5rem;">Our R&amp;D team is actively working on AI agents, agentic workflows, and next-generation data science tools. Partner with us today and get early access to tomorrow's technology.</p>
+            <a href="{% url 'contact' %}" class="btn btn-lg rounded-pill px-5 fw-bold" style="background:linear-gradient(90deg,#7c3aed,#0ea5e9);color:#fff;box-shadow:0 8px 25px rgba(124,58,237,0.35);">Talk to Our AI Team <i class="bi bi-arrow-right ms-2"></i></a>
+        </div>
+    </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     INDUSTRIES WE SERVE
+     ══════════════════════════════════════════════ -->
+<section class="py-5 bg-light" id="industries">
+    <div class="container py-4">
+        <div class="text-center mb-5" data-aos="fade-up">
+            <h6 class="text-orange fw-bold ls-1">INDUSTRIES WE SERVE</h6>
+            <h2 class="fw-800 display-5">Built for Every Sector</h2>
+            <p class="text-muted mx-auto" style="max-width:520px;">Our solutions span across industries — delivering specialized digital intelligence and technology tailored to each domain's unique needs.</p>
+        </div>
+        <div class="row g-3">
+            <div class="col-6 col-md-4 col-lg-3" data-aos="fade-up" data-aos-delay="0">
+                <div class="industry-chip"><div class="industry-chip-icon" style="background:#fff0f0;">🏥</div><span>Healthcare</span></div>
+            </div>
+            <div class="col-6 col-md-4 col-lg-3" data-aos="fade-up" data-aos-delay="50">
+                <div class="industry-chip"><div class="industry-chip-icon" style="background:#f0f7ff;">🏦</div><span>FinTech &amp; Banking</span></div>
+            </div>
+            <div class="col-6 col-md-4 col-lg-3" data-aos="fade-up" data-aos-delay="100">
+                <div class="industry-chip"><div class="industry-chip-icon" style="background:#fff7f0;">🛒</div><span>E-Commerce</span></div>
+            </div>
+            <div class="col-6 col-md-4 col-lg-3" data-aos="fade-up" data-aos-delay="150">
+                <div class="industry-chip"><div class="industry-chip-icon" style="background:#f0fff4;">🎓</div><span>EdTech</span></div>
+            </div>
+            <div class="col-6 col-md-4 col-lg-3" data-aos="fade-up" data-aos-delay="200">
+                <div class="industry-chip"><div class="industry-chip-icon" style="background:#fdf0ff;">🏭</div><span>Manufacturing</span></div>
+            </div>
+            <div class="col-6 col-md-4 col-lg-3" data-aos="fade-up" data-aos-delay="250">
+                <div class="industry-chip"><div class="industry-chip-icon" style="background:#f0f0ff;">🚚</div><span>Logistics</span></div>
+            </div>
+            <div class="col-6 col-md-4 col-lg-3" data-aos="fade-up" data-aos-delay="300">
+                <div class="industry-chip"><div class="industry-chip-icon" style="background:#fffbf0;">🏢</div><span>Real Estate</span></div>
+            </div>
+            <div class="col-6 col-md-4 col-lg-3" data-aos="fade-up" data-aos-delay="350">
+                <div class="industry-chip"><div class="industry-chip-icon" style="background:#f0fff8;">🤖</div><span>AI Startups</span></div>
+            </div>
+        </div>
+    </div>
+</section>
+
 
 <!-- ══════════════════════════════════════════════
      TECH STACK
@@ -748,7 +1039,21 @@
 <script>
 AOS.init({ duration: 800, once: true });
 
-// Animated counters
+// Generic counter animation helper
+function animateCounter(el, target, duration) {
+    let start = 0, startTime = null;
+    function step(timestamp) {
+        if (!startTime) startTime = timestamp;
+        const progress = Math.min((timestamp - startTime) / duration, 1);
+        const ease = 1 - Math.pow(1 - progress, 3);
+        el.textContent = Math.floor(ease * target);
+        if (progress < 1) requestAnimationFrame(step);
+        else el.textContent = target;
+    }
+    requestAnimationFrame(step);
+}
+
+// Hero counters
 let counted = false;
 window.addEventListener('scroll', function() {
     const s = document.querySelector('.hero-split');
@@ -764,6 +1069,24 @@ window.addEventListener('scroll', function() {
         });
     }
 });
+
+// Stats strip counters
+let stripCounted = false;
+const statsStrip = document.getElementById('stats-strip');
+if (statsStrip) {
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting && !stripCounted) {
+                stripCounted = true;
+                document.querySelectorAll('.counter2').forEach(el => {
+                    const target = parseInt(el.getAttribute('data-target'));
+                    animateCounter(el, target, 1800);
+                });
+            }
+        });
+    }, { threshold: 0.3 });
+    observer.observe(statsStrip);
+}
 
 // Robot widget
 (function(){
