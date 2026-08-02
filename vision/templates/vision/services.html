@@ -537,7 +537,7 @@
 <footer class="bg-black text-white py-5 border-top border-secondary">
     <div class="container">
         <div class="row g-4">
-            <div class="col-lg-4 mb-4 mb-lg-0">
+            <div class="col-lg-3 mb-4 mb-lg-0">
                 <span class="brand-name fw-bold fs-3">TRHvision<span class="text-orange"></span></span>
                 <p class="text-white-50 mt-3">Empowering global enterprises with cutting-edge AI, data science, web development, and digital solutions.</p>
                 <div class="d-flex gap-3 mt-4">
@@ -562,18 +562,31 @@
                     <li class="mb-2"><a href="{% url 'career' %}" class="text-white-50 text-decoration-none hover-white">Careers</a></li>
                     <li class="mb-2"><a href="{% url 'contact' %}" class="text-white-50 text-decoration-none hover-white">Contact</a></li>
                 </ul>
+                <h6 class="text-orange fw-bold mb-3 mt-4">LEGAL</h6>
+                <ul class="list-unstyled text-white-50">
+                    <li class="mb-2"><a href="{% url 'terms' %}" class="text-white-50 text-decoration-none hover-white">Terms & Conditions</a></li>
+                    <li class="mb-2"><a href="{% url 'privacy' %}" class="text-white-50 text-decoration-none hover-white">Privacy Policy</a></li>
+                    <li class="mb-2"><a href="{% url 'refund_policy' %}" class="text-white-50 text-decoration-none hover-white">Refund Policy</a></li>
+                </ul>
             </div>
             <div class="col-lg-3">
                 <h6 class="text-orange fw-bold mb-4">CONTACT</h6>
                 <ul class="list-unstyled text-white-50">
-                    <li class="mb-2"><i class="bi bi-geo-alt me-2"></i>Global HQ, India</li>
-                    <li class="mb-2"><i class="bi bi-envelope me-2"></i>contact@trhvision.in</li>
+                    <li class="mb-2"><i class="bi bi-envelope me-2"></i>support@trhvision.com</li>
                     <li class="mb-2"><i class="bi bi-phone me-2"></i>+91 8816847227</li>
+                    <li class="mb-2"><i class="bi bi-geo-alt me-2"></i>[YOUR REGISTERED ADDRESS]</li>
                 </ul>
             </div>
         </div>
-        <hr class="border-secondary my-5">
-        <div class="text-center text-white-50"><small>© 2026 TRHvision. All Rights Reserved.</small></div>
+        <hr class="border-secondary my-4">
+        <div class="d-flex flex-wrap justify-content-between align-items-center text-white-50">
+            <small>© 2026 TRHvision. All Rights Reserved.</small>
+            <div class="d-flex gap-3">
+                <a href="{% url 'terms' %}" class="text-white-50 text-decoration-none small">Terms</a>
+                <a href="{% url 'privacy' %}" class="text-white-50 text-decoration-none small">Privacy</a>
+                <a href="{% url 'refund_policy' %}" class="text-white-50 text-decoration-none small">Refunds</a>
+            </div>
+        </div>
     </div>
 </footer>
 

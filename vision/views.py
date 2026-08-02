@@ -57,6 +57,15 @@ def submit_review(request):
 def about(request):
     return render(request,"vision/about.html")
 
+def terms(request):
+    return render(request, "vision/terms.html")
+
+def privacy(request):
+    return render(request, "vision/privacy.html")
+
+def refund_policy(request):
+    return render(request, "vision/refund.html")
+
 from django.core.mail import send_mail
 from .models import Contact, ClientRequest
 

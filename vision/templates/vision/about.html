@@ -215,12 +215,86 @@
         </div>
     </section>
 
+    <!-- Company Identity — Required for Razorpay KYC -->
+    <section class="py-5 bg-white">
+        <div class="container py-4">
+            <div class="text-center mb-5" data-aos="fade-up">
+                <h6 class="text-orange fw-bold ls-1">COMPANY INFORMATION</h6>
+                <h2 class="fw-800">Registered Business Entity</h2>
+            </div>
+            <div class="row justify-content-center" data-aos="fade-up" data-aos-delay="100">
+                <div class="col-lg-8">
+                    <div class="bg-light p-5 rounded-4">
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <p class="text-muted small mb-1 fw-bold text-uppercase" style="letter-spacing:1px;">Legal Entity Name</p>
+                                <p class="fw-bold mb-3">[YOUR LEGAL ENTITY NAME]</p>
+
+                                <p class="text-muted small mb-1 fw-bold text-uppercase" style="letter-spacing:1px;">Business Type</p>
+                                <p class="fw-bold mb-3">IT Services & Technology Consulting</p>
+
+                                <p class="text-muted small mb-1 fw-bold text-uppercase" style="letter-spacing:1px;">Year Established</p>
+                                <p class="fw-bold mb-3">2024</p>
+                            </div>
+                            <div class="col-md-6">
+                                <p class="text-muted small mb-1 fw-bold text-uppercase" style="letter-spacing:1px;">Registered Address</p>
+                                <p class="fw-bold mb-3">[YOUR REGISTERED ADDRESS]</p>
+
+                                <p class="text-muted small mb-1 fw-bold text-uppercase" style="letter-spacing:1px;">GST Number</p>
+                                <p class="fw-bold mb-3">[YOUR GST NUMBER or "Applied / Not Applicable"]</p>
+
+                                <p class="text-muted small mb-1 fw-bold text-uppercase" style="letter-spacing:1px;">Contact</p>
+                                <p class="fw-bold mb-0">+91 8816847227<br>support@trhvision.com</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <footer class="bg-black text-white py-5 border-top border-secondary">
-        <div class="container text-center">
-            <p class="h4 mb-3">TRHvision<span class="text-orange"></span></p>
-            <p class="text-white-50 mb-1">📞 +91 8816847227 | 📧 hello@trhvision.in</p>
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-lg-4 mb-4 mb-lg-0">
+                    <span class="brand-name fw-bold fs-3">TRHvision</span>
+                    <p class="text-white-50 mt-3">Empowering businesses with AI, data science, web development, and digital solutions.</p>
+                </div>
+                <div class="col-6 col-lg-2 offset-lg-1">
+                    <h6 class="text-orange fw-bold mb-4">COMPANY</h6>
+                    <ul class="list-unstyled text-white-50">
+                        <li class="mb-2"><a href="{% url 'about' %}" class="text-white-50 text-decoration-none">About Us</a></li>
+                        <li class="mb-2"><a href="{% url 'services' %}" class="text-white-50 text-decoration-none">Services</a></li>
+                        <li class="mb-2"><a href="{% url 'career' %}" class="text-white-50 text-decoration-none">Careers</a></li>
+                        <li class="mb-2"><a href="{% url 'contact' %}" class="text-white-50 text-decoration-none">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="col-6 col-lg-2">
+                    <h6 class="text-orange fw-bold mb-4">LEGAL</h6>
+                    <ul class="list-unstyled text-white-50">
+                        <li class="mb-2"><a href="{% url 'terms' %}" class="text-white-50 text-decoration-none">Terms & Conditions</a></li>
+                        <li class="mb-2"><a href="{% url 'privacy' %}" class="text-white-50 text-decoration-none">Privacy Policy</a></li>
+                        <li class="mb-2"><a href="{% url 'refund_policy' %}" class="text-white-50 text-decoration-none">Refund Policy</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3">
+                    <h6 class="text-orange fw-bold mb-4">CONTACT</h6>
+                    <ul class="list-unstyled text-white-50">
+                        <li class="mb-2"><i class="bi bi-envelope me-2"></i>support@trhvision.com</li>
+                        <li class="mb-2"><i class="bi bi-phone me-2"></i>+91 8816847227</li>
+                        <li class="mb-2"><i class="bi bi-geo-alt me-2"></i>[YOUR REGISTERED ADDRESS]</li>
+                    </ul>
+                </div>
+            </div>
             <hr class="border-secondary my-4">
-            <small class="text-white-50">© 2025 TRHvision. All Rights Reserved.</small>
+            <div class="d-flex flex-wrap justify-content-between align-items-center text-white-50">
+                <small>© 2026 TRHvision. All Rights Reserved.</small>
+                <div class="d-flex gap-3">
+                    <a href="{% url 'terms' %}" class="text-white-50 text-decoration-none small">Terms</a>
+                    <a href="{% url 'privacy' %}" class="text-white-50 text-decoration-none small">Privacy</a>
+                    <a href="{% url 'refund_policy' %}" class="text-white-50 text-decoration-none small">Refunds</a>
+                </div>
+            </div>
         </div>
     </footer>
 
