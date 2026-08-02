@@ -1,18 +1,20 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-HXWELDJFKG"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-HXWELDJFKG');
-</script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-HXWELDJFKG"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-HXWELDJFKG');
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Terms & Conditions | TRHvision</title>
-    <meta name="description" content="Terms and Conditions for TRHvision IT services including web development, AI solutions, data science, and consulting.">
+    <meta name="description"
+        content="Terms and Conditions for TRHvision IT services including web development, AI solutions, data science, and consulting.">
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -21,212 +23,313 @@
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 
     <style>
-        body { font-family: 'Inter', sans-serif; }
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
         .legal-hero {
-            padding-top: 120px; padding-bottom: 60px;
+            padding-top: 120px;
+            padding-bottom: 60px;
             background: linear-gradient(135deg, #0a0a1a 0%, #0d1b3e 100%);
             color: #fff;
         }
-        .legal-content { max-width: 860px; margin: 0 auto; }
-        .legal-content h2 { font-size: 1.4rem; font-weight: 800; margin-top: 2.5rem; margin-bottom: 1rem; color: #0f172a; }
-        .legal-content h3 { font-size: 1.1rem; font-weight: 700; margin-top: 1.5rem; margin-bottom: .7rem; color: #1e293b; }
-        .legal-content p, .legal-content li { font-size: .95rem; line-height: 1.8; color: #475569; }
-        .legal-content ul { padding-left: 1.2rem; }
-        .legal-content li { margin-bottom: .4rem; }
-        .legal-badge { display:inline-block;background:rgba(14,165,233,0.1);color:#0ea5e9;font-size:.7rem;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;padding:5px 14px;border-radius:50px;margin-bottom:1rem; }
-        .last-updated { font-size:.85rem;color:rgba(255,255,255,0.5); }
+
+        .legal-content {
+            max-width: 860px;
+            margin: 0 auto;
+        }
+
+        .legal-content h2 {
+            font-size: 1.4rem;
+            font-weight: 800;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            color: #0f172a;
+        }
+
+        .legal-content h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-top: 1.5rem;
+            margin-bottom: .7rem;
+            color: #1e293b;
+        }
+
+        .legal-content p,
+        .legal-content li {
+            font-size: .95rem;
+            line-height: 1.8;
+            color: #475569;
+        }
+
+        .legal-content ul {
+            padding-left: 1.2rem;
+        }
+
+        .legal-content li {
+            margin-bottom: .4rem;
+        }
+
+        .legal-badge {
+            display: inline-block;
+            background: rgba(14, 165, 233, 0.1);
+            color: #0ea5e9;
+            font-size: .7rem;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            padding: 5px 14px;
+            border-radius: 50px;
+            margin-bottom: 1rem;
+        }
+
+        .last-updated {
+            font-size: .85rem;
+            color: rgba(255, 255, 255, 0.5);
+        }
     </style>
 </head>
+
 <body>
 
-<nav class="navbar navbar-expand-lg fixed-top shadow-sm custom-nav bg-white">
-    <div class="container">
-        <a class="navbar-brand d-flex align-items-center gap-2" href="{% url 'index' %}">
-            <img src="{% static 'vision/image/logo.png' %}" alt="TRHvision Logo" class="brand-logo" onerror="this.style.display='none'">
-            <span class="brand-name fw-bold fs-4">TRHvision</span>
-        </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="menu">
-            <ul class="navbar-nav mx-auto gap-lg-4 fw-semibold">
-                <li class="nav-item"><a class="nav-link" href="{% url 'index' %}">Home</a></li>
-                <li class="nav-item"><a class="nav-link" href="{% url 'services' %}">Services</a></li>
-                <li class="nav-item"><a class="nav-link" href="{% url 'career' %}">Careers</a></li>
-                <li class="nav-item"><a class="nav-link" href="{% url 'about' %}">About</a></li>
-                <li class="nav-item"><a class="nav-link" href="{% url 'contact' %}">Contact</a></li>
+    <nav class="navbar navbar-expand-lg fixed-top shadow-sm custom-nav bg-white">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center gap-2" href="{% url 'index' %}">
+                <img src="{% static 'vision/image/logo.png' %}" alt="TRHvision Logo" class="brand-logo"
+                    onerror="this.style.display='none'">
+                <span class="brand-name fw-bold fs-4">TRHvision</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="menu">
+                <ul class="navbar-nav mx-auto gap-lg-4 fw-semibold">
+                    <li class="nav-item"><a class="nav-link" href="{% url 'index' %}">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'services' %}">Services</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'career' %}">Careers</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'about' %}">About</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'contact' %}">Contact</a></li>
+                </ul>
+                <div class="d-flex gap-2">
+                    <a href="{% url 'sigin' %}" class="btn btn-outline-dark rounded-pill px-4">Login</a>
+                    <a href="{% url 'contact' %}"
+                        class="btn btn-orange rounded-pill px-4 text-white hover-up shadow-sm">Get Started</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <header class="legal-hero">
+        <div class="container text-center" data-aos="fade-up">
+            <span class="legal-badge">LEGAL</span>
+            <h1 class="display-5 fw-900 mb-3">Terms & Conditions</h1>
+            <p class="last-updated">Last updated: July 2026</p>
+        </div>
+    </header>
+
+    <section class="py-5 bg-white">
+        <div class="container legal-content" data-aos="fade-up">
+
+            <p>Welcome to <strong>TRHvision</strong> (operated by <strong>[YOUR LEGAL ENTITY NAME]</strong>). By
+                accessing or using our website (<strong>www.trhvision.in</strong>) and availing any of our services, you
+                agree to be bound by these Terms and Conditions. Please read them carefully before engaging with us.</p>
+
+            <h2>1. About TRHvision</h2>
+            <p>TRHvision is a technology services company headquartered in India. We provide professional IT services
+                including but not limited to:</p>
+            <ul>
+                <li>Custom Web Application Development (Django, Python, Full-Stack)</li>
+                <li>Artificial Intelligence & Agentic AI Systems</li>
+                <li>Data Science & Predictive Analytics</li>
+                <li>Machine Learning Model Development & Deployment</li>
+                <li>Business Intelligence Dashboards (Power BI, Tableau)</li>
+                <li>Cloud Data Architecture (AWS, Azure)</li>
+                <li>AI Chatbot & Conversational Agent Development</li>
+                <li>Process Automation & RPA Solutions</li>
+                <li>IT Consulting & Technology Strategy</li>
             </ul>
-            <div class="d-flex gap-2">
-                <a href="{% url 'sigin' %}" class="btn btn-outline-dark rounded-pill px-4">Login</a>
-                <a href="{% url 'contact' %}" class="btn btn-orange rounded-pill px-4 text-white hover-up shadow-sm">Get Started</a>
+
+            <h2>2. Definitions</h2>
+            <ul>
+                <li><strong>"Company," "We," "Us," "Our"</strong> refers to TRHvision / [YOUR LEGAL ENTITY NAME].</li>
+                <li><strong>"Client," "You," "Your"</strong> refers to the individual or entity availing our services.
+                </li>
+                <li><strong>"Services"</strong> refers to any IT service, product, or deliverable provided by TRHvision.
+                </li>
+                <li><strong>"Website"</strong> refers to www.trhvision.in and all its subdomains.</li>
+            </ul>
+
+            <h2>3. Scope of Services</h2>
+            <p>The scope, timeline, deliverables, and pricing for each project will be defined in a separate
+                <strong>Service Agreement</strong>, <strong>Statement of Work (SOW)</strong>, or
+                <strong>Proposal</strong> mutually agreed upon by both parties before the commencement of work. These
+                Terms & Conditions apply in addition to any such agreement.</p>
+
+            <h2>4. Engagement & Project Process</h2>
+            <ul>
+                <li><strong>Discovery Phase:</strong> We begin with a consultation to understand your requirements and
+                    business goals.</li>
+                <li><strong>Proposal & Agreement:</strong> A detailed proposal including scope, timeline, and pricing
+                    will be shared. Work begins only after written acceptance (email or signed document).</li>
+                <li><strong>Development:</strong> Agile development methodology is followed with regular updates and
+                    milestone demos.</li>
+                <li><strong>Delivery & Acceptance:</strong> Deliverables are shared for client review. Acceptance is
+                    assumed if no objections are raised within 7 business days of delivery.</li>
+            </ul>
+
+            <h2>5. Payment Terms</h2>
+            <ul>
+                <li>Payment terms are as specified in the individual Service Agreement or Proposal.</li>
+                <li>Typically, projects require an <strong>advance payment of 30–50%</strong> before work begins, with
+                    the balance due upon delivery or in milestone-based installments.</li>
+                <li>Payments can be made via <strong>Razorpay</strong> (UPI, debit/credit card, net banking), bank
+                    transfer (NEFT/RTGS/IMPS), or other approved methods.</li>
+                <li>All prices are in <strong>Indian Rupees (INR)</strong> unless otherwise stated.</li>
+                <li>GST (as applicable under Indian tax laws) will be charged in addition to the quoted price.</li>
+                <li>Late payments beyond 15 days may attract an interest of 1.5% per month on the outstanding amount.
+                </li>
+            </ul>
+
+            <h2>6. Intellectual Property</h2>
+            <ul>
+                <li>Upon full payment, the client receives <strong>full ownership</strong> of the custom-developed
+                    deliverables (code, designs, reports) as specified in the Service Agreement.</li>
+                <li>TRHvision retains the right to use <strong>generic components, frameworks, and libraries</strong>
+                    developed independently for other projects.</li>
+                <li>TRHvision may showcase the project in its portfolio (without disclosing confidential information)
+                    unless a Non-Disclosure Agreement (NDA) prohibits this.</li>
+                <li>Pre-existing intellectual property of either party remains the property of its original owner.</li>
+            </ul>
+
+            <h2>7. Confidentiality</h2>
+            <p>Both parties agree to maintain the confidentiality of all proprietary information, business data, trade
+                secrets, and technical details shared during the engagement. This obligation survives the termination of
+                the agreement for a period of 2 years.</p>
+
+            <h2>8. Client Responsibilities</h2>
+            <p>The Client agrees to:</p>
+            <ul>
+                <li>Provide timely and accurate information, data, content, and access credentials as required.</li>
+                <li>Designate a single point of contact for communication and approvals.</li>
+                <li>Review and approve deliverables within the agreed timelines.</li>
+                <li>Ensure that all content provided to TRHvision does not infringe any third-party intellectual
+                    property rights.</li>
+            </ul>
+
+            <h2>9. Warranties & Disclaimers</h2>
+            <ul>
+                <li>TRHvision warrants that all services will be performed with <strong>professional skill and
+                        care</strong> consistent with industry standards.</li>
+                <li>We provide a <strong>30-day bug-fix warranty</strong> from the date of delivery for any functional
+                    defects in the delivered software.</li>
+                <li>We do <strong>not</strong> guarantee specific business outcomes (such as revenue increase, traffic
+                    growth, or search engine rankings) unless explicitly committed in writing.</li>
+                <li>The website and services are provided on an <strong>"as is"</strong> and <strong>"as
+                        available"</strong> basis for informational and service-engagement purposes.</li>
+            </ul>
+
+            <h2>10. Limitation of Liability</h2>
+            <p>To the maximum extent permitted by law, TRHvision's total liability for any claims arising out of or
+                related to the services shall not exceed the total amount paid by the Client for the specific project in
+                question. In no event shall TRHvision be liable for any indirect, incidental, consequential, special, or
+                punitive damages.</p>
+
+            <h2>11. Termination</h2>
+            <ul>
+                <li>Either party may terminate the engagement by providing <strong>15 days' written notice</strong> via
+                    email.</li>
+                <li>Upon termination, the Client shall pay for all work completed up to the date of termination.</li>
+                <li>TRHvision will deliver all work-in-progress upon receipt of final payment.</li>
+                <li>Refund of any advance payments will be governed by our <a href="{% url 'refund_policy' %}"
+                        class="text-decoration-none fw-bold" style="color:#0ea5e9;">Refund & Cancellation Policy</a>.
+                </li>
+            </ul>
+
+            <h2>12. Force Majeure</h2>
+            <p>Neither party shall be liable for delays or failures in performance resulting from events beyond
+                reasonable control, including but not limited to natural disasters, pandemics, government actions, war,
+                strikes, Internet outages, or power failures.</p>
+
+            <h2>13. Governing Law & Dispute Resolution</h2>
+            <p>These Terms shall be governed by and construed in accordance with the laws of <strong>India</strong>. Any
+                disputes arising out of or in connection with these Terms shall be subject to the exclusive jurisdiction
+                of the courts in <strong>[YOUR CITY], India</strong>. The parties agree to first attempt to resolve
+                disputes through good-faith negotiation and, if necessary, mediation before resorting to litigation.</p>
+
+            <h2>14. Modifications</h2>
+            <p>TRHvision reserves the right to modify these Terms & Conditions at any time. Changes will be posted on
+                this page with an updated "Last updated" date. Continued use of our website or services after any
+                modification constitutes acceptance of the updated terms.</p>
+
+            <h2>15. Contact Us</h2>
+            <p>For any questions regarding these Terms & Conditions, please contact us:</p>
+            <ul>
+                <li><strong>Email:</strong> support@trhvision.com</li>
+                <li><strong>Phone:</strong> +91 8816847227</li>
+                <li><strong>Address:</strong> [YOUR REGISTERED ADDRESS]</li>
+                <li><strong>Website:</strong> <a href="{% url 'contact' %}"
+                        style="color:#0ea5e9;">www.trhvision.in/contact</a></li>
+            </ul>
+
+        </div>
+    </section>
+
+    <footer class="bg-black text-white py-5 border-top border-secondary">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-lg-4 mb-4 mb-lg-0">
+                    <span class="brand-name fw-bold fs-3">TRHvision</span>
+                    <p class="text-white-50 mt-3">Empowering businesses with AI, data science, web development, and
+                        digital solutions.</p>
+                </div>
+                <div class="col-6 col-lg-2 offset-lg-1">
+                    <h6 class="text-orange fw-bold mb-4">COMPANY</h6>
+                    <ul class="list-unstyled text-white-50">
+                        <li class="mb-2"><a href="{% url 'about' %}" class="text-white-50 text-decoration-none">About
+                                Us</a></li>
+                        <li class="mb-2"><a href="{% url 'services' %}"
+                                class="text-white-50 text-decoration-none">Services</a></li>
+                        <li class="mb-2"><a href="{% url 'career' %}"
+                                class="text-white-50 text-decoration-none">Careers</a></li>
+                        <li class="mb-2"><a href="{% url 'contact' %}"
+                                class="text-white-50 text-decoration-none">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="col-6 col-lg-2">
+                    <h6 class="text-orange fw-bold mb-4">LEGAL</h6>
+                    <ul class="list-unstyled text-white-50">
+                        <li class="mb-2"><a href="{% url 'terms' %}" class="text-white-50 text-decoration-none">Terms &
+                                Conditions</a></li>
+                        <li class="mb-2"><a href="{% url 'privacy' %}"
+                                class="text-white-50 text-decoration-none">Privacy Policy</a></li>
+                        <li class="mb-2"><a href="{% url 'refund_policy' %}"
+                                class="text-white-50 text-decoration-none">Refund Policy</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3">
+                    <h6 class="text-orange fw-bold mb-4">CONTACT</h6>
+                    <ul class="list-unstyled text-white-50">
+                        <li class="mb-2"><i class="bi bi-envelope me-2"></i>support@trhvision.com</li>
+                        <li class="mb-2"><i class="bi bi-phone me-2"></i>+91 8816847227</li>
+
+                    </ul>
+                </div>
+            </div>
+            <hr class="border-secondary my-4">
+            <div class="d-flex flex-wrap justify-content-between align-items-center text-white-50">
+                <small>© 2026 TRHvision. All Rights Reserved.</small>
+                <div class="d-flex gap-3">
+                    <a href="{% url 'terms' %}" class="text-white-50 text-decoration-none small">Terms</a>
+                    <a href="{% url 'privacy' %}" class="text-white-50 text-decoration-none small">Privacy</a>
+                    <a href="{% url 'refund_policy' %}" class="text-white-50 text-decoration-none small">Refunds</a>
+                </div>
             </div>
         </div>
-    </div>
-</nav>
+    </footer>
 
-<header class="legal-hero">
-    <div class="container text-center" data-aos="fade-up">
-        <span class="legal-badge">LEGAL</span>
-        <h1 class="display-5 fw-900 mb-3">Terms & Conditions</h1>
-        <p class="last-updated">Last updated: July 2026</p>
-    </div>
-</header>
-
-<section class="py-5 bg-white">
-    <div class="container legal-content" data-aos="fade-up">
-
-        <p>Welcome to <strong>TRHvision</strong> (operated by <strong>[YOUR LEGAL ENTITY NAME]</strong>). By accessing or using our website (<strong>www.trhvision.in</strong>) and availing any of our services, you agree to be bound by these Terms and Conditions. Please read them carefully before engaging with us.</p>
-
-        <h2>1. About TRHvision</h2>
-        <p>TRHvision is a technology services company headquartered in India. We provide professional IT services including but not limited to:</p>
-        <ul>
-            <li>Custom Web Application Development (Django, Python, Full-Stack)</li>
-            <li>Artificial Intelligence & Agentic AI Systems</li>
-            <li>Data Science & Predictive Analytics</li>
-            <li>Machine Learning Model Development & Deployment</li>
-            <li>Business Intelligence Dashboards (Power BI, Tableau)</li>
-            <li>Cloud Data Architecture (AWS, Azure)</li>
-            <li>AI Chatbot & Conversational Agent Development</li>
-            <li>Process Automation & RPA Solutions</li>
-            <li>IT Consulting & Technology Strategy</li>
-        </ul>
-
-        <h2>2. Definitions</h2>
-        <ul>
-            <li><strong>"Company," "We," "Us," "Our"</strong> refers to TRHvision / [YOUR LEGAL ENTITY NAME].</li>
-            <li><strong>"Client," "You," "Your"</strong> refers to the individual or entity availing our services.</li>
-            <li><strong>"Services"</strong> refers to any IT service, product, or deliverable provided by TRHvision.</li>
-            <li><strong>"Website"</strong> refers to www.trhvision.in and all its subdomains.</li>
-        </ul>
-
-        <h2>3. Scope of Services</h2>
-        <p>The scope, timeline, deliverables, and pricing for each project will be defined in a separate <strong>Service Agreement</strong>, <strong>Statement of Work (SOW)</strong>, or <strong>Proposal</strong> mutually agreed upon by both parties before the commencement of work. These Terms & Conditions apply in addition to any such agreement.</p>
-
-        <h2>4. Engagement & Project Process</h2>
-        <ul>
-            <li><strong>Discovery Phase:</strong> We begin with a consultation to understand your requirements and business goals.</li>
-            <li><strong>Proposal & Agreement:</strong> A detailed proposal including scope, timeline, and pricing will be shared. Work begins only after written acceptance (email or signed document).</li>
-            <li><strong>Development:</strong> Agile development methodology is followed with regular updates and milestone demos.</li>
-            <li><strong>Delivery & Acceptance:</strong> Deliverables are shared for client review. Acceptance is assumed if no objections are raised within 7 business days of delivery.</li>
-        </ul>
-
-        <h2>5. Payment Terms</h2>
-        <ul>
-            <li>Payment terms are as specified in the individual Service Agreement or Proposal.</li>
-            <li>Typically, projects require an <strong>advance payment of 30–50%</strong> before work begins, with the balance due upon delivery or in milestone-based installments.</li>
-            <li>Payments can be made via <strong>Razorpay</strong> (UPI, debit/credit card, net banking), bank transfer (NEFT/RTGS/IMPS), or other approved methods.</li>
-            <li>All prices are in <strong>Indian Rupees (INR)</strong> unless otherwise stated.</li>
-            <li>GST (as applicable under Indian tax laws) will be charged in addition to the quoted price.</li>
-            <li>Late payments beyond 15 days may attract an interest of 1.5% per month on the outstanding amount.</li>
-        </ul>
-
-        <h2>6. Intellectual Property</h2>
-        <ul>
-            <li>Upon full payment, the client receives <strong>full ownership</strong> of the custom-developed deliverables (code, designs, reports) as specified in the Service Agreement.</li>
-            <li>TRHvision retains the right to use <strong>generic components, frameworks, and libraries</strong> developed independently for other projects.</li>
-            <li>TRHvision may showcase the project in its portfolio (without disclosing confidential information) unless a Non-Disclosure Agreement (NDA) prohibits this.</li>
-            <li>Pre-existing intellectual property of either party remains the property of its original owner.</li>
-        </ul>
-
-        <h2>7. Confidentiality</h2>
-        <p>Both parties agree to maintain the confidentiality of all proprietary information, business data, trade secrets, and technical details shared during the engagement. This obligation survives the termination of the agreement for a period of 2 years.</p>
-
-        <h2>8. Client Responsibilities</h2>
-        <p>The Client agrees to:</p>
-        <ul>
-            <li>Provide timely and accurate information, data, content, and access credentials as required.</li>
-            <li>Designate a single point of contact for communication and approvals.</li>
-            <li>Review and approve deliverables within the agreed timelines.</li>
-            <li>Ensure that all content provided to TRHvision does not infringe any third-party intellectual property rights.</li>
-        </ul>
-
-        <h2>9. Warranties & Disclaimers</h2>
-        <ul>
-            <li>TRHvision warrants that all services will be performed with <strong>professional skill and care</strong> consistent with industry standards.</li>
-            <li>We provide a <strong>30-day bug-fix warranty</strong> from the date of delivery for any functional defects in the delivered software.</li>
-            <li>We do <strong>not</strong> guarantee specific business outcomes (such as revenue increase, traffic growth, or search engine rankings) unless explicitly committed in writing.</li>
-            <li>The website and services are provided on an <strong>"as is"</strong> and <strong>"as available"</strong> basis for informational and service-engagement purposes.</li>
-        </ul>
-
-        <h2>10. Limitation of Liability</h2>
-        <p>To the maximum extent permitted by law, TRHvision's total liability for any claims arising out of or related to the services shall not exceed the total amount paid by the Client for the specific project in question. In no event shall TRHvision be liable for any indirect, incidental, consequential, special, or punitive damages.</p>
-
-        <h2>11. Termination</h2>
-        <ul>
-            <li>Either party may terminate the engagement by providing <strong>15 days' written notice</strong> via email.</li>
-            <li>Upon termination, the Client shall pay for all work completed up to the date of termination.</li>
-            <li>TRHvision will deliver all work-in-progress upon receipt of final payment.</li>
-            <li>Refund of any advance payments will be governed by our <a href="{% url 'refund_policy' %}" class="text-decoration-none fw-bold" style="color:#0ea5e9;">Refund & Cancellation Policy</a>.</li>
-        </ul>
-
-        <h2>12. Force Majeure</h2>
-        <p>Neither party shall be liable for delays or failures in performance resulting from events beyond reasonable control, including but not limited to natural disasters, pandemics, government actions, war, strikes, Internet outages, or power failures.</p>
-
-        <h2>13. Governing Law & Dispute Resolution</h2>
-        <p>These Terms shall be governed by and construed in accordance with the laws of <strong>India</strong>. Any disputes arising out of or in connection with these Terms shall be subject to the exclusive jurisdiction of the courts in <strong>[YOUR CITY], India</strong>. The parties agree to first attempt to resolve disputes through good-faith negotiation and, if necessary, mediation before resorting to litigation.</p>
-
-        <h2>14. Modifications</h2>
-        <p>TRHvision reserves the right to modify these Terms & Conditions at any time. Changes will be posted on this page with an updated "Last updated" date. Continued use of our website or services after any modification constitutes acceptance of the updated terms.</p>
-
-        <h2>15. Contact Us</h2>
-        <p>For any questions regarding these Terms & Conditions, please contact us:</p>
-        <ul>
-            <li><strong>Email:</strong> support@trhvision.com</li>
-            <li><strong>Phone:</strong> +91 8816847227</li>
-            <li><strong>Address:</strong> [YOUR REGISTERED ADDRESS]</li>
-            <li><strong>Website:</strong> <a href="{% url 'contact' %}" style="color:#0ea5e9;">www.trhvision.in/contact</a></li>
-        </ul>
-
-    </div>
-</section>
-
-<footer class="bg-black text-white py-5 border-top border-secondary">
-    <div class="container">
-        <div class="row g-4">
-            <div class="col-lg-4 mb-4 mb-lg-0">
-                <span class="brand-name fw-bold fs-3">TRHvision</span>
-                <p class="text-white-50 mt-3">Empowering businesses with AI, data science, web development, and digital solutions.</p>
-            </div>
-            <div class="col-6 col-lg-2 offset-lg-1">
-                <h6 class="text-orange fw-bold mb-4">COMPANY</h6>
-                <ul class="list-unstyled text-white-50">
-                    <li class="mb-2"><a href="{% url 'about' %}" class="text-white-50 text-decoration-none">About Us</a></li>
-                    <li class="mb-2"><a href="{% url 'services' %}" class="text-white-50 text-decoration-none">Services</a></li>
-                    <li class="mb-2"><a href="{% url 'career' %}" class="text-white-50 text-decoration-none">Careers</a></li>
-                    <li class="mb-2"><a href="{% url 'contact' %}" class="text-white-50 text-decoration-none">Contact</a></li>
-                </ul>
-            </div>
-            <div class="col-6 col-lg-2">
-                <h6 class="text-orange fw-bold mb-4">LEGAL</h6>
-                <ul class="list-unstyled text-white-50">
-                    <li class="mb-2"><a href="{% url 'terms' %}" class="text-white-50 text-decoration-none">Terms & Conditions</a></li>
-                    <li class="mb-2"><a href="{% url 'privacy' %}" class="text-white-50 text-decoration-none">Privacy Policy</a></li>
-                    <li class="mb-2"><a href="{% url 'refund_policy' %}" class="text-white-50 text-decoration-none">Refund Policy</a></li>
-                </ul>
-            </div>
-            <div class="col-lg-3">
-                <h6 class="text-orange fw-bold mb-4">CONTACT</h6>
-                <ul class="list-unstyled text-white-50">
-                    <li class="mb-2"><i class="bi bi-envelope me-2"></i>support@trhvision.com</li>
-                    <li class="mb-2"><i class="bi bi-phone me-2"></i>+91 8816847227</li>
-                    
-                </ul>
-            </div>
-        </div>
-        <hr class="border-secondary my-4">
-        <div class="d-flex flex-wrap justify-content-between align-items-center text-white-50">
-            <small>© 2026 TRHvision. All Rights Reserved.</small>
-            <div class="d-flex gap-3">
-                <a href="{% url 'terms' %}" class="text-white-50 text-decoration-none small">Terms</a>
-                <a href="{% url 'privacy' %}" class="text-white-50 text-decoration-none small">Privacy</a>
-                <a href="{% url 'refund_policy' %}" class="text-white-50 text-decoration-none small">Refunds</a>
-            </div>
-        </div>
-    </div>
-</footer>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-<script>AOS.init({ duration: 600, once: true });</script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>AOS.init({ duration: 600, once: true });</script>
 </body>
+
 </html>
