@@ -53,6 +53,10 @@ INSTALLED_APPS = [
     'vision',
     'ckeditor',
     'ckeditor_uploader',
+    # ─ REST API ──────────────────────────────────────
+    'rest_framework',
+    'rest_framework.authtoken',
+    'corsheaders',
 ]
 
 CKEDITOR_UPLOAD_PATH = 'uploads/'
@@ -76,6 +80,8 @@ CKEDITOR_CONFIGS = {
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
+    # CORS — must be before CommonMiddleware
+    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -209,3 +215,40 @@ SERVER_EMAIL = 'contact@trhvision.in'
 # Replace with your actual keys from https://dashboard.razorpay.com/app/keys
 RAZORPAY_KEY_ID = os.environ.get('RAZORPAY_KEY_ID', '')      # Loaded from .env
 RAZORPAY_KEY_SECRET = os.environ.get('RAZORPAY_KEY_SECRET', '')  # Loaded from .env
+
+# =============================================================================
+# REST FRAMEWORK (Django REST Framework)
+# =============================================================================
+REST_FRAMEWORK = {
+    # Require a valid Token for every request
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+        # Session auth also active so DRF browsable API works in browser
+        'rest_framework.authentication.SessionAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAdminUser',
+    ],
+    # Return up to 1000 rows per page — Power BI will auto-paginate
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 1000,
+    # Prefer JSON responses
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer',   # disable in prod if needed
+    ],
+    'DEFAULT_FILTER_BACKENDS': [
+        'rest_framework.filters.SearchFilter',
+        'rest_framework.filters.OrderingFilter',
+    ],
+    'DATETIME_FORMAT': '%Y-%m-%dT%H:%M:%S',
+    'DATE_FORMAT': '%Y-%m-%d',
+}
+
+# =============================================================================
+# CORS (Cross-Origin Resource Sharing)
+# Allows Power BI / external tools to call the API from any origin
+# =============================================================================
+CORS_ALLOW_ALL_ORIGINS = True         # Wide open — safe because API is token-protected
+CORS_ALLOW_CREDENTIALS = False
+CORS_URLS_REGEX = r'^/api/.*$'        # Only apply CORS to /api/ paths

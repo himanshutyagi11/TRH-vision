@@ -285,7 +285,10 @@ def create_razorpay_order(request):
             'key':      settings.RAZORPAY_KEY_ID,
         })
     except Exception as e:
-        return JsonResponse({'error': str(e)}, status=500)
+        error_msg = str(e)
+        if "Authentication failed" in error_msg:
+            error_msg = "Razorpay Authentication Failed: Your RAZORPAY_KEY_ID or RAZORPAY_KEY_SECRET in .env is invalid or expired. Please update them with active keys from dashboard.razorpay.com."
+        return JsonResponse({'error': error_msg}, status=500)
 
 
 @csrf_exempt
@@ -321,25 +324,35 @@ def payment_success(request):
         except InternshipPricing.DoesNotExist:
             amount   = 0
 
-        # --- Save enrollment ---
-        enrollment = Enrollment.objects.create(
-            name=name,
-            college=college,
-            email=email,
-            phone=phone,
-            domain=domain,
-            duration=duration,
-            amount=amount,
-            transaction_id=razorpay_payment_id,
-            razorpay_order_id=razorpay_order_id,
-            razorpay_payment_id=razorpay_payment_id,
-            is_paid=True,
-        )
+        # --- Save or update enrollment ---
+        enrollment = Enrollment.objects.filter(email=email).first()
+        if enrollment:
+            enrollment.is_paid = True
+            enrollment.transaction_id = razorpay_payment_id
+            enrollment.razorpay_order_id = razorpay_order_id
+            enrollment.razorpay_payment_id = razorpay_payment_id
+            if amount > 0:
+                enrollment.amount = amount
+            if name:
+                enrollment.name = name
+            enrollment.save()
+        else:
+            enrollment = Enrollment.objects.create(
+                name=name,
+                college=college,
+                email=email,
+                phone=phone,
+                domain=domain,
+                duration=duration,
+                amount=amount,
+                transaction_id=razorpay_payment_id,
+                razorpay_order_id=razorpay_order_id,
+                razorpay_payment_id=razorpay_payment_id,
+                is_paid=True,
+            )
 
         # Save in session for success page download link
         request.session['enrolled_id'] = enrollment.id
-
-        # Offer letter will be sent by the background processor after admin approval and 4 hours have passed
 
         # --- Notify admin ---
         try:
@@ -365,10 +378,16 @@ Payment ID: {razorpay_payment_id}
         except Exception:
             pass  # Don't break enrollment flow if email fails
 
+        if request.user.is_authenticated:
+            messages.success(request, "Payment verified successfully! Your certificate is now unlocked for download.")
+            return redirect('dashboard')
+
         return redirect('enroll_success')
 
     except Exception as e:
         messages.error(request, f"Enrollment error: {e}")
+        if request.user.is_authenticated:
+            return redirect('dashboard')
         return redirect('enroll')
 
 
@@ -647,7 +666,6 @@ def dashboard(request):
         day = today - timedelta(days=i)
         count = DailyTrackCheckIn.objects.filter(user=request.user, date=day).count()
         calendar_days.append({'date': day, 'count': count, 'is_today': day == today})
-
     # System tracks user hasn't enrolled in yet (for 'Add Track' suggestions)
     enrolled_track_ids = [enr.track_id for enr in enrollments]
     available_tracks = ChallengeTrack.objects.filter(is_system=True).exclude(
@@ -660,6 +678,8 @@ def dashboard(request):
     # Fetch student enrollment for offer letter download (only if admin-approved)
     from .models import Enrollment
     enrollment = Enrollment.objects.filter(email=request.user.email, is_paid=True, is_approved=True).first()
+    paid_enrollment = Enrollment.objects.filter(email=request.user.email, is_paid=True).first()
+    is_paid = bool(paid_enrollment)
 
     context = {
         'tasks': all_tasks,
@@ -682,6 +702,7 @@ def dashboard(request):
         'days_left_for_cert': days_left_for_cert,
         'all_projects_cleared': all_projects_cleared,
         'has_certificate': has_certificate,
+        'is_paid': is_paid,
         # Daily Challenger
         'streak': streak,
         'enrollments': enrollments,
@@ -982,7 +1003,7 @@ def _build_certificate_pdf(user, profile, enrollment=None):
         tw = bb[2] - bb[0]
         draw.text((center_x - tw // 2, y), text, font=fnt, fill=color)
 
-    def paste_sign_image(img_name, center_x, line_y):
+    def paste_sign_image(img_name, center_x, line_y, target_w=150):
         sig_path = os.path.join(settings.BASE_DIR, 'vision', 'static', 'vision', 'image', img_name)
         if os.path.exists(sig_path):
             try:
@@ -996,7 +1017,7 @@ def _build_certificate_pdf(user, profile, enrollment=None):
 
                 # Resize to fit above the signature line nicely
                 sig_w, sig_h = sig_img.size
-                new_w = 150  # Smaller width to account for the removed transparent padding
+                new_w = target_w  # Custom width per signature to maintain visual balance
                 new_h = int(sig_h * (new_w / sig_w))
                 sig_img = sig_img.resize((new_w, new_h), Image.LANCZOS)
                 
@@ -1019,7 +1040,7 @@ def _build_certificate_pdf(user, profile, enrollment=None):
     
     draw_sig_text("Harshit Dubey", sig2_center_x, 1250, font_small, DARK)
     draw_sig_text("Human Resource",  sig2_center_x, 1285, font_small, GRAY)
-    paste_sign_image("HR signature.png", sig2_center_x, sig_y_line)
+    paste_sign_image("HR signature.png", sig2_center_x, sig_y_line, target_w=90)
 
     # ── 4. Generate & paste QR code — bottom right, above footer ─────────
     qr = qrcode_lib.QRCode(version=1, box_size=8, border=3)
@@ -1116,6 +1137,9 @@ def generate_certificate(request):
     # Look up the student's enrollment to use the same UNID as the offer letter
     from .models import Enrollment
     enrollment = Enrollment.objects.filter(email=request.user.email, is_paid=True).first()
+    if not enrollment:
+        messages.error(request, "Payment required! Please complete your payment before downloading your certificate.")
+        return redirect('dashboard')
 
     pdf_bytes = _build_certificate_pdf(request.user, profile, enrollment=enrollment)
 

@@ -1,8 +1,56 @@
 from . import views
 from django.contrib.auth import views as auth_views
-from django.urls import path
+from django.urls import path, include
 from django.conf.urls.static import static
 from django.conf import settings
+
+# ── REST API Router ────────────────────────────────────────────────────────
+from rest_framework.routers import DefaultRouter
+from rest_framework.authtoken.views import obtain_auth_token
+from . import api_views
+
+router = DefaultRouter()
+
+# Auth / Users
+router.register(r'users',               api_views.UserViewSet,                   basename='user')
+
+# Internship
+router.register(r'enrollments',         api_views.EnrollmentViewSet,             basename='enrollment')
+router.register(r'students',            api_views.ProfileViewSet,                basename='profile')
+
+# Curriculum
+router.register(r'tasks',               api_views.TaskViewSet,                   basename='task')
+router.register(r'questions',           api_views.QuestionViewSet,               basename='question')
+router.register(r'learning-materials',  api_views.LearningMaterialViewSet,       basename='learningmaterial')
+
+# Projects
+router.register(r'projects',            api_views.ProjectViewSet,                basename='project')
+router.register(r'project-submissions', api_views.ProjectSubmissionViewSet,      basename='projectsubmission')
+
+# Contacts
+router.register(r'contacts',            api_views.ContactViewSet,                basename='contact')
+router.register(r'client-requests',     api_views.ClientRequestViewSet,          basename='clientrequest')
+
+# CMS
+router.register(r'announcements',       api_views.AnnouncementViewSet,           basename='announcement')
+router.register(r'pricing',             api_views.InternshipPricingViewSet,      basename='internshippricing')
+router.register(r'reviews',             api_views.ReviewViewSet,                 basename='review')
+
+# Daily Challenges
+router.register(r'challenge-tracks',        api_views.ChallengeTrackViewSet,         basename='challengetrack')
+router.register(r'challenge-enrollments',   api_views.UserChallengeEnrollmentViewSet, basename='userchallengeenrollment')
+router.register(r'daily-checkins',          api_views.DailyTrackCheckInViewSet,      basename='dailytrackcheckin')
+router.register(r'milestone-achievements',  api_views.MilestoneAchievementViewSet,   basename='milestoneachievement')
+router.register(r'user-streaks',            api_views.UserStreakViewSet,              basename='userstreak')
+
+# Client Portal
+router.register(r'client-profiles',     api_views.ClientProfileViewSet,          basename='clientprofile')
+router.register(r'client-projects',     api_views.ClientProjectViewSet,          basename='clientproject')
+router.register(r'client-milestones',   api_views.ClientProjectMilestoneViewSet, basename='clientprojectmilestone')
+router.register(r'client-deliverables', api_views.ClientProjectDeliverableViewSet, basename='clientprojectdeliverable')
+router.register(r'client-updates',      api_views.ClientProjectUpdateViewSet,    basename='clientprojectupdate')
+router.register(r'client-invoices',     api_views.ClientInvoiceViewSet,          basename='clientinvoice')
+# ──────────────────────────────────────────────────────────────────────────
 
 urlpatterns = [
     path('', views.index, name='index'),
@@ -32,7 +80,13 @@ urlpatterns = [
     path('complete-daily-challenge/', views.complete_daily_challenge, name='complete_daily_challenge'),
     path('track-checkin/<int:track_id>/', views.track_checkin, name='track_checkin'),
     path('my-challenges/', views.manage_challenges, name='manage_challenges'),
-    
+
+    # ── REST API v1 ────────────────────────────────────────────
+    path('api/v1/', api_views.api_root, name='api-root'),
+    path('api/v1/', include(router.urls)),
+    path('api/v1/auth/token/', obtain_auth_token, name='api-token-auth'),
+    # ───────────────────────────────────────────────────────────
+
     # ── Client Dashboard URLs ──────────────────────────────────
     path('client/login/', views.client_login, name='client_login'),
     path('client/dashboard/', views.client_dashboard, name='client_dashboard'),

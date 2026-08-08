@@ -508,7 +508,7 @@
                     {% endif %}
                 </div>
 
-                {% if certificate_unlocked %}
+                {% if certificate_unlocked and is_paid %}
                 <h5 class="fw-bold text-success">🎓 Certificate Unlocked!</h5>
                 <p class="small text-muted mb-1">
                     <strong>{{ internship_name }}</strong> Internship<br>
@@ -525,6 +525,29 @@
                         <i class="bi bi-download me-2"></i>Download
                     </a>
                 </div>
+                {% elif certificate_unlocked and not is_paid %}
+                <h5 class="fw-bold text-warning">🎓 Certificate Ready — Payment Required</h5>
+                <p class="small text-muted mb-1">
+                    <strong>{{ internship_name }}</strong> Internship<br>
+                    <span class="badge bg-warning bg-opacity-10 text-dark mt-1">{{ period_text }}</span>
+                </p>
+                <p class="small text-muted mb-3">Please complete the payment to download your official certificate.</p>
+                <button type="button" id="payForCertBtn"
+                    class="btn btn-orange w-100 rounded-pill text-white fw-bold shadow-sm py-2">
+                    <i class="bi bi-credit-card me-2"></i>Pay & Download Certificate
+                </button>
+                <form id="certPaymentSuccessForm" method="POST" action="{% url 'payment_success' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="razorpay_order_id" id="cert_h_order_id">
+                    <input type="hidden" name="razorpay_payment_id" id="cert_h_payment_id">
+                    <input type="hidden" name="razorpay_signature" id="cert_h_signature">
+                    <input type="hidden" name="name" value="{{ request.user.first_name }} {{ request.user.last_name }}">
+                    <input type="hidden" name="college" value="N/A">
+                    <input type="hidden" name="email" value="{{ request.user.email }}">
+                    <input type="hidden" name="phone" value="N/A">
+                    <input type="hidden" name="domain" value="{{ internship_name }}">
+                    <input type="hidden" name="duration" value="{{ period_text }}">
+                </form>
                 {% elif validation_pending or not all_projects_cleared %}
                 <h5 class="fw-bold text-warning">Project Under Review</h5>
                 <p class="small text-muted mb-1">
@@ -594,6 +617,67 @@
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const certBtn = document.getElementById('payForCertBtn');
+            if (certBtn) {
+                certBtn.addEventListener('click', function () {
+                    certBtn.disabled = true;
+                    certBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Creating payment order…';
+
+                    fetch('{% url "create_razorpay_order" %}', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ duration: '{{ period_text }}' }),
+                    })
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data.error) {
+                                alert('Payment error: ' + data.error);
+                                certBtn.disabled = false;
+                                certBtn.innerHTML = '<i class="bi bi-credit-card me-2"></i>Pay & Download Certificate';
+                                return;
+                            }
+
+                            const options = {
+                                key: data.key,
+                                amount: data.amount,
+                                currency: data.currency,
+                                order_id: data.order_id,
+                                name: 'TRHvision Academy',
+                                description: 'Certificate Fee — {{ internship_name }} ({{ period_text }})',
+                                image: '{% static "vision/image/logo.png" %}',
+                                prefill: {
+                                    name: '{{ request.user.first_name }} {{ request.user.last_name }}',
+                                    email: '{{ request.user.email }}',
+                                },
+                                theme: { color: '#111111' },
+                                handler: function (response) {
+                                    document.getElementById('cert_h_order_id').value = response.razorpay_order_id;
+                                    document.getElementById('cert_h_payment_id').value = response.razorpay_payment_id;
+                                    document.getElementById('cert_h_signature').value = response.razorpay_signature;
+                                    document.getElementById('certPaymentSuccessForm').submit();
+                                },
+                                modal: {
+                                    ondismiss: function () {
+                                        certBtn.disabled = false;
+                                        certBtn.innerHTML = '<i class="bi bi-credit-card me-2"></i>Pay & Download Certificate';
+                                    }
+                                }
+                            };
+                            const rzp = new Razorpay(options);
+                            rzp.open();
+                        })
+                        .catch(err => {
+                            alert('Failed to initiate payment. Please try again.');
+                            certBtn.disabled = false;
+                            certBtn.innerHTML = '<i class="bi bi-credit-card me-2"></i>Pay & Download Certificate';
+                        });
+                });
+            }
+        });
+    </script>
 </body>
 
 </html>
