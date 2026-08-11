@@ -75,63 +75,22 @@
                                     {% for pricing in active_pricings %}
                                     <option value="{{ pricing.duration }}"
                                         data-price="{{ pricing.price|floatformat:0 }}">
-                                        {{ pricing.duration }} (₹{{ pricing.price|floatformat:0 }})
+                                        {{ pricing.duration }}
                                     </option>
                                     {% endfor %}
                                 </select>
                             </div>
 
-                            <!-- Payment Section — shown after duration is picked -->
-                            <div class="col-12 mt-4" id="paymentSection" style="display:none;">
-                                <h5 class="fw-bold text-orange mb-3 border-bottom pb-2" id="paymentSectionHeading">3. Secure Payment</h5>
-
-                                <!-- Amount Summary -->
-                                <div
-                                    class="d-flex align-items-center justify-content-between bg-light border rounded-4 p-4 mb-4">
-                                    <div>
-                                        <p class="mb-1 text-muted small" id="amountLabel">Total Amount</p>
-                                        <h2 class="fw-bold text-success mb-0" id="displayAmount">₹0</h2>
-                                    </div>
-                                    <div class="text-end" id="secureBadgeWrapper">
-                                        <span class="badge bg-success-subtle text-success fs-6 px-3 py-2 rounded-pill">
-                                            <i class="bi bi-shield-lock-fill me-1"></i> 100% Secure
-                                        </span>
-                                        <p class="text-muted small mt-2 mb-0" id="paymentProcessorText">Powered by Razorpay</p>
-                                    </div>
-                                </div>
-
-                                <!-- What's included -->
-                                <div class="row g-3 mb-4">
-                                    <div class="col-md-4">
-                                        <div class="d-flex align-items-center gap-2 bg-white border rounded-3 p-3">
-                                            <i class="bi bi-patch-check-fill text-success fs-5"></i>
-                                            <small class="fw-semibold">Certificate Included</small>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="d-flex align-items-center gap-2 bg-white border rounded-3 p-3">
-                                            <i class="bi bi-credit-card-2-front-fill text-primary fs-5"></i>
-                                            <small class="fw-semibold">UPI / Card / Netbanking</small>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="d-flex align-items-center gap-2 bg-white border rounded-3 p-3">
-                                            <i class="bi bi-arrow-counterclockwise text-warning fs-5"></i>
-                                            <small class="fw-semibold">Instant Confirmation</small>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Pay Now Button -->
-                                <button type="button" id="payNowBtn"
+                            <!-- Submit Button -->
+                            <div class="col-12 mt-4">
+                                <button type="button" id="submitEnrollBtn"
                                     class="btn btn-dark btn-lg w-100 rounded-pill fw-bold hover-up"
-                                    onclick="initiatePayment()">
-                                    <i class="bi bi-lock-fill me-2"></i>Pay Securely — <span id="btnAmount">₹0</span>
+                                    onclick="submitEnrollment()">
+                                    <i class="bi bi-check-circle-fill me-2"></i>Submit Enrollment
                                 </button>
                                 <p class="text-muted text-center small mt-2">
                                     <i class="bi bi-info-circle me-1"></i>
-                                    You'll be redirected to Razorpay's secure checkout. Supported: UPI, Cards, Net
-                                    Banking, Wallets.
+                                    You will be enrolled and can access your dashboard once confirmed.
                                 </p>
                             </div>
 
@@ -160,45 +119,6 @@
 </section>
 
 <script>
-    // Load the pricing map passed dynamically from the Django view
-    const priceMap = JSON.parse('{{ pricing_map_json|escapejs }}');
-
-    document.getElementById('f_duration').addEventListener('change', function () {
-        const duration = this.value;
-        if (duration && priceMap[duration] !== undefined) {
-            const amount = priceMap[duration];
-            
-            const btn = document.getElementById('payNowBtn');
-            const helpText = document.querySelector('#paymentSection p.text-muted.text-center.small');
-            const sectionHeading = document.getElementById('paymentSectionHeading');
-            const amountLabel = document.getElementById('amountLabel');
-            const paymentProcessorText = document.getElementById('paymentProcessorText');
-
-            if (amount === 0) {
-                if (sectionHeading) sectionHeading.textContent = '3. Complete Registration';
-                if (amountLabel) amountLabel.textContent = 'Registration Fee';
-                if (paymentProcessorText) paymentProcessorText.style.display = 'none';
-                document.getElementById('displayAmount').textContent = 'Free';
-                btn.innerHTML = '<i class="bi bi-check-circle-fill me-2"></i>Enroll for Free';
-                helpText.innerHTML = '<i class="bi bi-info-circle me-1"></i>Since this internship is free, no payment is required. You will be registered immediately.';
-            } else {
-                if (sectionHeading) sectionHeading.textContent = '3. Secure Payment';
-                if (amountLabel) amountLabel.textContent = 'Total Amount';
-                if (paymentProcessorText) paymentProcessorText.style.display = 'block';
-                document.getElementById('displayAmount').textContent = '₹' + amount;
-                btn.innerHTML = '<i class="bi bi-lock-fill me-2"></i>Pay Securely — <span id="btnAmount">₹' + amount + '</span>';
-                helpText.innerHTML = '<i class="bi bi-info-circle me-1"></i>You\'ll be redirected to Razorpay\'s secure checkout. Supported: UPI, Cards, Net Banking, Wallets.';
-            }
-
-            document.getElementById('paymentSection').style.display = 'block';
-            setTimeout(() => {
-                document.getElementById('paymentSection').scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }, 100);
-        } else {
-            document.getElementById('paymentSection').style.display = 'none';
-        }
-    });
-
     function validateForm() {
         const name = document.getElementById('f_name').value.trim();
         const college = document.getElementById('f_college').value.trim();
@@ -218,95 +138,25 @@
         return true;
     }
 
-    function initiatePayment() {
+    function submitEnrollment() {
         if (!validateForm()) return;
 
-        const duration = document.getElementById('f_duration').value;
-        const amount = priceMap[duration];
-        const btn = document.getElementById('payNowBtn');
-
-        if (amount === 0) {
-            btn.disabled = true;
-            btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Enrolling…';
-
-            // Fill hidden form
-            document.getElementById('h_name').value = document.getElementById('f_name').value.trim();
-            document.getElementById('h_college').value = document.getElementById('f_college').value.trim();
-            document.getElementById('h_email').value = document.getElementById('f_email').value.trim();
-            document.getElementById('h_phone').value = document.getElementById('f_phone').value.trim();
-            document.getElementById('h_domain').value = document.getElementById('f_domain').value;
-            document.getElementById('h_duration').value = duration;
-
-            // Change form action to free enrollment endpoint (which is 'enroll') and submit
-            const form = document.getElementById('paymentSuccessForm');
-            form.action = "{% url 'enroll' %}";
-            form.submit();
-            return;
-        }
-
+        const btn = document.getElementById('submitEnrollBtn');
         btn.disabled = true;
-        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Creating order…';
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Submitting…';
 
-        fetch('{% url "create_razorpay_order" %}', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ duration: duration }),
-        })
-            .then(res => res.json())
-            .then(data => {
-                if (data.error) {
-                    alert('Error: ' + data.error);
-                    btn.disabled = false;
-                    btn.innerHTML = '<i class="bi bi-lock-fill me-2"></i>Pay Securely — <span id="btnAmount">₹' + priceMap[duration] + '</span>';
-                    return;
-                }
+        // Fill hidden form fields
+        document.getElementById('h_name').value = document.getElementById('f_name').value.trim();
+        document.getElementById('h_college').value = document.getElementById('f_college').value.trim();
+        document.getElementById('h_email').value = document.getElementById('f_email').value.trim();
+        document.getElementById('h_phone').value = document.getElementById('f_phone').value.trim();
+        document.getElementById('h_domain').value = document.getElementById('f_domain').value;
+        document.getElementById('h_duration').value = document.getElementById('f_duration').value;
 
-                const options = {
-                    key: data.key,
-                    amount: data.amount,
-                    currency: data.currency,
-                    order_id: data.order_id,
-                    name: 'TRHvision Academy',
-                    description: document.getElementById('f_domain').value + ' Internship — ' + duration,
-                    image: '{% static "vision/image/logo.png" %}',
-                    prefill: {
-                        name: document.getElementById('f_name').value.trim(),
-                        email: document.getElementById('f_email').value.trim(),
-                        contact: document.getElementById('f_phone').value.trim(),
-                    },
-                    theme: { color: '#111111' },
-                    handler: function (response) {
-                        // Fill hidden form and submit
-                        document.getElementById('h_order_id').value = response.razorpay_order_id;
-                        document.getElementById('h_payment_id').value = response.razorpay_payment_id;
-                        document.getElementById('h_signature').value = response.razorpay_signature;
-                        document.getElementById('h_name').value = document.getElementById('f_name').value.trim();
-                        document.getElementById('h_college').value = document.getElementById('f_college').value.trim();
-                        document.getElementById('h_email').value = document.getElementById('f_email').value.trim();
-                        document.getElementById('h_phone').value = document.getElementById('f_phone').value.trim();
-                        document.getElementById('h_domain').value = document.getElementById('f_domain').value;
-                        document.getElementById('h_duration').value = document.getElementById('f_duration').value;
-                        // Reset action back to payment_success (in case it was dynamically changed)
-                        const form = document.getElementById('paymentSuccessForm');
-                        form.action = "{% url 'payment_success' %}";
-                        form.submit();
-                    },
-                    modal: {
-                        ondismiss: function () {
-                            btn.disabled = false;
-                            btn.innerHTML = '<i class="bi bi-lock-fill me-2"></i>Pay Securely — ₹' + priceMap[duration];
-                        }
-                    }
-                };
-
-                const rzp = new Razorpay(options);
-                rzp.open();
-            })
-            .catch(err => {
-                alert('Network error. Please try again.');
-                btn.disabled = false;
-                btn.innerHTML = '<i class="bi bi-lock-fill me-2"></i>Pay Securely — ₹' + priceMap[duration];
-            });
+        // Submit to the enroll endpoint (no payment required at this stage)
+        const form = document.getElementById('paymentSuccessForm');
+        form.action = "{% url 'enroll' %}";
+        form.submit();
     }
 </script>
 {% endblock %}
