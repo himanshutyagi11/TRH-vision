@@ -187,39 +187,49 @@ def enroll(request):
             pricing = InternshipPricing.objects.get(duration=duration, is_active=True)
             price = int(pricing.price)
         except InternshipPricing.DoesNotExist:
-            price = -1
-
-        if price != 0:
-            messages.error(request, "Invalid payment or pricing configuration.")
-            return redirect('enroll')
+            price = 0  # Default to free if no pricing found
 
         try:
-            # Save enrollment for free internship
-            enrollment = Enrollment.objects.create(
-                name=name,
-                college=college,
-                email=email,
-                phone=phone,
-                domain=domain,
-                duration=duration,
-                amount=0,
-                transaction_id='FREE_ENROLL',
-                razorpay_order_id='FREE_ENROLL',
-                razorpay_payment_id='FREE_ENROLL',
-                is_paid=True,
-            )
+            if price == 0:
+                # Free enrollment — mark as paid immediately
+                enrollment = Enrollment.objects.create(
+                    name=name,
+                    college=college,
+                    email=email,
+                    phone=phone,
+                    domain=domain,
+                    duration=duration,
+                    amount=0,
+                    transaction_id='FREE_ENROLL',
+                    razorpay_order_id='FREE_ENROLL',
+                    razorpay_payment_id='FREE_ENROLL',
+                    is_paid=True,
+                )
+            else:
+                # Paid enrollment — save without payment; student pays later from dashboard
+                enrollment = Enrollment.objects.create(
+                    name=name,
+                    college=college,
+                    email=email,
+                    phone=phone,
+                    domain=domain,
+                    duration=duration,
+                    amount=price,
+                    transaction_id='PENDING',
+                    razorpay_order_id='PENDING',
+                    razorpay_payment_id='PENDING',
+                    is_paid=False,
+                )
 
-            # Save in session for success page download link
+            # Save in session for success page
             request.session['enrolled_id'] = enrollment.id
-
-            # Offer letter will be sent by the background processor after admin approval and 4 hours have passed
 
             # --- Notify admin ---
             try:
                 send_mail(
-                    f"✅ New Free Enrollment: {name} — {domain}",
+                    f"✅ New Enrollment: {name} — {domain}",
                     f"""
-New Free Enrollment!
+New Enrollment Received!
 
 Name:       {name}
 College:    {college}
@@ -227,7 +237,8 @@ Email:      {email}
 Phone:      {phone}
 Domain:     {domain}
 Duration:   {duration}
-Amount:     ₹0
+Amount:     ₹{price}
+Status:     {'Free / Paid' if price == 0 else 'Payment Pending (from Dashboard)'}
 """,
                     'noreply@trhvision.in',
                     ['support@trhvision.in'],
