@@ -239,6 +239,32 @@ class Enrollment(models.Model):
         return f"{self.name} - {self.domain} ({self.duration})"
 
 
+# =================================================================
+#  STUDENT ATTENDANCE
+#  One record per student per day — created automatically on login.
+#  Lets admin see who is actively engaging with the platform.
+# =================================================================
+class StudentAttendance(models.Model):
+    user       = models.ForeignKey(User, on_delete=models.CASCADE, related_name='attendance_records')
+    date       = models.DateField(help_text="Calendar date of the login")
+    login_time = models.DateTimeField(help_text="Timestamp of the first login on this date")
+    ip_address = models.GenericIPAddressField(null=True, blank=True)
+    user_agent = models.CharField(max_length=500, blank=True)
+    login_count = models.PositiveIntegerField(
+        default=1,
+        help_text="How many times the student logged in on this date"
+    )
+
+    class Meta:
+        unique_together = ('user', 'date')   # One attendance row per student per day
+        ordering = ['-date', 'user']
+        verbose_name = 'Student Attendance'
+        verbose_name_plural = 'Student Attendance'
+
+    def __str__(self):
+        return f"{self.user.get_full_name() or self.user.username} — {self.date}"
+
+
 # -------------------------------------------------------------------
 # Announcement model: period-specific notices shown on the dashboard
 # -------------------------------------------------------------------

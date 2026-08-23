@@ -107,6 +107,7 @@ urlpatterns = [
     path('trhadmin/enrollments/<int:enrollment_id>/send-offer/', views.trh_admin_send_offer_letter, name='trh_admin_send_offer_letter'),
     path('trhadmin/enrollments/<int:enrollment_id>/send-credentials/', views.trh_admin_send_credentials, name='trh_admin_send_credentials'),
     path('trhadmin/contacts/', views.trh_admin_contacts, name='trh_admin_contacts'),
+    path('trhadmin/attendance/', views.trh_admin_attendance, name='trh_admin_attendance'),
 
     # Password Reset URLs
     path('password_reset/', auth_views.PasswordResetView.as_view(

@@ -1,0 +1,308 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-HXWELDJFKG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-HXWELDJFKG');
+</script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Attendance | Admin Panel</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        body { background: #f8fafc; }
+        .admin-sidebar { width: 260px; height: 100vh; position: fixed; top: 0; left: 0; background: #111827; z-index: 1000; padding: 1.5rem; display: flex; flex-direction: column; overflow-y: auto; }
+        .admin-main { margin-left: 260px; padding: 2rem; min-height: 100vh; }
+        @media (max-width: 991px) { .admin-sidebar { transform: translateX(-100%); transition: transform .3s; } .admin-sidebar.show { transform: translateX(0); } .admin-main { margin-left: 0; } }
+        .admin-sidebar .brand { display: flex; align-items: center; gap: 8px; margin-bottom: 2rem; text-decoration: none; }
+        .admin-sidebar .brand span { font-size: 1.1rem; font-weight: 800; color: #fff; }
+        .admin-sidebar .brand .dot { color: #6366f1; }
+        .admin-sidebar .admin-tag { font-size: 0.55rem; background: #6366f1; color: #fff; padding: 2px 8px; border-radius: 4px; font-weight: 700; letter-spacing: 1px; margin-left: 4px; }
+        .admin-sidebar .section-label { font-size: 0.6rem; color: rgba(255,255,255,0.25); font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; margin: 1.5rem 0 0.5rem 0.5rem; }
+        .admin-sidebar .nav-link { color: rgba(255,255,255,0.45); font-weight: 600; font-size: 0.82rem; border-radius: 10px; padding: 9px 12px; margin-bottom: 2px; transition: all 0.2s; }
+        .admin-sidebar .nav-link:hover, .admin-sidebar .nav-link.active { color: #fff; background: rgba(99,102,241,0.15); }
+        .admin-sidebar .nav-link i { width: 20px; text-align: center; }
+
+        .kpi-card { background: #fff; border-radius: 16px; padding: 1.25rem 1.5rem; border: 1px solid rgba(0,0,0,0.04); box-shadow: 0 1px 3px rgba(0,0,0,0.04); transition: transform 0.2s, box-shadow 0.2s; }
+        .kpi-card:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(0,0,0,0.08); }
+        .kpi-icon { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; }
+        .table-card { background: #fff; border-radius: 16px; padding: 1.5rem; border: 1px solid rgba(0,0,0,0.04); box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+        .table th { font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #94a3b8; border-bottom: 2px solid #f1f5f9; }
+        .table td { font-size: 0.82rem; vertical-align: middle; border-color: #f8fafc; }
+
+        /* Dot heat-map style for "last seen" badges */
+        .seen-today    { background: #d1fae5; color: #065f46; }
+        .seen-week     { background: #dbeafe; color: #1e40af; }
+        .seen-month    { background: #fef3c7; color: #92400e; }
+        .seen-inactive { background: #f1f5f9; color: #64748b; }
+
+        .avatar { width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.78rem; font-weight: 700; flex-shrink: 0; }
+
+        /* Tab styles */
+        .tab-toggle { display: flex; gap: .5rem; }
+        .tab-btn { border: none; background: #f1f5f9; border-radius: 10px; padding: 6px 16px; font-size: 0.78rem; font-weight: 600; cursor: pointer; color: #64748b; transition: .2s; }
+        .tab-btn.active { background: #111827; color: #fff; }
+    </style>
+</head>
+<body>
+<button class="btn btn-dark d-lg-none position-fixed top-0 start-0 m-3 z-3 shadow rounded-3"
+    onclick="document.querySelector('.admin-sidebar').classList.toggle('show')">
+    <i class="bi bi-list fs-4"></i>
+</button>
+
+<!-- Sidebar -->
+<aside class="admin-sidebar">
+    <a href="{% url 'trh_admin_dashboard' %}" class="brand">
+        <img src="{% static 'vision/image/logo.png' %}" alt="" width="28" onerror="this.style.display='none'">
+        <span>TRHvision<span class="dot">.</span></span><span class="admin-tag">ADMIN</span>
+    </a>
+
+    <div class="section-label">Overview</div>
+    <nav class="nav flex-column">
+        <a href="{% url 'trh_admin_dashboard' %}" class="nav-link"><i class="bi bi-grid-1x2-fill me-2"></i>Dashboard</a>
+    </nav>
+
+    <div class="section-label">Internships</div>
+    <nav class="nav flex-column">
+        <a href="{% url 'trh_admin_students' %}" class="nav-link"><i class="bi bi-mortarboard me-2"></i>Students</a>
+        <a href="{% url 'trh_admin_enrollments' %}" class="nav-link"><i class="bi bi-credit-card me-2"></i>Enrollments</a>
+        <a href="{% url 'trh_admin_attendance' %}" class="nav-link active"><i class="bi bi-calendar-check me-2"></i>Attendance</a>
+    </nav>
+
+    <div class="section-label">Clients</div>
+    <nav class="nav flex-column">
+        <a href="{% url 'trh_admin_clients' %}" class="nav-link"><i class="bi bi-building me-2"></i>Clients</a>
+    </nav>
+
+    <div class="section-label">Communication</div>
+    <nav class="nav flex-column">
+        <a href="{% url 'trh_admin_contacts' %}" class="nav-link"><i class="bi bi-chat-dots me-2"></i>Messages</a>
+    </nav>
+
+    <div class="mt-auto pt-3 border-top" style="border-color:rgba(255,255,255,0.08)!important;">
+        <a href="{% url 'admin:index' %}" class="nav-link"><i class="bi bi-database me-2"></i>Django Admin</a>
+        <a href="{% url 'index' %}" class="nav-link text-danger"><i class="bi bi-box-arrow-right me-2"></i>Exit</a>
+    </div>
+</aside>
+
+<main class="admin-main">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+        <div>
+            <h4 class="fw-bold mb-1"><i class="bi bi-calendar-check-fill text-success me-2"></i>Student Attendance</h4>
+            <p class="text-muted small mb-0">Track which students are logging in and staying active.</p>
+        </div>
+    </div>
+
+    {% if messages %}
+    <div class="mb-3">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show py-2 small rounded-3" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close btn-close-sm" data-bs-dismiss="alert"></button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- KPI Cards -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-4 col-6">
+            <div class="kpi-card">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="kpi-icon" style="background:#d1fae5;color:#059669;"><i class="bi bi-person-check-fill"></i></div>
+                    <div>
+                        <p class="text-muted mb-0" style="font-size:0.65rem;font-weight:700;letter-spacing:1px;">TODAY</p>
+                        <h4 class="fw-bold mb-0">{{ today_count }}</h4>
+                        <p class="text-muted mb-0" style="font-size:0.65rem;">Students logged in</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 col-6">
+            <div class="kpi-card">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="kpi-icon" style="background:#dbeafe;color:#2563eb;"><i class="bi bi-calendar-week-fill"></i></div>
+                    <div>
+                        <p class="text-muted mb-0" style="font-size:0.65rem;font-weight:700;letter-spacing:1px;">THIS WEEK</p>
+                        <h4 class="fw-bold mb-0">{{ this_week_count }}</h4>
+                        <p class="text-muted mb-0" style="font-size:0.65rem;">Unique daily sessions</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 col-6">
+            <div class="kpi-card">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="kpi-icon" style="background:#ede9fe;color:#7c3aed;"><i class="bi bi-graph-up-arrow"></i></div>
+                    <div>
+                        <p class="text-muted mb-0" style="font-size:0.65rem;font-weight:700;letter-spacing:1px;">THIS MONTH</p>
+                        <h4 class="fw-bold mb-0">{{ month_count }}</h4>
+                        <p class="text-muted mb-0" style="font-size:0.65rem;">Unique daily sessions</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search / Filter -->
+    <form method="GET" class="d-flex flex-wrap gap-2 align-items-center mb-4">
+        <input type="text" name="q" class="form-control form-control-sm rounded-pill"
+               placeholder="Search by name or email..." value="{{ search }}" style="max-width:260px;">
+        <input type="date" name="date_from" class="form-control form-control-sm rounded-pill"
+               value="{{ date_from }}" style="max-width:160px;" title="From date">
+        <input type="date" name="date_to" class="form-control form-control-sm rounded-pill"
+               value="{{ date_to }}" style="max-width:160px;" title="To date">
+        <button class="btn btn-sm btn-dark rounded-pill px-3"><i class="bi bi-search me-1"></i>Filter</button>
+        <a href="{% url 'trh_admin_attendance' %}" class="btn btn-sm btn-outline-secondary rounded-pill px-3">Reset</a>
+    </form>
+
+    <!-- Tab Toggle -->
+    <div class="tab-toggle mb-3">
+        <button class="tab-btn active" onclick="showTab('summary', this)">Per Student Summary</button>
+        <button class="tab-btn" onclick="showTab('log', this)">Daily Login Log (30 days)</button>
+    </div>
+
+    <!-- ── Tab 1: Per-Student Summary ────────────────────────────── -->
+    <div id="tab-summary">
+        <div class="table-card">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h6 class="fw-bold mb-0"><i class="bi bi-people-fill text-primary me-2"></i>Student Engagement Overview</h6>
+                <span class="badge bg-dark rounded-pill">{{ student_summary|length }} students</span>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>Student</th>
+                            <th>Email</th>
+                            <th>Days Present</th>
+                            <th>Total Logins</th>
+                            <th>Last Seen</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for s in student_summary %}
+                        {% with full_name=s.user__first_name|add:" "|add:s.user__last_name %}
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="avatar" style="background:#e0e7ff;color:#4338ca;">
+                                        {{ s.user__first_name|first|upper }}{{ s.user__last_name|first|upper }}
+                                    </div>
+                                    <span class="fw-semibold">{{ full_name|default:s.user__email }}</span>
+                                </div>
+                            </td>
+                            <td class="text-muted">{{ s.user__email }}</td>
+                            <td>
+                                <span class="fw-bold">{{ s.total_days }}</span>
+                                <span class="text-muted small"> day{{ s.total_days|pluralize }}</span>
+                            </td>
+                            <td>
+                                <span class="fw-bold">{{ s.total_logins }}</span>
+                                <span class="text-muted small"> login{{ s.total_logins|pluralize }}</span>
+                            </td>
+                            <td class="text-muted">{{ s.last_seen|date:"M d, Y" }}</td>
+                            <td>
+                                {% with days_ago=today|timeuntil:s.last_seen %}
+                                {% if s.last_seen == today %}
+                                <span class="badge rounded-pill seen-today" style="font-size:0.65rem;">
+                                    <i class="bi bi-circle-fill me-1" style="font-size:0.45rem;"></i>Active Today
+                                </span>
+                                {% elif s.last_seen >= week_start %}
+                                <span class="badge rounded-pill seen-week" style="font-size:0.65rem;">This Week</span>
+                                {% else %}
+                                <span class="badge rounded-pill seen-inactive" style="font-size:0.65rem;">{{ s.last_seen|timesince }} ago</span>
+                                {% endif %}
+                                {% endwith %}
+                            </td>
+                        </tr>
+                        {% endwith %}
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center text-muted py-4">
+                                <i class="bi bi-calendar-x display-6 d-block mb-2 opacity-25"></i>
+                                No attendance records yet. Records appear automatically when students log in.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── Tab 2: Daily Login Log ────────────────────────────────── -->
+    <div id="tab-log" style="display:none;">
+        <div class="table-card">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h6 class="fw-bold mb-0"><i class="bi bi-clock-history text-warning me-2"></i>Daily Login Log — Last 30 Days</h6>
+                <span class="badge bg-dark rounded-pill">{{ recent_records|length }} records</span>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Student</th>
+                            <th>Email</th>
+                            <th>Logins</th>
+                            <th>First Login At</th>
+                            <th>IP Address</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for r in recent_records %}
+                        <tr>
+                            <td>
+                                <span class="fw-semibold {% if r.date == today %}text-success{% endif %}">
+                                    {{ r.date|date:"D, M d" }}
+                                </span>
+                                {% if r.date == today %}
+                                <span class="badge bg-success ms-1" style="font-size:0.55rem;">TODAY</span>
+                                {% endif %}
+                            </td>
+                            <td class="fw-semibold">{{ r.user.get_full_name|default:r.user.username }}</td>
+                            <td class="text-muted">{{ r.user.email }}</td>
+                            <td>
+                                <span class="badge bg-light text-dark border" style="font-size:0.7rem;">
+                                    <i class="bi bi-arrow-repeat me-1"></i>{{ r.login_count }}×
+                                </span>
+                            </td>
+                            <td class="text-muted">{{ r.login_time|date:"h:i A" }}</td>
+                            <td class="text-muted" style="font-size:0.75rem;">{{ r.ip_address|default:"—" }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center text-muted py-4">
+                                No login records in the last 30 days.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+function showTab(tab, btn) {
+    document.getElementById('tab-summary').style.display = tab === 'summary' ? '' : 'none';
+    document.getElementById('tab-log').style.display     = tab === 'log'     ? '' : 'none';
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+}
+</script>
+</body>
+</html>

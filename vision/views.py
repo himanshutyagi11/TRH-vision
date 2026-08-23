@@ -1882,7 +1882,9 @@ def trh_admin_login(request):
 def trh_admin_dashboard(request):
     """Admin panel overview with KPIs."""
     from django.db.models import Sum, Count
-    from .models import Enrollment, Contact, ClientRequest
+    from .models import Enrollment, Contact, ClientRequest, StudentAttendance
+    from django.utils import timezone
+    import datetime
 
     # Student stats
     total_students = Profile.objects.count()
@@ -1899,11 +1901,28 @@ def trh_admin_dashboard(request):
     total_client_revenue = ClientInvoice.objects.filter(status='paid').aggregate(
         total=Sum('amount'))['total'] or 0
 
+    # Attendance stats
+    today = timezone.localdate()
+    week_start = today - datetime.timedelta(days=today.weekday())
+    today_active = StudentAttendance.objects.filter(date=today).count()
+    week_active  = StudentAttendance.objects.filter(date__gte=week_start).count()
+    # Students active in last 7 days (unique students)
+    active_7d = StudentAttendance.objects.filter(
+        date__gte=today - datetime.timedelta(days=6)
+    ).values('user').distinct().count()
+
     # Recent entries
     recent_enrollments = Enrollment.objects.order_by('-created_at')[:5]
     recent_contacts = Contact.objects.order_by('-created_at')[:5]
     recent_client_requests = ClientRequest.objects.order_by('-created_at')[:5]
     recent_projects = ClientProject.objects.order_by('-created_at')[:5]
+    # Today's attendance list for dashboard widget
+    todays_logins = (
+        StudentAttendance.objects
+        .filter(date=today)
+        .select_related('user')
+        .order_by('-login_count')[:8]
+    )
 
     context = {
         'total_students': total_students,
@@ -1917,8 +1936,14 @@ def trh_admin_dashboard(request):
         'recent_contacts': recent_contacts,
         'recent_client_requests': recent_client_requests,
         'recent_projects': recent_projects,
+        # Attendance
+        'today_active': today_active,
+        'week_active':  week_active,
+        'active_7d':    active_7d,
+        'todays_logins': todays_logins,
     }
     return render(request, 'vision/trh_admin_dashboard.html', context)
+
 
 
 @staff_required
@@ -2359,6 +2384,101 @@ def trh_admin_contacts(request):
         'tab': tab,
     }
     return render(request, 'vision/trh_admin_contacts.html', context)
+
+
+@staff_required
+def trh_admin_attendance(request):
+    """Admin view: student attendance tracker — who is logging in and how often."""
+    from .models import StudentAttendance
+    from django.db.models import Count, Max, Sum
+    from django.utils import timezone
+    import datetime
+
+    # ── Filters ────────────────────────────────────────────────────
+    search     = request.GET.get('q', '').strip()
+    date_from  = request.GET.get('date_from', '')
+    date_to    = request.GET.get('date_to', '')
+
+    records_qs = StudentAttendance.objects.select_related('user', 'user__profile')
+
+    if search:
+        records_qs = records_qs.filter(
+            models.Q(user__first_name__icontains=search) |
+            models.Q(user__last_name__icontains=search)  |
+            models.Q(user__email__icontains=search)
+        )
+    if date_from:
+        try:
+            records_qs = records_qs.filter(date__gte=date_from)
+        except ValueError:
+            pass
+    if date_to:
+        try:
+            records_qs = records_qs.filter(date__lte=date_to)
+        except ValueError:
+            pass
+
+    # ── Today's active students ──────────────────────────────────
+    today = timezone.localdate()
+    today_count = StudentAttendance.objects.filter(date=today).count()
+
+    # ── This week ───────────────────────────────────────────────
+    week_start = today - datetime.timedelta(days=today.weekday())
+    this_week_count = StudentAttendance.objects.filter(date__gte=week_start).count()
+
+    # ── This month ───────────────────────────────────────────────
+    month_count = StudentAttendance.objects.filter(
+        date__year=today.year, date__month=today.month
+    ).count()
+
+    # ── Per-student summary ──────────────────────────────────────
+    # Group attendance by student — total days present, last seen, total logins
+    student_summary = (
+        StudentAttendance.objects
+        .values('user', 'user__first_name', 'user__last_name', 'user__email')
+        .annotate(
+            total_days=Count('id'),
+            total_logins=Sum('login_count'),
+            last_seen=Max('date'),
+        )
+        .order_by('-last_seen')
+    )
+
+    if search:
+        student_summary = student_summary.filter(
+            models.Q(user__first_name__icontains=search) |
+            models.Q(user__last_name__icontains=search)  |
+            models.Q(user__email__icontains=search)
+        )
+
+    # ── Recent 30-day log (detailed rows) ─────────────────────────
+    since_30 = today - datetime.timedelta(days=29)
+    recent_records = (
+        StudentAttendance.objects
+        .filter(date__gte=since_30)
+        .select_related('user')
+        .order_by('-date', '-login_count')
+    )
+    if search:
+        recent_records = recent_records.filter(
+            models.Q(user__first_name__icontains=search) |
+            models.Q(user__last_name__icontains=search)  |
+            models.Q(user__email__icontains=search)
+        )
+
+    context = {
+        'student_summary': student_summary,
+        'recent_records':  recent_records,
+        'today_count':     today_count,
+        'this_week_count': this_week_count,
+        'month_count':     month_count,
+        'search':          search,
+        'date_from':       date_from,
+        'date_to':         date_to,
+        'today':           today,
+        'week_start':      week_start,
+    }
+    return render(request, 'vision/trh_admin_attendance.html', context)
 
 
 @staff_required

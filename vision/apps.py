@@ -2,11 +2,63 @@ from django.apps import AppConfig
 import os
 import sys
 
+
+def _record_student_attendance(sender, request, user, **kwargs):
+    """
+    Signal handler for django.contrib.auth.signals.user_logged_in.
+    Records one attendance row per student per calendar day.
+    Skips staff, superusers, and client-portal accounts.
+    """
+    # Only track regular student accounts
+    if user.is_staff or user.is_superuser:
+        return
+    # Skip client portal users
+    if hasattr(user, 'client_profile'):
+        return
+    # Skip if the user has no student profile
+    if not hasattr(user, 'profile'):
+        return
+
+    try:
+        from django.utils import timezone
+        from django.db.models import F
+        from .models import StudentAttendance
+
+        today = timezone.localdate()
+        now   = timezone.now()
+
+        # Get client IP
+        x_forwarded = request.META.get('HTTP_X_FORWARDED_FOR', '')
+        ip = x_forwarded.split(',')[0].strip() if x_forwarded else request.META.get('REMOTE_ADDR', '')
+        ua = request.META.get('HTTP_USER_AGENT', '')[:500]
+
+        record, created = StudentAttendance.objects.get_or_create(
+            user=user,
+            date=today,
+            defaults={
+                'login_time': now,
+                'ip_address': ip or None,
+                'user_agent': ua,
+                'login_count': 1,
+            }
+        )
+        if not created:
+            # Already logged in today — just increment the counter
+            StudentAttendance.objects.filter(pk=record.pk).update(
+                login_count=F('login_count') + 1
+            )
+    except Exception:
+        pass  # Never break the login flow
+
+
 class VisionConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'vision'
 
     def ready(self):
+        # Connect the attendance signal
+        from django.contrib.auth.signals import user_logged_in
+        user_logged_in.connect(_record_student_attendance, dispatch_uid='vision_student_attendance')
         # NOTE: Auto-dispatcher disabled — admin now uses the manual one-click
         # "Send Offer Letter" → "Send Credentials" flow in the enrollments panel.
         # To re-enable, uncomment the block below.
