@@ -180,6 +180,7 @@
                         <div>
                             <p class="text-muted mb-0" style="font-size:0.65rem;font-weight:700;letter-spacing:1px;">REVENUE</p>
                             <h4 class="fw-bold mb-0">₹{{ total_enrollment_revenue|floatformat:0 }}</h4>
+                            <p class="text-muted mb-0" style="font-size:0.55rem;">Certificate payments</p>
                         </div>
                     </div>
                 </div>
@@ -192,8 +193,9 @@
                 <div class="kpi-card" style="background: linear-gradient(135deg, #0f172a, #1e293b); color: #fff;">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <p class="mb-1" style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-weight:700;letter-spacing:1px;">INTERNSHIP REVENUE</p>
+                            <p class="mb-1" style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-weight:700;letter-spacing:1px;">CERTIFICATE REVENUE</p>
                             <h3 class="fw-bold mb-0">₹{{ total_enrollment_revenue|floatformat:0 }}</h3>
+                            <p class="mb-0" style="font-size:0.6rem;color:rgba(255,255,255,0.35);">Student certificate payments only</p>
                         </div>
                         <div style="font-size:2rem;opacity:0.15;"><i class="bi bi-mortarboard-fill"></i></div>
                     </div>
@@ -221,7 +223,7 @@
                         <a href="{% url 'trh_admin_enrollments' %}" class="btn btn-sm btn-outline-dark rounded-pill px-3">View All</a>
                     </div>
                     <table class="table table-hover mb-0">
-                        <thead><tr><th>Name</th><th>Domain</th><th>Duration</th><th>Paid</th></tr></thead>
+                        <thead><tr><th>Name</th><th>Domain</th><th>Duration</th><th>Status</th></tr></thead>
                         <tbody>
                             {% for e in recent_enrollments %}
                             <tr>
@@ -229,10 +231,16 @@
                                 <td>{{ e.domain }}</td>
                                 <td>{{ e.duration }}</td>
                                 <td>
-                                    {% if e.is_paid %}
-                                    <span class="badge bg-success" style="font-size:0.65rem;">Paid</span>
+                                    {% if not e.is_approved %}
+                                    <span class="badge bg-warning text-dark" style="font-size:0.65rem;">New</span>
+                                    {% elif not e.offer_letter_sent %}
+                                    <span class="badge bg-info text-dark" style="font-size:0.65rem;">Approved</span>
+                                    {% elif not e.credentials_sent %}
+                                    <span class="badge bg-primary" style="font-size:0.65rem;">Letter Sent</span>
+                                    {% elif e.certificate_paid %}
+                                    <span class="badge bg-success" style="font-size:0.65rem;">Cert. Paid</span>
                                     {% else %}
-                                    <span class="badge bg-warning text-dark" style="font-size:0.65rem;">Pending</span>
+                                    <span class="badge bg-success" style="font-size:0.65rem;">Active</span>
                                     {% endif %}
                                 </td>
                             </tr>

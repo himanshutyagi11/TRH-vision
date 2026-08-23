@@ -1893,9 +1893,9 @@ def trh_admin_dashboard(request):
     active_client_projects = ClientProject.objects.exclude(status='completed').count()
     total_client_projects = ClientProject.objects.count()
 
-    # Revenue
-    total_enrollment_revenue = Enrollment.objects.filter(is_paid=True).aggregate(
-        total=Sum('amount'))['total'] or 0
+    # Revenue — only count certificate payments made by students after internship
+    total_enrollment_revenue = Enrollment.objects.filter(certificate_paid=True).aggregate(
+        total=Sum('certificate_payment_amount'))['total'] or 0
     total_client_revenue = ClientInvoice.objects.filter(status='paid').aggregate(
         total=Sum('amount'))['total'] or 0
 
@@ -2374,9 +2374,9 @@ def trh_admin_approve_enrollment(request, enrollment_id):
         return redirect('trh_admin_enrollments')
 
     enrollment = get_object_or_404(Enrollment, id=enrollment_id)
-    if not enrollment.is_paid:
-        messages.error(request, "Cannot approve an unpaid enrollment.")
-        return redirect('trh_admin_enrollments')
+
+    # Removed: no longer require is_paid before approving.
+    # Students enroll first, complete the internship, then pay for the certificate.
 
     if enrollment.is_approved:
         messages.warning(request, "Enrollment is already approved.")

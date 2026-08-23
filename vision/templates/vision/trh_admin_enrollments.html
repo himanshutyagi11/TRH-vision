@@ -101,29 +101,39 @@
         <div class="table-card">
             <div class="table-responsive">
                 <table class="table table-hover mb-0">
-                    <thead><tr><th>Name</th><th>College</th><th>Email</th><th>Phone</th><th>Domain</th><th>Duration</th><th>Amount</th><th>Payment</th><th>Approval Status</th><th>Date</th></tr></thead>
+                    <thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Domain</th><th>Duration</th><th>Amount</th><th>Reg. Payment</th><th>Cert. Payment</th><th>Approval Status</th><th>Date</th></tr></thead>
                     <tbody>
                         {% for e in enrollments %}
                         <tr>
                             <td class="fw-bold">{{ e.name }}</td>
-                            <td class="text-muted">{{ e.college }}</td>
                             <td>{{ e.email }}</td>
                             <td>{{ e.phone }}</td>
                             <td><span class="badge bg-light text-dark border">{{ e.domain }}</span></td>
                             <td>{{ e.duration }}</td>
                             <td class="fw-bold">₹{{ e.amount|floatformat:0 }}</td>
+                            <!-- Registration Fee Payment -->
                             <td>
                                 {% if e.is_paid %}
                                 <span class="badge bg-success" style="font-size:0.65rem;">Paid</span>
-                                <br>
-                                <a href="{% url 'download_offer_letter_by_id' e.id %}" target="_blank" class="text-primary small text-decoration-none" style="font-size:0.75rem;">
-                                    <i class="bi bi-file-earmark-pdf me-1"></i>Offer Letter
-                                </a>
                                 {% if e.razorpay_payment_id %}
                                 <br><small class="text-muted" style="font-size:0.6rem;">{{ e.razorpay_payment_id|truncatechars:15 }}</small>
                                 {% endif %}
                                 {% else %}
                                 <span class="badge bg-warning text-dark" style="font-size:0.65rem;">Pending</span>
+                                {% endif %}
+                            </td>
+                            <!-- Certificate Payment (paid after internship completion) -->
+                            <td>
+                                {% if e.certificate_paid %}
+                                <span class="badge bg-success" style="font-size:0.65rem;">Paid</span>
+                                {% if e.certificate_payment_amount %}
+                                <br><small class="text-success fw-bold" style="font-size:0.7rem;">₹{{ e.certificate_payment_amount|floatformat:0 }}</small>
+                                {% endif %}
+                                {% if e.certificate_payment_id %}
+                                <br><small class="text-muted" style="font-size:0.6rem;">{{ e.certificate_payment_id|truncatechars:12 }}</small>
+                                {% endif %}
+                                {% else %}
+                                <span class="text-muted small" style="font-size:0.7rem;">—</span>
                                 {% endif %}
                             </td>
                             <td>
@@ -170,11 +180,17 @@
                                     <span class="badge bg-primary-subtle text-primary d-block mt-1" style="font-size:0.6rem;">
                                         <i class="bi bi-key-fill me-1"></i>Credentials Sent
                                     </span>
+                                    {% if e.is_approved %}
+                                    <a href="{% url 'download_offer_letter_by_id' e.id %}" target="_blank"
+                                       class="text-primary small text-decoration-none d-block mt-1"
+                                       style="font-size:0.65rem;">
+                                        <i class="bi bi-file-earmark-pdf me-1"></i>Offer Letter
+                                    </a>
+                                    {% endif %}
                                     {% endif %}
 
                                 {% else %}
-                                    {% if e.is_paid %}
-                                    {# --- STEP 1: Approve --- #}
+                                    {# --- NOT YET APPROVED: Show Approve button for ALL enrollments --- #}
                                     <form method="POST" action="{% url 'trh_admin_approve_enrollment' e.id %}"
                                           class="d-inline"
                                           onsubmit="return confirm('Approve enrollment for {{ e.name }}?')">
@@ -190,9 +206,6 @@
                                             </button>
                                         </div>
                                     </form>
-                                    {% else %}
-                                    <span class="text-muted small" style="font-size:0.7rem;">Awaiting Payment</span>
-                                    {% endif %}
                                 {% endif %}
                             </td>
                             <td class="text-muted">{{ e.created_at|date:"M d, Y" }}</td>

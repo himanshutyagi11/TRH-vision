@@ -223,6 +223,18 @@ class Enrollment(models.Model):
     start_date = models.DateField(null=True, blank=True, help_text="Admin-set internship start date (used on offer letter & certificate)")
     created_at = models.DateTimeField(auto_now_add=True)
 
+    # Certificate payment — paid by the student AFTER completing internship
+    certificate_paid = models.BooleanField(default=False, help_text="True when the student has paid for the completion certificate")
+    certificate_payment_amount = models.DecimalField(
+        max_digits=10, decimal_places=2, null=True, blank=True,
+        help_text="Amount paid by the student to receive their completion certificate"
+    )
+    certificate_payment_id = models.CharField(
+        max_length=200, blank=True, null=True,
+        help_text="Razorpay/UPI payment ID for the certificate payment"
+    )
+    certificate_payment_date = models.DateTimeField(null=True, blank=True, help_text="When the student completed the certificate payment")
+
     def __str__(self):
         return f"{self.name} - {self.domain} ({self.duration})"
 
