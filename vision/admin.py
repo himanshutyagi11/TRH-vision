@@ -16,7 +16,9 @@ from .models import (
     ClientProfile, ClientProject, ClientProjectMilestone,
     ClientProjectDeliverable, ClientProjectUpdate, ClientInvoice,
     EmailTemplate, OFFER_LETTER_PLACEHOLDERS, CREDENTIALS_PLACEHOLDERS,
+    LEARNING_COMPLETION_PLACEHOLDERS, INTERNSHIP_COMPLETION_PLACEHOLDERS,
     Review,
+    LearningTopic, LearningLesson,
 )
 
 # ===========================================================
@@ -699,6 +701,10 @@ class EmailTemplateAdmin(admin.ModelAdmin):
         """Shows the available {placeholder} variables directly in the change form."""
         if obj.name == 'offer_letter':
             ref = OFFER_LETTER_PLACEHOLDERS
+        elif obj.name == 'learning_completion':
+            ref = LEARNING_COMPLETION_PLACEHOLDERS
+        elif obj.name == 'internship_completion':
+            ref = INTERNSHIP_COMPLETION_PLACEHOLDERS
         else:
             ref = CREDENTIALS_PLACEHOLDERS
         return format_html(
@@ -744,3 +750,62 @@ class ReviewAdmin(admin.ModelAdmin):
         return obj.message[:60] + '…' if len(obj.message) > 60 else obj.message
     short_message.short_description = 'Message'
 
+
+# ===========================================================
+# LEARNING HUB Admin
+# ===========================================================
+
+class LearningLessonInline(admin.StackedInline):
+    """Edit lessons directly inside a LearningTopic admin page."""
+    model = LearningLesson
+    extra = 1
+    fields = ('title', 'order', 'is_active', 'content', 'code_language', 'code_example', 'try_it_note')
+    ordering = ('order',)
+    show_change_link = True
+
+
+@admin.register(LearningTopic)
+class LearningTopicAdmin(admin.ModelAdmin):
+    list_display  = ('title', 'domain', 'icon_preview', 'lesson_count_display', 'order', 'is_active')
+    list_filter   = ('domain', 'is_active')
+    search_fields = ('title', 'description')
+    list_editable = ('order', 'is_active')
+    ordering      = ('domain', 'order')
+    inlines       = [LearningLessonInline]
+
+    def icon_preview(self, obj):
+        return format_html('<i class="{}"></i> <small style="color:#6b7280">{}</small>', obj.icon, obj.icon)
+    icon_preview.short_description = 'Icon'
+
+    def lesson_count_display(self, obj):
+        count = obj.lessons.filter(is_active=True).count()
+        colour = '#22c55e' if count > 0 else '#ef4444'
+        return format_html('<strong style="color:{}">{}  lessons</strong>', colour, count)
+    lesson_count_display.short_description = 'Lessons'
+
+
+@admin.register(LearningLesson)
+class LearningLessonAdmin(admin.ModelAdmin):
+    list_display  = ('title', 'topic', 'code_language', 'order', 'is_active', 'updated_at')
+    list_filter   = ('topic__domain', 'code_language', 'is_active')
+    search_fields = ('title', 'content')
+    list_editable = ('order', 'is_active')
+    ordering      = ('topic__domain', 'topic__order', 'order')
+    readonly_fields = ('created_at', 'updated_at')
+    fieldsets = (
+        (None, {
+            'fields': ('topic', 'title', 'order', 'is_active')
+        }),
+        ('Lesson Content', {
+            'fields': ('content',),
+            'description': 'Use HTML tags: &lt;p&gt;, &lt;h3&gt;, &lt;ul&gt;, &lt;strong&gt;, &lt;code&gt;, &lt;table class="table"&gt;, etc.'
+        }),
+        ('Code Example', {
+            'fields': ('code_language', 'code_example', 'try_it_note'),
+            'classes': ('collapse',),
+        }),
+        ('Metadata', {
+            'fields': ('created_at', 'updated_at'),
+            'classes': ('collapse',),
+        }),
+    )

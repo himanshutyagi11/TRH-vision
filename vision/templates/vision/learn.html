@@ -1,0 +1,215 @@
+﻿{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Learning Hub | TRHvision Academy</title>
+<meta name="description" content="Structured learning content for your internship at TRHvision Academy.">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+<link rel="stylesheet" href="{% static 'vision/css/style.css' %}">
+<style>
+:root{--learn-green:#10b981;--learn-green-dark:#065f46;--learn-accent:#34d399;--sidebar-w:300px;--topbar-h:60px;}
+*{box-sizing:border-box;}
+body{font-family:'Inter',sans-serif;background:#f0fdf4;margin:0;}
+.learn-topbar{position:fixed;top:0;left:0;right:0;height:var(--topbar-h);background:#fff;border-bottom:1px solid #e7f5ee;display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem;z-index:1100;box-shadow:0 2px 12px rgba(16,185,129,.07);}
+.topbar-brand{display:flex;align-items:center;gap:.6rem;text-decoration:none;}
+.topbar-brand img{width:36px;}
+.topbar-brand span{font-weight:800;font-size:1.1rem;color:#111;}
+.topbar-brand span em{color:var(--learn-green);font-style:normal;}
+.topbar-pill{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:999px;padding:4px 12px;font-size:.72rem;font-weight:600;color:var(--learn-green-dark);}
+.learn-sidebar{position:fixed;top:var(--topbar-h);left:0;bottom:0;width:var(--sidebar-w);background:#fff;border-right:1px solid #e7f5ee;overflow-y:auto;overflow-x:hidden;z-index:1000;padding:1rem 0;transition:transform .3s ease;}
+.learn-sidebar::-webkit-scrollbar{width:4px;}
+.learn-sidebar::-webkit-scrollbar-thumb{background:#bbf7d0;border-radius:99px;}
+.sidebar-domain-label{font-size:.6rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:#6b7280;padding:.75rem 1.2rem .25rem;}
+.sidebar-topic{display:flex;align-items:center;justify-content:space-between;padding:.55rem 1.2rem;font-size:.82rem;font-weight:600;color:#374151;cursor:pointer;user-select:none;transition:background .15s;gap:.5rem;}
+.sidebar-topic:hover{background:#f0fdf4;}
+.sidebar-topic .topic-icon{color:var(--learn-green);font-size:1rem;flex-shrink:0;}
+.sidebar-topic .topic-title{flex:1;}
+.sidebar-topic .topic-chevron{font-size:.7rem;color:#9ca3af;transition:transform .2s;}
+.sidebar-topic.open .topic-chevron{transform:rotate(90deg);}
+.sidebar-topic .topic-prog{font-size:.62rem;font-weight:700;color:var(--learn-green);background:#f0fdf4;border-radius:99px;padding:2px 7px;white-space:nowrap;}
+.sidebar-lessons{display:none;padding:.25rem 0 .25rem 2.6rem;border-left:2px solid #d1fae5;margin-left:2.2rem;}
+.sidebar-lessons.open{display:block;}
+.sidebar-lesson-link{display:flex;align-items:center;gap:.4rem;padding:.3rem .5rem;font-size:.78rem;color:#4b5563;text-decoration:none;border-radius:6px;transition:background .15s,color .15s;}
+.sidebar-lesson-link:hover{background:#ecfdf5;color:var(--learn-green-dark);}
+.sidebar-lesson-link.active{background:#d1fae5;color:var(--learn-green-dark);font-weight:700;}
+.sidebar-lesson-link .check-icon{color:var(--learn-green);font-size:.7rem;}
+.sidebar-lesson-link .pending-dot{width:6px;height:6px;border-radius:50%;background:#d1d5db;flex-shrink:0;}
+.learn-main{margin-left:var(--sidebar-w);margin-top:var(--topbar-h);padding:2.5rem;min-height:calc(100vh - var(--topbar-h));}
+.learn-hero{background:linear-gradient(135deg,#065f46 0%,#10b981 60%,#34d399 100%);border-radius:20px;padding:2.5rem;color:#fff;margin-bottom:2.5rem;position:relative;overflow:hidden;box-shadow:0 12px 40px rgba(16,185,129,.28);}
+.learn-hero::before{content:'📚';position:absolute;right:2rem;top:50%;transform:translateY(-50%);font-size:7rem;opacity:.12;line-height:1;}
+.learn-hero h1{font-weight:900;font-size:1.8rem;margin:0 0 .4rem;}
+.learn-hero p{margin:0;opacity:.82;font-size:.92rem;}
+.hero-stats{display:flex;gap:2rem;margin-top:1.5rem;flex-wrap:wrap;}
+.hero-stat-val{font-size:2rem;font-weight:900;line-height:1;}
+.hero-stat-lbl{font-size:.65rem;letter-spacing:1.5px;text-transform:uppercase;opacity:.6;margin-top:2px;}
+.hero-progress-wrap{margin-top:1.2rem;max-width:400px;}
+.hero-progress-bar-bg{background:rgba(255,255,255,.2);border-radius:99px;height:8px;overflow:hidden;}
+.hero-progress-bar-fill{height:8px;border-radius:99px;background:#fff;transition:width .6s ease;}
+.hero-progress-label{font-size:.72rem;opacity:.7;margin-top:.3rem;}
+.learn-filter-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:.75rem;}
+.filter-tab{padding:6px 18px;border-radius:99px;font-size:.8rem;font-weight:600;border:2px solid #d1fae5;background:#fff;color:#374151;text-decoration:none;transition:all .15s;}
+.filter-tab:hover,.filter-tab.active{background:var(--learn-green);color:#fff;border-color:var(--learn-green);}
+.domain-section{margin-bottom:2.5rem;}
+.domain-heading{font-size:.75rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:#6b7280;margin-bottom:1rem;display:flex;align-items:center;gap:.5rem;}
+.domain-heading::after{content:'';flex:1;height:1px;background:#e5e7eb;}
+.topics-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.2rem;}
+.topic-card{background:#fff;border-radius:16px;padding:1.5rem;border:1.5px solid #e5e7eb;text-decoration:none;color:inherit;transition:transform .2s,box-shadow .2s,border-color .2s;display:flex;flex-direction:column;gap:.75rem;}
+.topic-card:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(16,185,129,.14);border-color:#6ee7b7;color:inherit;}
+.topic-card-header{display:flex;align-items:flex-start;gap:.85rem;}
+.topic-card-icon{width:46px;height:46px;border-radius:12px;background:linear-gradient(135deg,#d1fae5 0%,#a7f3d0 100%);display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0;color:var(--learn-green-dark);}
+.topic-card-title{font-weight:700;font-size:.95rem;color:#111;margin:0 0 .2rem;}
+.topic-card-desc{font-size:.78rem;color:#6b7280;margin:0;}
+.topic-card-meta{display:flex;align-items:center;justify-content:space-between;}
+.topic-lesson-count{font-size:.72rem;font-weight:600;color:#6b7280;background:#f3f4f6;padding:3px 9px;border-radius:99px;}
+.topic-prog-wrap{flex:1;margin:0 .75rem;}
+.topic-prog-bar{height:5px;background:#e5e7eb;border-radius:99px;overflow:hidden;}
+.topic-prog-fill{height:5px;border-radius:99px;background:linear-gradient(90deg,var(--learn-green),var(--learn-accent));transition:width .4s ease;}
+.topic-prog-pct{font-size:.65rem;font-weight:700;color:var(--learn-green);white-space:nowrap;}
+.empty-state{text-align:center;padding:4rem 2rem;color:#9ca3af;background:#fff;border-radius:20px;border:2px dashed #d1fae5;}
+.empty-state .empty-icon{font-size:4rem;display:block;margin-bottom:1rem;opacity:.5;}
+.empty-state h4{color:#374151;font-weight:700;}
+@media(max-width:768px){.learn-sidebar{transform:translateX(-100%);}.learn-sidebar.show{transform:translateX(0);}.learn-main{margin-left:0;padding:1.2rem;}.topics-grid{grid-template-columns:1fr;}.learn-hero h1{font-size:1.3rem;}}
+</style>
+</head>
+<body>
+<div class="learn-topbar">
+  <div class="d-flex align-items-center gap-3">
+    <button class="btn btn-light btn-sm d-lg-none" id="sidebarToggle"><i class="bi bi-list fs-5"></i></button>
+    <a href="{% url 'index' %}" class="topbar-brand">
+      <img src="{% static 'vision/image/logo.png' %}" alt="Logo" onerror="this.style.display='none'">
+      <span>TRHvision <em>Learn</em></span>
+    </a>
+  </div>
+  <div class="d-flex align-items-center gap-2">
+    <span class="topbar-pill d-none d-sm-inline"><i class="bi bi-mortarboard-fill me-1"></i>{{ internship_name }}</span>
+    <a href="{% url 'dashboard' %}" class="btn btn-sm btn-light rounded-pill px-3"><i class="bi bi-grid-fill me-1"></i>Dashboard</a>
+  </div>
+</div>
+
+<aside class="learn-sidebar" id="learnSidebar">
+  <div style="padding:.5rem 1.2rem .75rem;">
+    <div style="font-size:.72rem;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:1.5px;">
+      {% if browse_all %}All Domains{% else %}{{ student_domain }}{% endif %}
+    </div>
+  </div>
+  {% for domain, topics in domain_map.items %}
+    <div class="sidebar-domain-label">{{ domain }}</div>
+    {% for topic in topics %}
+      <div class="sidebar-topic" onclick="toggleTopic(this)" id="st-{{ topic.id }}">
+        <i class="bi {{ topic.icon }} topic-icon"></i>
+        <span class="topic-title">{{ topic.title }}</span>
+        <span class="topic-prog">{{ topic.completed_count }}/{{ topic.active_lesson_count }}</span>
+        <i class="bi bi-chevron-right topic-chevron"></i>
+      </div>
+      <div class="sidebar-lessons" id="sl-{{ topic.id }}">
+        {% for lesson in topic.active_lessons %}
+          <a href="{% url 'learn_lesson' lesson.id %}" class="sidebar-lesson-link">
+            {% if lesson.id in completed_lesson_ids %}
+              <i class="bi bi-check-circle-fill check-icon"></i>
+            {% else %}
+              <span class="pending-dot"></span>
+            {% endif %}
+            {{ lesson.title }}
+          </a>
+        {% empty %}
+          <span style="font-size:.72rem;color:#9ca3af;padding:.2rem .5rem;">No lessons yet</span>
+        {% endfor %}
+      </div>
+    {% endfor %}
+  {% empty %}
+    <div style="padding:1.5rem 1.2rem;font-size:.82rem;color:#9ca3af;">No topics found.</div>
+  {% endfor %}
+</aside>
+
+<main class="learn-main">
+  <div class="learn-hero">
+    <h1>📚 Learning Hub</h1>
+    <p>Structured lessons for your <strong>{{ internship_name }}</strong> internship — curated, interactive, and built for you.</p>
+    <div class="hero-stats">
+      <div><div class="hero-stat-val">{{ total_lessons }}</div><div class="hero-stat-lbl">Total Lessons</div></div>
+      <div><div class="hero-stat-val">{{ total_completed }}</div><div class="hero-stat-lbl">Completed</div></div>
+    </div>
+    {% if total_lessons > 0 %}
+    <div class="hero-progress-wrap">
+      <div class="hero-progress-bar-bg">
+        <div class="hero-progress-bar-fill" style="width:{% widthratio total_completed total_lessons 100 %}%"></div>
+      </div>
+      <div class="hero-progress-label">{{ total_completed }} of {{ total_lessons }} lessons completed</div>
+    </div>
+    {% endif %}
+  </div>
+
+  <div class="learn-filter-bar">
+    <div class="d-flex gap-2 flex-wrap">
+      <a href="{% url 'learn_home' %}" class="filter-tab {% if not browse_all %}active{% endif %}"><i class="bi bi-person-fill me-1"></i>My Domain</a>
+      <a href="{% url 'learn_home' %}?browse_all=1" class="filter-tab {% if browse_all %}active{% endif %}"><i class="bi bi-globe me-1"></i>All Domains</a>
+    </div>
+    <small class="text-muted">{{ total_lessons }} lesson{{ total_lessons|pluralize }} available</small>
+  </div>
+
+  {% if domain_map %}
+    {% for domain, topics in domain_map.items %}
+    <div class="domain-section">
+      <div class="domain-heading"><i class="bi bi-layers me-1"></i>{{ domain }}</div>
+      <div class="topics-grid">
+        {% for topic in topics %}
+          {% if topic.active_lessons %}
+            <a href="{% url 'learn_lesson' topic.active_lessons.0.id %}" class="topic-card">
+          {% else %}
+            <div class="topic-card" style="opacity:.55;cursor:default;">
+          {% endif %}
+            <div class="topic-card-header">
+              <div class="topic-card-icon"><i class="bi {{ topic.icon }}"></i></div>
+              <div>
+                <p class="topic-card-title">{{ topic.title }}</p>
+                <p class="topic-card-desc">{{ topic.description|default:"Click to start learning" }}</p>
+              </div>
+            </div>
+            <div class="topic-card-meta">
+              <span class="topic-lesson-count"><i class="bi bi-book me-1"></i>{{ topic.active_lesson_count }} lesson{{ topic.active_lesson_count|pluralize }}</span>
+              <div class="topic-prog-wrap"><div class="topic-prog-bar"><div class="topic-prog-fill" style="width:{{ topic.topic_progress }}%"></div></div></div>
+              <span class="topic-prog-pct">{{ topic.topic_progress }}%</span>
+            </div>
+          {% if topic.active_lessons %}</a>{% else %}</div>{% endif %}
+        {% endfor %}
+      </div>
+    </div>
+    {% endfor %}
+  {% else %}
+    <div class="empty-state">
+      <span class="empty-icon">📭</span>
+      <h4>No content yet for your domain</h4>
+      <p class="mb-3">Learning materials for <strong>{{ student_domain }}</strong> are being prepared by your mentors.</p>
+      {% if not browse_all %}
+      <a href="{% url 'learn_home' %}?browse_all=1" class="btn btn-success rounded-pill px-4"><i class="bi bi-globe me-2"></i>Browse All Domains</a>
+      {% endif %}
+    </div>
+  {% endif %}
+</main>
+
+<div id="sidebarOverlay" onclick="closeSidebar()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:999;"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+const sidebarToggle = document.getElementById('sidebarToggle');
+const sidebar = document.getElementById('learnSidebar');
+const overlay = document.getElementById('sidebarOverlay');
+if(sidebarToggle){sidebarToggle.addEventListener('click',()=>{sidebar.classList.toggle('show');overlay.style.display=sidebar.classList.contains('show')?'block':'none';});}
+function closeSidebar(){sidebar.classList.remove('show');overlay.style.display='none';}
+function toggleTopic(el){
+  const topicId=el.id.replace('st-','');
+  const lessonsEl=document.getElementById('sl-'+topicId);
+  const isOpen=el.classList.contains('open');
+  document.querySelectorAll('.sidebar-topic').forEach(t=>t.classList.remove('open'));
+  document.querySelectorAll('.sidebar-lessons').forEach(l=>l.classList.remove('open'));
+  if(!isOpen){el.classList.add('open');if(lessonsEl)lessonsEl.classList.add('open');}
+}
+const firstTopic=document.querySelector('.sidebar-topic');
+if(firstTopic){firstTopic.classList.add('open');const fid=firstTopic.id.replace('st-','');const fl=document.getElementById('sl-'+fid);if(fl)fl.classList.add('open');}
+</script>
+</body>
+</html>

@@ -1,0 +1,428 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{ lesson.title }} | {{ topic.title }} | TRHvision Learn</title>
+<meta name="description" content="{{ lesson.title }} lesson at TRHvision Academy">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<link rel="stylesheet" href="{% static 'vision/css/style.css' %}">
+<style>
+:root{
+  --green:#10b981;--green-dark:#065f46;--green-light:#d1fae5;--green-xlight:#ecfdf5;
+  --green-accent:#34d399;--sidebar-w:300px;--toc-w:240px;--topbar-h:60px;
+  --border:#e2e8f0;--bg-page:#f8fafc;
+  --shadow-sm:0 1px 3px rgba(0,0,0,.08);--shadow-md:0 4px 16px rgba(0,0,0,.1);
+  --radius-sm:8px;--radius-md:12px;--radius-lg:16px;--radius-xl:20px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Inter',sans-serif;background:var(--bg-page);color:#0f172a;overflow-x:hidden;}
+
+/* TOP BAR */
+.learn-topbar{position:fixed;top:0;left:0;right:0;height:var(--topbar-h);background:#fff;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem;z-index:1100;box-shadow:0 2px 12px rgba(16,185,129,.06);}
+.topbar-brand{display:flex;align-items:center;gap:.6rem;text-decoration:none;}
+.topbar-brand img{width:34px;}
+.topbar-brand span{font-weight:800;font-size:1.05rem;color:#111;}
+.topbar-brand span em{color:var(--green);font-style:normal;}
+.topbar-pill{background:var(--green-xlight);border:1px solid var(--green-light);border-radius:999px;padding:4px 12px;font-size:.72rem;font-weight:600;color:var(--green-dark);}
+
+/* SIDEBAR */
+.learn-sidebar{position:fixed;top:var(--topbar-h);left:0;bottom:0;width:var(--sidebar-w);background:#fff;border-right:1px solid var(--border);overflow-y:auto;overflow-x:hidden;z-index:1000;padding:1rem 0;transition:transform .3s ease;}
+.learn-sidebar::-webkit-scrollbar{width:3px;}
+.learn-sidebar::-webkit-scrollbar-thumb{background:var(--green-light);border-radius:99px;}
+.sidebar-domain-label{font-size:.6rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:#94a3b8;padding:.8rem 1.2rem .3rem;}
+.sidebar-topic{display:flex;align-items:center;justify-content:space-between;padding:.5rem 1.2rem;font-size:.81rem;font-weight:600;color:#374151;cursor:pointer;user-select:none;transition:background .15s;gap:.5rem;}
+.sidebar-topic:hover{background:var(--green-xlight);}
+.sidebar-topic .topic-icon{color:var(--green);font-size:.95rem;flex-shrink:0;}
+.sidebar-topic .topic-title{flex:1;}
+.sidebar-topic .topic-chevron{font-size:.68rem;color:#9ca3af;transition:transform .2s;}
+.sidebar-topic.open .topic-chevron{transform:rotate(90deg);}
+.sidebar-topic .topic-prog{font-size:.6rem;font-weight:700;color:var(--green);background:var(--green-xlight);border-radius:99px;padding:2px 7px;white-space:nowrap;}
+.sidebar-lessons{display:none;padding:.2rem 0 .2rem 2.5rem;border-left:2px solid var(--green-light);margin-left:2.1rem;}
+.sidebar-lessons.open{display:block;}
+.sidebar-lesson-link{display:flex;align-items:center;gap:.4rem;padding:.28rem .5rem;font-size:.77rem;color:#4b5563;text-decoration:none;border-radius:6px;transition:background .15s,color .15s;line-height:1.4;}
+.sidebar-lesson-link:hover{background:var(--green-xlight);color:var(--green-dark);}
+.sidebar-lesson-link.active{background:var(--green-light);color:var(--green-dark);font-weight:700;}
+.check-icon{color:var(--green);font-size:.68rem;}
+.pending-dot{width:6px;height:6px;border-radius:50%;background:#d1d5db;flex-shrink:0;}
+
+/* MAIN GRID */
+.learn-main{margin-left:var(--sidebar-w);margin-top:var(--topbar-h);padding:2.5rem 2rem 2.5rem 2.5rem;display:grid;grid-template-columns:1fr var(--toc-w);grid-template-areas:"article toc";gap:2rem;min-height:calc(100vh - var(--topbar-h));}
+.article-col{grid-area:article;min-width:0;}
+.toc-col{grid-area:toc;}
+
+/* BREADCRUMB */
+.lesson-breadcrumb{font-size:.77rem;color:#6b7280;display:flex;align-items:center;gap:.4rem;flex-wrap:wrap;margin-bottom:1.4rem;}
+.lesson-breadcrumb a{color:var(--green);text-decoration:none;font-weight:500;}
+.lesson-breadcrumb a:hover{text-decoration:underline;}
+
+/* ARTICLE HEADER */
+.article-header{background:#fff;border:1px solid var(--border);border-radius:var(--radius-xl);padding:2rem 2.5rem;margin-bottom:1.5rem;position:relative;overflow:hidden;}
+.article-header::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--green),var(--green-accent));}
+.article-meta{display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;margin-bottom:.85rem;}
+.meta-badge{display:inline-flex;align-items:center;gap:.3rem;font-size:.72rem;font-weight:600;padding:3px 10px;border-radius:99px;border:1px solid;}
+.meta-badge.topic-badge{background:var(--green-xlight);color:var(--green-dark);border-color:var(--green-light);}
+.meta-badge.reading-badge{background:#f1f5f9;color:#475569;border-color:#e2e8f0;}
+.meta-badge.done-badge{background:#f0fdf4;color:#065f46;border-color:#bbf7d0;}
+.article-title{font-size:2rem;font-weight:900;color:#0f172a;line-height:1.25;margin-bottom:1rem;}
+.complete-btn{display:inline-flex;align-items:center;gap:.5rem;padding:10px 22px;border-radius:99px;font-size:.84rem;font-weight:700;border:2px solid var(--green);color:var(--green);background:#fff;cursor:pointer;transition:all .2s;}
+.complete-btn.done{background:var(--green);color:#fff;}
+.complete-btn:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(16,185,129,.3);}
+
+/* ════ LESSON CONTENT — GFG / W3SCHOOLS STYLE ════ */
+.lesson-content{background:#fff;border:1px solid var(--border);border-radius:var(--radius-xl);padding:2.5rem;margin-bottom:1.5rem;line-height:1.85;font-size:.97rem;color:#0f172a;}
+.lesson-content h1{font-size:1.7rem;font-weight:900;color:#0f172a;margin:1.8rem 0 .8rem;padding-bottom:.4rem;border-bottom:2px solid var(--green-light);}
+.lesson-content h2{font-size:1.35rem;font-weight:800;color:#0f172a;margin:1.6rem 0 .75rem;padding-bottom:.3rem;border-bottom:1px solid #e5e7eb;}
+.lesson-content h3{font-size:1.1rem;font-weight:700;color:#0f172a;margin:1.4rem 0 .6rem;}
+.lesson-content h4{font-size:.97rem;font-weight:700;color:#1e293b;margin:1.2rem 0 .5rem;}
+.lesson-content h5{font-size:.9rem;font-weight:700;color:#334155;margin:1rem 0 .4rem;}
+.lesson-content p{margin-bottom:1.1rem;}
+.lesson-content p:last-child{margin-bottom:0;}
+.lesson-content a{color:var(--green);font-weight:500;text-decoration:underline;text-underline-offset:2px;}
+.lesson-content a:hover{color:var(--green-dark);}
+.lesson-content code{font-family:'Fira Code',monospace;background:#f0fdf4;border:1px solid #bbf7d0;padding:2px 7px;border-radius:5px;font-size:.87em;color:#065f46;}
+.lesson-content strong{font-weight:700;color:#0f172a;}
+.lesson-content em{font-style:italic;color:#374151;}
+.lesson-content ul,.lesson-content ol{padding-left:1.6rem;margin-bottom:1.1rem;}
+.lesson-content li{margin-bottom:.4rem;padding-left:.2rem;}
+.lesson-content ul li::marker{color:var(--green);}
+.lesson-content ol li::marker{color:var(--green);font-weight:700;}
+.lesson-content blockquote{border-left:4px solid var(--green);padding:.85rem 1.2rem;background:var(--green-xlight);border-radius:0 var(--radius-sm) var(--radius-sm) 0;margin:1.2rem 0;color:#374151;}
+.lesson-content blockquote p{margin-bottom:0;}
+.lesson-content table{width:100%;border-collapse:collapse;margin:1.4rem 0;font-size:.9rem;border-radius:var(--radius-md);overflow:hidden;box-shadow:var(--shadow-sm);border:1px solid var(--border);}
+.lesson-content table th{background:#0f172a;color:#fff;padding:11px 14px;text-align:left;font-weight:700;font-size:.82rem;}
+.lesson-content table td{padding:10px 14px;border-bottom:1px solid #e5e7eb;vertical-align:top;}
+.lesson-content table tr:last-child td{border-bottom:none;}
+.lesson-content table tr:nth-child(even) td{background:#f8fafc;}
+.lesson-content table tr:hover td{background:var(--green-xlight);}
+.lesson-content hr{border:none;height:1px;background:linear-gradient(90deg,transparent,var(--green-light),transparent);margin:2rem 0;}
+.lesson-content img{max-width:100%;border-radius:var(--radius-md);margin:.8rem 0;box-shadow:var(--shadow-sm);}
+/* Callout boxes */
+.lesson-content .note,.lesson-content .info-box{background:#eff6ff;border-left:4px solid #3b82f6;border-radius:0 var(--radius-sm) var(--radius-sm) 0;padding:.85rem 1.1rem;margin:1.2rem 0;font-size:.9rem;}
+.lesson-content .warning,.lesson-content .warn-box{background:#fffbeb;border-left:4px solid #f59e0b;border-radius:0 var(--radius-sm) var(--radius-sm) 0;padding:.85rem 1.1rem;margin:1.2rem 0;font-size:.9rem;}
+.lesson-content .tip,.lesson-content .success-box{background:var(--green-xlight);border-left:4px solid var(--green);border-radius:0 var(--radius-sm) var(--radius-sm) 0;padding:.85rem 1.1rem;margin:1.2rem 0;font-size:.9rem;}
+.lesson-content .error,.lesson-content .danger-box{background:#fff1f2;border-left:4px solid #ef4444;border-radius:0 var(--radius-sm) var(--radius-sm) 0;padding:.85rem 1.1rem;margin:1.2rem 0;font-size:.9rem;}
+/* Pre/code blocks inside content */
+.lesson-content pre{background:#1e293b;border-radius:var(--radius-md);padding:1.2rem 1.5rem;overflow-x:auto;margin:1.2rem 0;font-size:.88rem;line-height:1.65;}
+.lesson-content pre code{background:transparent!important;border:none!important;padding:0!important;color:#e2e8f0!important;font-size:inherit!important;font-family:'Fira Code',monospace!important;}
+
+/* CODE BLOCK (dedicated) */
+.code-section{margin-bottom:1.5rem;}
+.code-section-title{font-size:.82rem;font-weight:800;color:#374151;text-transform:uppercase;letter-spacing:1px;margin-bottom:.75rem;display:flex;align-items:center;gap:.5rem;}
+.code-block-wrap{border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow-md);}
+.code-block-header{display:flex;align-items:center;justify-content:space-between;background:#1e293b;padding:.65rem 1rem;border-bottom:1px solid #334155;}
+.code-lang-badge{font-size:.69rem;font-weight:700;color:var(--green-accent);text-transform:uppercase;letter-spacing:1.5px;display:flex;align-items:center;gap:.4rem;}
+.copy-btn{font-size:.72rem;font-weight:600;color:#94a3b8;background:transparent;border:1px solid #334155;border-radius:6px;padding:3px 11px;cursor:pointer;transition:all .15s;}
+.copy-btn:hover{background:#334155;color:#fff;}
+.code-block-wrap pre{margin:0!important;border-radius:0!important;}
+.code-block-wrap pre code{font-family:'Fira Code',monospace!important;font-size:.88rem!important;line-height:1.65!important;}
+.try-it-note{background:#fffbeb;border:1px solid #fde68a;border-top:none;border-radius:0 0 var(--radius-lg) var(--radius-lg);padding:.75rem 1.1rem;font-size:.82rem;color:#92400e;display:flex;align-items:flex-start;gap:.5rem;}
+
+/* TABLE OF CONTENTS */
+.toc-sticky{position:sticky;top:calc(var(--topbar-h) + 1.5rem);background:#fff;border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.1rem;max-height:calc(100vh - var(--topbar-h) - 3rem);overflow-y:auto;}
+.toc-sticky::-webkit-scrollbar{width:3px;}
+.toc-sticky::-webkit-scrollbar-thumb{background:var(--green-light);border-radius:99px;}
+.toc-title{font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;color:#94a3b8;margin-bottom:.85rem;display:flex;align-items:center;gap:.4rem;}
+.toc-list{list-style:none;padding:0;}
+.toc-list li{margin-bottom:.15rem;}
+.toc-list a{display:block;font-size:.78rem;color:#6b7280;text-decoration:none;padding:.28rem .5rem;border-radius:6px;border-left:2px solid transparent;transition:all .15s;line-height:1.4;}
+.toc-list a:hover{background:var(--green-xlight);color:var(--green-dark);border-left-color:var(--green-accent);}
+.toc-list a.toc-active{background:var(--green-xlight);color:var(--green-dark);font-weight:600;border-left-color:var(--green);}
+.toc-list .toc-h3 a{padding-left:1.2rem;font-size:.74rem;}
+.toc-list .toc-h4 a{padding-left:2rem;font-size:.72rem;}
+.toc-progress-section{margin-top:1.1rem;border-top:1px solid var(--border);padding-top:1rem;}
+.toc-progress-label{font-size:.68rem;color:#94a3b8;font-weight:600;text-transform:uppercase;letter-spacing:1px;margin-bottom:.4rem;}
+.toc-progress-bar{height:5px;background:#e5e7eb;border-radius:99px;overflow:hidden;}
+.toc-progress-fill{height:5px;border-radius:99px;background:linear-gradient(90deg,var(--green),var(--green-accent));transition:width .4s;}
+.toc-progress-pct{font-size:.68rem;color:var(--green);font-weight:700;margin-top:.25rem;}
+
+/* PREV/NEXT NAV */
+.lesson-nav{display:flex;justify-content:space-between;align-items:stretch;gap:1rem;flex-wrap:wrap;margin-top:1.5rem;}
+.nav-btn{display:flex;align-items:center;gap:.65rem;padding:14px 22px;border-radius:var(--radius-md);text-decoration:none;font-weight:700;font-size:.85rem;transition:all .2s;border:2px solid transparent;min-width:160px;flex:1;}
+.nav-btn-prev{background:#fff;color:#374151;border-color:var(--border);justify-content:flex-start;}
+.nav-btn-prev:hover{border-color:var(--green);color:var(--green-dark);background:var(--green-xlight);}
+.nav-btn-next{background:var(--green);color:#fff;justify-content:flex-end;}
+.nav-btn-next:hover{background:var(--green-dark);transform:translateY(-2px);box-shadow:0 6px 20px rgba(16,185,129,.4);}
+.nav-btn-label{font-size:.68rem;font-weight:600;opacity:.65;text-transform:uppercase;letter-spacing:.5px;}
+
+/* READING PROGRESS BAR */
+#readingProgressBar{position:fixed;top:var(--topbar-h);left:0;right:0;height:3px;background:linear-gradient(90deg,var(--green),var(--green-accent));transform-origin:left;transform:scaleX(0);z-index:1099;transition:transform .1s linear;}
+
+/* TOPIC COMPLETE BANNER */
+.topic-complete-banner{background:linear-gradient(135deg,#065f46 0%,#10b981 100%);border-radius:var(--radius-lg);padding:1.5rem 2rem;color:#fff;display:flex;align-items:center;gap:1.5rem;margin-bottom:1.5rem;box-shadow:0 8px 30px rgba(16,185,129,.3);}
+.topic-complete-banner .banner-icon{font-size:2.2rem;flex-shrink:0;}
+
+/* RESPONSIVE */
+@media(max-width:1280px){.learn-main{grid-template-columns:1fr;grid-template-areas:"article";}.toc-col{display:none;}}
+@media(max-width:991px){.learn-sidebar{transform:translateX(-100%);}.learn-sidebar.show{transform:translateX(0);}.learn-main{margin-left:0;padding:1.5rem 1rem;}}
+@media(max-width:600px){.article-title{font-size:1.4rem;}.article-header{padding:1.4rem 1.2rem;}.lesson-content{padding:1.4rem 1.2rem;}.nav-btn{min-width:0;flex:1;}}
+</style>
+</head>
+<body>
+<div id="readingProgressBar"></div>
+
+<!-- TOP BAR -->
+<div class="learn-topbar">
+  <div class="d-flex align-items-center gap-3">
+    <button class="btn btn-light btn-sm d-lg-none" id="sidebarToggle"><i class="bi bi-list fs-5"></i></button>
+    <a href="{% url 'index' %}" class="topbar-brand">
+      <img src="{% static 'vision/image/logo.png' %}" alt="Logo" onerror="this.style.display='none'">
+      <span>TRHvision <em>Learn</em></span>
+    </a>
+  </div>
+  <div class="d-flex align-items-center gap-2">
+    <span class="topbar-pill d-none d-sm-inline"><i class="bi bi-mortarboard-fill me-1"></i>{{ internship_name }}</span>
+    <a href="{% url 'learn_home' %}" class="btn btn-sm btn-light rounded-pill px-3"><i class="bi bi-house-fill me-1"></i>Hub</a>
+    <a href="{% url 'dashboard' %}" class="btn btn-sm btn-light rounded-pill px-3"><i class="bi bi-grid-fill me-1"></i>Dashboard</a>
+  </div>
+</div>
+
+<!-- LEFT SIDEBAR -->
+<aside class="learn-sidebar" id="learnSidebar">
+  <div style="padding:.5rem 1.2rem .75rem;">
+    <div style="font-size:.7rem;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:1.5px;">
+      {% if browse_all %}All Domains{% else %}{{ student_domain }}{% endif %}
+    </div>
+  </div>
+  {% for domain, topics in domain_map.items %}
+    <div class="sidebar-domain-label">{{ domain }}</div>
+    {% for t in topics %}
+      <div class="sidebar-topic {% if t.id == topic.id %}open{% endif %}" onclick="toggleTopic(this)" id="st-{{ t.id }}">
+        <i class="bi {{ t.icon }} topic-icon"></i>
+        <span class="topic-title">{{ t.title }}</span>
+        <span class="topic-prog">{{ t.completed_count }}/{{ t.active_lesson_count }}</span>
+        <i class="bi bi-chevron-right topic-chevron"></i>
+      </div>
+      <div class="sidebar-lessons {% if t.id == topic.id %}open{% endif %}" id="sl-{{ t.id }}">
+        {% for l in t.active_lessons %}
+          <a href="{% url 'learn_lesson' l.id %}" class="sidebar-lesson-link {% if l.id == lesson.id %}active{% endif %}">
+            {% if l.id in completed_lesson_ids %}
+              <i class="bi bi-check-circle-fill check-icon"></i>
+            {% else %}
+              <span class="pending-dot"></span>
+            {% endif %}
+            {{ l.title }}
+          </a>
+        {% empty %}
+          <span style="font-size:.72rem;color:#9ca3af;padding:.2rem .5rem;">No lessons yet</span>
+        {% endfor %}
+      </div>
+    {% endfor %}
+  {% empty %}
+    <div style="padding:1.5rem 1.2rem;font-size:.82rem;color:#9ca3af;">No topics found.</div>
+  {% endfor %}
+</aside>
+
+<!-- MAIN GRID -->
+<main class="learn-main">
+  <div class="article-col">
+
+    <!-- Breadcrumb -->
+    <div class="lesson-breadcrumb">
+      <a href="{% url 'learn_home' %}"><i class="bi bi-house-fill"></i> Hub</a>
+      <i class="bi bi-chevron-right" style="font-size:.6rem;"></i>
+      <a href="{% url 'learn_home' %}">{{ topic.domain }}</a>
+      <i class="bi bi-chevron-right" style="font-size:.6rem;"></i>
+      <span>{{ topic.title }}</span>
+      <i class="bi bi-chevron-right" style="font-size:.6rem;"></i>
+      <span style="color:#0f172a;font-weight:600;">{{ lesson.title }}</span>
+    </div>
+
+    <!-- Article Header -->
+    <div class="article-header">
+      <div class="article-meta">
+        <span class="meta-badge topic-badge"><i class="bi {{ topic.icon }}"></i> {{ topic.title }}</span>
+        <span class="meta-badge reading-badge"><i class="bi bi-clock"></i> <span id="readingTime">...</span> min read</span>
+        {% if is_completed %}<span class="meta-badge done-badge"><i class="bi bi-check-circle-fill"></i> Completed</span>{% endif %}
+      </div>
+      <h1 class="article-title">{{ lesson.title }}</h1>
+      <div>
+        <form method="post" action="" style="display:inline;">
+          {% csrf_token %}
+          {% if is_completed %}
+            <input type="hidden" name="action" value="uncomplete">
+            <button type="submit" class="complete-btn done"><i class="bi bi-check-circle-fill"></i> Completed</button>
+          {% else %}
+            <input type="hidden" name="action" value="complete">
+            <button type="submit" class="complete-btn"><i class="bi bi-circle"></i> Mark as Complete</button>
+          {% endif %}
+        </form>
+      </div>
+    </div>
+
+    <!-- Lesson Content -->
+    <div class="lesson-content" id="lessonBody">
+      {{ lesson.content|safe }}
+    </div>
+
+    <!-- Code Block -->
+    {% if lesson.code_example %}
+    <div class="code-section">
+      <div class="code-section-title"><i class="bi bi-code-square text-success"></i> Code Example</div>
+      <div class="code-block-wrap">
+        <div class="code-block-header">
+          <span class="code-lang-badge"><i class="bi bi-file-code"></i> {{ lesson.code_language|upper }}</span>
+          <button class="copy-btn" id="copyCodeBtn" onclick="copyCode()"><i class="bi bi-clipboard me-1"></i>Copy</button>
+        </div>
+        <pre><code class="{{ lesson.code_language }}" id="codeBlock">{{ lesson.code_example }}</code></pre>
+      </div>
+      {% if lesson.try_it_note %}
+      <div class="try-it-note">
+        <i class="bi bi-lightbulb-fill" style="color:#d97706;flex-shrink:0;margin-top:2px;"></i>
+        <span><strong>Try it:</strong> {{ lesson.try_it_note }}</span>
+      </div>
+      {% endif %}
+    </div>
+    {% endif %}
+
+    <!-- Topic Complete Banner -->
+    {% if is_completed and not next_lesson %}
+    <div class="topic-complete-banner">
+      <div class="banner-icon">&#127942;</div>
+      <div>
+        <h5 style="font-weight:800;margin-bottom:.2rem;">Topic Complete!</h5>
+        <p style="margin:0;opacity:.85;font-size:.88rem;">You have finished all lessons in <strong>{{ topic.title }}</strong>. Great work!</p>
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- Prev/Next Navigation -->
+    <div class="lesson-nav">
+      {% if prev_lesson %}
+        <a href="{% url 'learn_lesson' prev_lesson.id %}" class="nav-btn nav-btn-prev">
+          <i class="bi bi-arrow-left-circle-fill fs-5"></i>
+          <div><div class="nav-btn-label">Previous</div><div>{{ prev_lesson.title }}</div></div>
+        </a>
+      {% else %}
+        <a href="{% url 'learn_home' %}" class="nav-btn nav-btn-prev">
+          <i class="bi bi-grid-fill fs-5"></i>
+          <div><div class="nav-btn-label">Back to</div><div>Learning Hub</div></div>
+        </a>
+      {% endif %}
+      {% if next_lesson %}
+        <a href="{% url 'learn_lesson' next_lesson.id %}" class="nav-btn nav-btn-next">
+          <div style="text-align:right;"><div class="nav-btn-label">Next Lesson</div><div>{{ next_lesson.title }}</div></div>
+          <i class="bi bi-arrow-right-circle-fill fs-5"></i>
+        </a>
+      {% else %}
+        <a href="{% url 'learn_home' %}" class="nav-btn nav-btn-next">
+          <div style="text-align:right;"><div class="nav-btn-label">All Done!</div><div>Back to Hub</div></div>
+          <i class="bi bi-check2-all fs-5"></i>
+        </a>
+      {% endif %}
+    </div>
+
+  </div><!-- /article-col -->
+
+  <!-- RIGHT: TABLE OF CONTENTS -->
+  <div class="toc-col">
+    <div class="toc-sticky" id="tocBox">
+      <div class="toc-title"><i class="bi bi-list-nested"></i> On This Page</div>
+      <ul class="toc-list" id="tocList"></ul>
+      <div class="toc-progress-section">
+        <div class="toc-progress-label">Topic Progress</div>
+        <div class="toc-progress-bar"><div class="toc-progress-fill" id="tocProgressFill" style="width:0%;"></div></div>
+        <div class="toc-progress-pct">{{ topic.completed_count }}/{{ topic.active_lesson_count }} lessons</div>
+      </div>
+      <div style="margin-top:1rem;border-top:1px solid #e5e7eb;padding-top:1rem;">
+        <a href="{% url 'learn_home' %}" class="toc-quick-link d-flex align-items-center gap-2" style="font-size:.78rem;color:#6b7280;text-decoration:none;padding:.3rem .4rem;border-radius:6px;">
+          <i class="bi bi-house-fill text-success"></i> Learning Hub
+        </a>
+        <a href="{% url 'dashboard' %}" class="toc-quick-link d-flex align-items-center gap-2 mt-1" style="font-size:.78rem;color:#6b7280;text-decoration:none;padding:.3rem .4rem;border-radius:6px;">
+          <i class="bi bi-grid-fill text-primary"></i> Dashboard
+        </a>
+      </div>
+    </div>
+  </div><!-- /toc-col -->
+
+</main>
+
+<div id="sidebarOverlay" onclick="closeSidebar()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:999;"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
+<script>
+const sidebarToggle=document.getElementById('sidebarToggle');
+const sidebar=document.getElementById('learnSidebar');
+const overlay=document.getElementById('sidebarOverlay');
+if(sidebarToggle){sidebarToggle.addEventListener('click',()=>{sidebar.classList.toggle('show');overlay.style.display=sidebar.classList.contains('show')?'block':'none';});}
+function closeSidebar(){sidebar.classList.remove('show');overlay.style.display='none';}
+function toggleTopic(el){
+  var topicId=el.id.replace('st-','');
+  var lessonsEl=document.getElementById('sl-'+topicId);
+  var isOpen=el.classList.contains('open');
+  document.querySelectorAll('.sidebar-topic').forEach(function(t){t.classList.remove('open');});
+  document.querySelectorAll('.sidebar-lessons').forEach(function(l){l.classList.remove('open');});
+  if(!isOpen){el.classList.add('open');if(lessonsEl)lessonsEl.classList.add('open');}
+}
+function copyCode(){
+  var code=document.getElementById('codeBlock');
+  if(!code)return;
+  navigator.clipboard.writeText(code.innerText).then(function(){
+    var btn=document.getElementById('copyCodeBtn');
+    btn.innerHTML='<i class="bi bi-check2 me-1"></i>Copied!';
+    btn.style.color='#34d399';
+    setTimeout(function(){btn.innerHTML='<i class="bi bi-clipboard me-1"></i>Copy';btn.style.color='';},2000);
+  });
+}
+(function(){
+  var body=document.getElementById('lessonBody');
+  if(!body)return;
+  var words=body.innerText.trim().split(/\s+/).length;
+  var el=document.getElementById('readingTime');
+  if(el)el.textContent=Math.max(1,Math.ceil(words/200));
+})();
+(function(){
+  var body=document.getElementById('lessonBody');
+  var tocList=document.getElementById('tocList');
+  if(!body||!tocList)return;
+  var headings=body.querySelectorAll('h2,h3,h4');
+  if(headings.length===0){var b=document.getElementById('tocBox');if(b)b.style.display='none';return;}
+  headings.forEach(function(h,i){
+    var id='lh-'+i;h.id=id;
+    var tag=h.tagName.toLowerCase();
+    var li=document.createElement('li');li.className='toc-'+tag;
+    var a=document.createElement('a');a.href='#'+id;a.textContent=h.textContent;
+    a.addEventListener('click',function(e){e.preventDefault();document.getElementById(id).scrollIntoView({behavior:'smooth',block:'start'});});
+    li.appendChild(a);tocList.appendChild(li);
+  });
+  var tocLinks=tocList.querySelectorAll('a');
+  var obs=new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(entry.isIntersecting){
+        tocLinks.forEach(function(a){a.classList.remove('toc-active');});
+        var al=tocList.querySelector('a[href="#'+entry.target.id+'"]');
+        if(al)al.classList.add('toc-active');
+      }
+    });
+  },{rootMargin:'-80px 0px -60% 0px'});
+  headings.forEach(function(h){obs.observe(h);});
+})();
+(function(){
+  var bar=document.getElementById('readingProgressBar');
+  if(!bar)return;
+  window.addEventListener('scroll',function(){
+    var s=window.scrollY;var d=document.documentElement.scrollHeight-window.innerHeight;
+    bar.style.transform='scaleX('+(d>0?s/d:0)+')';
+  },{passive:true});
+})();
+document.querySelectorAll('.toc-quick-link').forEach(function(a){
+  a.addEventListener('mouseenter',function(){a.style.background='#f0fdf4';});
+  a.addEventListener('mouseleave',function(){a.style.background='';});
+});
+var firstActive=document.querySelector('.sidebar-topic.open');
+if(!firstActive){
+  var ft=document.querySelector('.sidebar-topic');
+  if(ft){ft.classList.add('open');var fid=ft.id.replace('st-','');var fl=document.getElementById('sl-'+fid);if(fl)fl.classList.add('open');}
+}
+var al=document.querySelector('.sidebar-lesson-link.active');
+if(al)setTimeout(function(){al.scrollIntoView({block:'center',behavior:'smooth'});},300);
+</script>
+</body>
+</html>

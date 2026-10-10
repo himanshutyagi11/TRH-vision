@@ -727,6 +727,275 @@ def dashboard(request):
     return render(request, 'vision/dashboard.html', context)
 
 
+# ══════════════════════════════════════════════════════════════════════════════
+# LEARNING HUB — /learn/
+# ══════════════════════════════════════════════════════════════════════════════
+
+def _send_learning_completion_email_if_done(user, student_domain):
+    """
+    Called after a student marks a lesson complete.
+    If the student has now completed every active lesson in their domain
+    (plus 'All' domain lessons), sends the learning completion email once.
+
+    The email template is pulled from the DB (EmailTemplate name='learning_completion')
+    so the admin can edit subject/body from the admin panel.
+    """
+    from .models import LearningTopic, LearningLesson, Enrollment, EmailTemplate
+    from django.core.mail import EmailMessage
+    from django.conf import settings as django_settings
+
+    # 1. Gather all active lessons for the student's domain
+    domain_topics = LearningTopic.objects.filter(
+        is_active=True,
+        domain__in=[student_domain, 'All']
+    ).prefetch_related('lessons')
+
+    all_lesson_ids = set()
+    for topic in domain_topics:
+        for lesson in topic.lessons.all():
+            if lesson.is_active:
+                all_lesson_ids.add(lesson.id)
+
+    if not all_lesson_ids:
+        return  # No lessons configured — nothing to check
+
+    # 2. Check how many the student has completed
+    completed_ids = set(user.completed_lessons.values_list('id', flat=True))
+    remaining = all_lesson_ids - completed_ids
+    if remaining:
+        return  # Not finished yet
+
+    # 3. Guard — only send once per student (use Enrollment flag)
+    enrollment = Enrollment.objects.filter(
+        email=user.email,
+        is_approved=True,
+    ).first()
+
+    if enrollment and getattr(enrollment, 'learning_completion_email_sent', False):
+        return  # Already sent
+
+    # 4. Build context
+    try:
+        profile = user.profile
+        student_id = profile.student_id
+        duration = profile.period
+    except Exception:
+        student_id = ''
+        duration = ''
+
+    template_ctx = {
+        'name':       user.get_full_name() or user.username,
+        'domain':     student_domain,
+        'duration':   duration,
+        'email':      user.email,
+        'student_id': student_id,
+        'total':      len(all_lesson_ids),
+    }
+
+    # 5. Load admin-editable template
+    tpl = EmailTemplate.objects.filter(name='learning_completion').first()
+    if tpl:
+        email_subject, email_body = tpl.get_rendered(template_ctx)
+    else:
+        # Hardcoded fallback
+        email_subject = (
+            f"\U0001f393 Congratulations! You've Completed Your Learning Content"
+            f" \u2013 {student_domain} | TRHvision Academy"
+        )
+        email_body = (
+            f"Dear {template_ctx['name']},\n\n"
+            "Congratulations! \U0001f389\n\n"
+            f"You have successfully completed all {template_ctx['total']} lessons of the "
+            f"{student_domain} learning content on the TRHvision Academy portal.\n\n"
+            "This is a remarkable achievement and reflects your dedication and hard work "
+            "throughout the internship programme.\n\n"
+            "What's next?\n"
+            "  \u2022 Continue with your tasks and projects on the portal.\n"
+            "  \u2022 Submit your final project for review.\n"
+            "  \u2022 Reach out to us if you have any questions.\n\n"
+            "We are proud of your progress and look forward to seeing you excel!\n\n"
+            "With warm regards,\n"
+            "TRHvision Academy Team\n"
+            "\U0001f4e7 info@trhvision.in | \U0001f310 www.trhvision.in"
+        )
+
+    # 6. Send the email
+    try:
+        from_email = getattr(django_settings, 'EMAIL_HOST_USER', None) or \
+                     getattr(django_settings, 'DEFAULT_FROM_EMAIL', 'noreply@trhvision.in')
+
+        msg = EmailMessage(
+            subject=email_subject,
+            body=email_body,
+            from_email=from_email,
+            to=[user.email],
+            cc=['rachit.tyagi@trhvision.in'],
+        )
+        msg.send(fail_silently=False)
+
+        # 7. Mark as sent so we don't double-send
+        if enrollment:
+            Enrollment.objects.filter(pk=enrollment.pk).update(
+                learning_completion_email_sent=True
+            )
+    except Exception:
+        pass  # Don't surface email errors to the student UI
+
+
+@login_required(login_url='sigin')
+def learn_home(request):
+    """
+    W3Schools-style learning hub home page.
+    By default shows topics for the student's domain.
+    ?browse_all=1 shows all domains.
+    """
+    from .models import LearningTopic, LearningLesson
+
+    try:
+        profile = request.user.profile
+        student_domain = profile.Intren
+        period_text = profile.period
+        student_id = profile.student_id
+    except Exception:
+        return redirect('index')
+
+    browse_all = request.GET.get('browse_all') == '1'
+
+    # Fetch topics
+    if browse_all:
+        topics = LearningTopic.objects.filter(is_active=True).prefetch_related('lessons')
+    else:
+        topics = LearningTopic.objects.filter(
+            is_active=True,
+            domain__in=[student_domain, 'All']
+        ).prefetch_related('lessons')
+
+    # Enrich topics with lesson count & student progress
+    completed_lesson_ids = set(
+        request.user.completed_lessons.values_list('id', flat=True)
+    )
+
+    # Group by domain for sidebar rendering
+    domain_map = {}
+    for topic in topics:
+        active_lessons = [l for l in topic.lessons.all() if l.is_active]
+        topic.active_lessons = active_lessons
+        topic.active_lesson_count = len(active_lessons)
+        completed_in_topic = sum(1 for l in active_lessons if l.id in completed_lesson_ids)
+        topic.completed_count = completed_in_topic
+        topic.topic_progress = (
+            int((completed_in_topic / len(active_lessons)) * 100) if active_lessons else 0
+        )
+        d = topic.domain
+        if d not in domain_map:
+            domain_map[d] = []
+        domain_map[d].append(topic)
+
+    # Overall progress stats
+    total_lessons = sum(t.active_lesson_count for tlist in domain_map.values() for t in tlist)
+    total_completed = len([lid for lid in completed_lesson_ids])
+
+    context = {
+        'domain_map': domain_map,
+        'student_domain': student_domain,
+        'browse_all': browse_all,
+        'student_id': student_id,
+        'period_text': period_text,
+        'internship_name': student_domain,
+        'total_lessons': total_lessons,
+        'total_completed': min(total_completed, total_lessons),
+        'completed_lesson_ids': completed_lesson_ids,
+    }
+    return render(request, 'vision/learn.html', context)
+
+
+@login_required(login_url='sigin')
+def learn_lesson(request, lesson_id):
+    """
+    Renders a single lesson. POST with action=complete marks it done.
+    """
+    from .models import LearningTopic, LearningLesson
+
+    lesson = get_object_or_404(LearningLesson, id=lesson_id, is_active=True)
+    topic = lesson.topic
+
+    try:
+        profile = request.user.profile
+        student_domain = profile.Intren
+        period_text = profile.period
+        student_id = profile.student_id
+    except Exception:
+        return redirect('index')
+
+    # Mark lesson complete via POST
+    if request.method == 'POST' and request.POST.get('action') == 'complete':
+        lesson.completed_by.add(request.user)
+
+        # ── Check if the student has now completed ALL their domain lessons ──
+        try:
+            _send_learning_completion_email_if_done(request.user, student_domain)
+        except Exception:
+            pass  # Never break the completion flow
+
+        return redirect('learn_lesson', lesson_id=lesson_id)
+
+    if request.method == 'POST' and request.POST.get('action') == 'uncomplete':
+        lesson.completed_by.remove(request.user)
+        return redirect('learn_lesson', lesson_id=lesson_id)
+
+    # Sidebar: same domain filtering as learn_home
+    browse_all = request.GET.get('browse_all') == '1'
+    if browse_all:
+        sidebar_topics = LearningTopic.objects.filter(is_active=True).prefetch_related('lessons')
+    else:
+        sidebar_topics = LearningTopic.objects.filter(
+            is_active=True,
+            domain__in=[student_domain, 'All']
+        ).prefetch_related('lessons')
+
+    completed_lesson_ids = set(
+        request.user.completed_lessons.values_list('id', flat=True)
+    )
+
+    domain_map = {}
+    for t in sidebar_topics:
+        active_lessons = [l for l in t.lessons.all() if l.is_active]
+        t.active_lessons = active_lessons
+        t.active_lesson_count = len(active_lessons)
+        t.completed_count = sum(1 for l in active_lessons if l.id in completed_lesson_ids)
+        t.topic_progress = (
+            int((t.completed_count / len(active_lessons)) * 100) if active_lessons else 0
+        )
+        d = t.domain
+        if d not in domain_map:
+            domain_map[d] = []
+        domain_map[d].append(t)
+
+    # Previous / Next lesson within the same topic (by order)
+    siblings = list(topic.lessons.filter(is_active=True).order_by('order', 'id'))
+    current_idx = next((i for i, l in enumerate(siblings) if l.id == lesson.id), 0)
+    prev_lesson = siblings[current_idx - 1] if current_idx > 0 else None
+    next_lesson = siblings[current_idx + 1] if current_idx < len(siblings) - 1 else None
+
+    is_completed = request.user in lesson.completed_by.all()
+
+    context = {
+        'lesson': lesson,
+        'topic': topic,
+        'prev_lesson': prev_lesson,
+        'next_lesson': next_lesson,
+        'is_completed': is_completed,
+        'domain_map': domain_map,
+        'student_domain': student_domain,
+        'browse_all': browse_all,
+        'student_id': student_id,
+        'period_text': period_text,
+        'internship_name': student_domain,
+        'completed_lesson_ids': completed_lesson_ids,
+    }
+    return render(request, 'vision/learn_lesson.html', context)
+
+
 @login_required(login_url='sigin')
 def task_details(request, task_id):
     task = get_object_or_404(Task, id=task_id)
@@ -2978,3 +3247,240 @@ def start_approved_enrollments_dispatcher():
 
     t = threading.Thread(target=run_dispatcher, daemon=True)
     t.start()
+
+
+# ═══════════════════════════════════════════════════════════════
+#  MAIL CENTRE — completion reminder management
+# ═══════════════════════════════════════════════════════════════
+
+def _compute_enrollment_end_date(enrollment):
+    """
+    Returns (end_date, days_remaining) for a given enrollment.
+    Returns (None, None) if start_date is not set.
+    """
+    import datetime, calendar
+    if not enrollment.start_date:
+        return None, None
+
+    duration_map = {
+        '1 Month': 1, '2 Months': 2, '3 Months': 3, '6 Months': 6,
+    }
+    months = duration_map.get(enrollment.duration, 1)
+    start = enrollment.start_date
+    try:
+        end_date = start.replace(month=start.month + months)
+    except ValueError:
+        end_month = (start.month + months - 1) % 12 + 1
+        end_year = start.year + (start.month + months - 1) // 12
+        end_day = min(start.day, calendar.monthrange(end_year, end_month)[1])
+        end_date = datetime.date(end_year, end_month, end_day)
+
+    from django.utils import timezone
+    today = timezone.localdate()
+    days_remaining = (end_date - today).days
+    return end_date, days_remaining
+
+
+@staff_required
+def trh_admin_mail_centre(request):
+    """
+    Mail Centre — admin page for managing internship-completion reminder emails.
+    Shows:
+      - Upcoming completions (next 30 days)
+      - Template editor (subject + body)
+      - Bulk auto-send trigger
+      - Stats (sent / pending)
+    """
+    import datetime
+    from django.utils import timezone
+    from .models import Enrollment, EmailTemplate
+
+    today = timezone.localdate()
+
+    # ── Handle template save ────────────────────────────────────
+    if request.method == 'POST':
+        action = request.POST.get('action', '')
+
+        if action == 'save_template':
+            subj = request.POST.get('subject', '').strip()
+            body = request.POST.get('body', '').strip()
+            if not subj or not body:
+                messages.error(request, "Subject and body cannot be empty.")
+            else:
+                tpl, created = EmailTemplate.objects.get_or_create(
+                    name='internship_completion',
+                    defaults={
+                        'label': 'Internship Completion Reminder Email',
+                        'subject': subj,
+                        'body': body,
+                    }
+                )
+                if not created:
+                    tpl.subject = subj
+                    tpl.body = body
+                    tpl.save()
+                messages.success(request, "✅ Email template saved successfully.")
+            return redirect('trh_admin_mail_centre')
+
+        elif action == 'run_auto_send':
+            # Call the management command logic inline
+            from django.core.management import call_command
+            from io import StringIO
+            out = StringIO()
+            try:
+                call_command('send_completion_reminders', stdout=out)
+                output = out.getvalue()
+                sent = output.count('✓')
+                failed = output.count('✗')
+                messages.success(
+                    request,
+                    f"📬 Auto-send complete. Sent: {sent} email(s). Failed: {failed}."
+                )
+            except Exception as exc:
+                messages.error(request, f"Auto-send failed: {exc}")
+            return redirect('trh_admin_mail_centre')
+
+        elif action == 'reset_flag':
+            enrollment_id = request.POST.get('enrollment_id')
+            try:
+                enr = Enrollment.objects.get(id=enrollment_id)
+                enr.completion_reminder_sent = False
+                enr.save(update_fields=['completion_reminder_sent'])
+                messages.success(request, f"Flag reset for {enr.name}.")
+            except Enrollment.DoesNotExist:
+                messages.error(request, "Enrollment not found.")
+            return redirect('trh_admin_mail_centre')
+
+    # ── Build upcoming completions list ────────────────────────
+    approved = Enrollment.objects.filter(
+        is_approved=True,
+        start_date__isnull=False,
+    ).order_by('start_date')
+
+    upcoming = []          # ending within 30 days
+    alert_window = []      # ending in 5-7 days (will auto-send)
+
+    for enr in approved:
+        end_date, days_remaining = _compute_enrollment_end_date(enr)
+        if end_date is None:
+            continue
+        if days_remaining is None:
+            continue
+        if days_remaining <= 30:
+            row = {
+                'enrollment': enr,
+                'end_date': end_date,
+                'days_remaining': days_remaining,
+                'status': 'sent' if enr.completion_reminder_sent else (
+                    'overdue' if days_remaining < 0 else (
+                        'due' if days_remaining <= 7 else 'upcoming'
+                    )
+                ),
+            }
+            upcoming.append(row)
+            if 5 <= days_remaining <= 7 and not enr.completion_reminder_sent:
+                alert_window.append(row)
+
+    # Sort: soonest first
+    upcoming.sort(key=lambda x: x['days_remaining'])
+
+    # ── Stats ──────────────────────────────────────────────────
+    total_approved = approved.count()
+    total_sent = approved.filter(completion_reminder_sent=True).count()
+    total_pending = len([r for r in upcoming if r['status'] in ('due', 'upcoming')])
+
+    # ── Load template ─────────────────────────────────────────
+    tpl = EmailTemplate.objects.filter(name='internship_completion').first()
+
+    from .models import INTERNSHIP_COMPLETION_PLACEHOLDERS
+
+    context = {
+        'upcoming': upcoming,
+        'alert_window': alert_window,
+        'total_approved': total_approved,
+        'total_sent': total_sent,
+        'total_pending': total_pending,
+        'tpl': tpl,
+        'placeholder_ref': INTERNSHIP_COMPLETION_PLACEHOLDERS,
+        'today': today,
+    }
+    return render(request, 'vision/trh_admin_mail_centre.html', context)
+
+
+@staff_required
+def trh_admin_send_completion_email(request, enrollment_id):
+    """
+    Manually send the internship-completion reminder to a single student.
+    """
+    import datetime
+    from django.utils import timezone
+    from .models import Enrollment, EmailTemplate
+    from django.core.mail import EmailMessage as DjangoEmailMessage
+    from django.conf import settings as django_settings
+
+    if request.method != 'POST':
+        return redirect('trh_admin_mail_centre')
+
+    enrollment = get_object_or_404(Enrollment, id=enrollment_id)
+    end_date, days_remaining = _compute_enrollment_end_date(enrollment)
+
+    # Get student_id
+    student_id = ''
+    try:
+        from django.contrib.auth.models import User as DjangoUser
+        user = DjangoUser.objects.filter(email=enrollment.email).first()
+        if user:
+            student_id = user.profile.student_id
+    except Exception:
+        pass
+
+    template_ctx = {
+        'name':       enrollment.name,
+        'domain':     enrollment.domain,
+        'duration':   enrollment.duration,
+        'email':      enrollment.email,
+        'student_id': student_id,
+        'start_date': enrollment.start_date.strftime('%B %d, %Y') if enrollment.start_date else '',
+        'end_date':   end_date.strftime('%B %d, %Y') if end_date else 'N/A',
+        'days_left':  str(days_remaining) if days_remaining is not None else 'N/A',
+    }
+
+    tpl = EmailTemplate.objects.filter(name='internship_completion').first()
+    if tpl:
+        subject, body = tpl.get_rendered(template_ctx)
+    else:
+        subject = (
+            f"\U0001f393 Your {enrollment.domain} Internship is Ending Soon — TRHvision"
+        )
+        end_str = end_date.strftime('%B %d, %Y') if end_date else 'soon'
+        body = (
+            f"Dear {enrollment.name},\n\n"
+            f"This is a reminder that your {enrollment.domain} internship ends on {end_str}.\n\n"
+            "Please ensure you have completed all tasks and submitted your final project.\n\n"
+            "Best regards,\nTRHvision Academy Team"
+        )
+
+    try:
+        from_email = (
+            getattr(django_settings, 'EMAIL_HOST_USER', None)
+            or getattr(django_settings, 'DEFAULT_FROM_EMAIL', 'noreply@trhvision.in')
+        )
+        msg = DjangoEmailMessage(
+            subject=subject,
+            body=body,
+            from_email=from_email,
+            to=[enrollment.email],
+        )
+        msg.send(fail_silently=False)
+
+        enrollment.completion_reminder_sent = True
+        enrollment.save(update_fields=['completion_reminder_sent'])
+
+        messages.success(
+            request,
+            f"📧 Completion reminder sent to {enrollment.name} ({enrollment.email})."
+        )
+    except Exception as exc:
+        messages.error(request, f"Failed to send email: {exc}")
+
+    return redirect('trh_admin_mail_centre')

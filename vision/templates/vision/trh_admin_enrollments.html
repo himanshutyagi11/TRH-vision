@@ -55,7 +55,8 @@
         <div class="section-label">Clients</div>
         <nav class="nav flex-column"><a href="{% url 'trh_admin_clients' %}" class="nav-link"><i class="bi bi-building me-2"></i>Clients</a></nav>
         <div class="section-label">Communication</div>
-        <nav class="nav flex-column"><a href="{% url 'trh_admin_contacts' %}" class="nav-link"><i class="bi bi-chat-dots me-2"></i>Messages</a></nav>
+        <nav class="nav flex-column"><a href="{% url 'trh_admin_contacts' %}" class="nav-link"><i class="bi bi-chat-dots me-2"></i>Messages</a>
+            <a href="{% url 'trh_admin_mail_centre' %}" class="nav-link"><i class="bi bi-envelope-paper-fill me-2"></i>Mail Centre</a></nav>
         <div class="mt-auto pt-3 border-top" style="border-color:rgba(255,255,255,0.08)!important;">
             <a href="{% url 'admin:index' %}" class="nav-link"><i class="bi bi-database me-2"></i>Django Admin</a>
             <a href="{% url 'index' %}" class="nav-link text-danger"><i class="bi bi-box-arrow-right me-2"></i>Exit</a>

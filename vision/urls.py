@@ -81,7 +81,11 @@ urlpatterns = [
     path('track-checkin/<int:track_id>/', views.track_checkin, name='track_checkin'),
     path('my-challenges/', views.manage_challenges, name='manage_challenges'),
 
-    # ── REST API v1 ────────────────────────────────────────────
+    # ── Learning Hub ───────────────────────────────────────────────────────
+    path('learn/', views.learn_home, name='learn_home'),
+    path('learn/lesson/<int:lesson_id>/', views.learn_lesson, name='learn_lesson'),
+
+
     path('api/v1/', api_views.api_root, name='api-root'),
     path('api/v1/', include(router.urls)),
     path('api/v1/auth/token/', obtain_auth_token, name='api-token-auth'),
@@ -108,6 +112,8 @@ urlpatterns = [
     path('trhadmin/enrollments/<int:enrollment_id>/send-credentials/', views.trh_admin_send_credentials, name='trh_admin_send_credentials'),
     path('trhadmin/contacts/', views.trh_admin_contacts, name='trh_admin_contacts'),
     path('trhadmin/attendance/', views.trh_admin_attendance, name='trh_admin_attendance'),
+    path('trhadmin/mail-centre/', views.trh_admin_mail_centre, name='trh_admin_mail_centre'),
+    path('trhadmin/mail-centre/send/<int:enrollment_id>/', views.trh_admin_send_completion_email, name='trh_admin_send_completion_email'),
 
     # Password Reset URLs
     path('password_reset/', auth_views.PasswordResetView.as_view(

@@ -235,6 +235,18 @@ class Enrollment(models.Model):
     )
     certificate_payment_date = models.DateTimeField(null=True, blank=True, help_text="When the student completed the certificate payment")
 
+    # Learning completion email — sent automatically when the student finishes all lessons
+    learning_completion_email_sent = models.BooleanField(
+        default=False,
+        help_text="Set to True after the learning-completion congratulations email has been sent to this student"
+    )
+
+    # Internship completion reminder — sent 5-7 days before internship end date
+    completion_reminder_sent = models.BooleanField(
+        default=False,
+        help_text="Set to True after the pre-completion reminder email has been auto-sent to this student"
+    )
+
     def __str__(self):
         return f"{self.name} - {self.domain} ({self.duration})"
 
@@ -677,6 +689,28 @@ Available placeholders for the credentials email:
   {portal_url} - Portal login URL
 """
 
+LEARNING_COMPLETION_PLACEHOLDERS = """
+Available placeholders for the learning completion email:
+  {name}       - Student full name
+  {domain}     - Internship domain (e.g. Data Science)
+  {duration}   - Internship duration (e.g. 3 Months)
+  {email}      - Student email address
+  {student_id} - Student portal ID (e.g. TRH20-26-001)
+  {total}      - Total number of lessons completed
+"""
+
+INTERNSHIP_COMPLETION_PLACEHOLDERS = """
+Available placeholders for the internship completion reminder email:
+  {name}       - Student full name
+  {domain}     - Internship domain (e.g. Data Science)
+  {duration}   - Internship duration (e.g. 3 Months)
+  {email}      - Student email address
+  {student_id} - Student portal ID (e.g. TRH20-26-001)
+  {start_date} - Internship start date (e.g. July 01, 2026)
+  {end_date}   - Internship end date (e.g. October 15, 2026)
+  {days_left}  - Days remaining until internship ends (e.g. 5)
+"""
+
 
 class EmailTemplate(models.Model):
     """
@@ -688,6 +722,8 @@ class EmailTemplate(models.Model):
     TEMPLATE_CHOICES = [
         ('offer_letter', 'Offer Letter Email'),
         ('login_credentials', 'Login Credentials Email'),
+        ('learning_completion', 'Learning Content Completion Email'),
+        ('internship_completion', 'Internship Completion Reminder Email'),
     ]
 
     name = models.CharField(
@@ -729,3 +765,128 @@ class EmailTemplate(models.Model):
         rendered_subject = self.subject.format_map(safe_ctx)
         rendered_body = self.body.format_map(safe_ctx)
         return rendered_subject, rendered_body
+
+
+# =================================================================
+#  LEARNING HUB
+#  W3Schools-style structured learning content scoped per domain.
+#  Admin creates Topics (e.g. "Python Basics") and Lessons
+#  (individual pages with HTML content + code examples).
+#  Students can track which lessons they have completed.
+# =================================================================
+
+class LearningTopic(models.Model):
+    """A subject chapter grouping lessons — e.g. 'Python Basics', 'SQL Joins'."""
+
+    DOMAIN_CHOICES = [
+        ('Data Analytics', 'Data Analytics'),
+        ('Power BI developer', 'Power BI developer'),
+        ('Web Development', 'Web Development'),
+        ('Machine Learning', 'Machine Learning'),
+        ('Data Science', 'Data Science'),
+        ('Artificial Intelligence', 'Artificial Intelligence'),
+        ('All', 'All Domains'),
+    ]
+
+    ICON_CHOICES = [
+        ('bi-graph-up', 'Graph / Analytics'),
+        ('bi-bar-chart-fill', 'Bar Chart / BI'),
+        ('bi-code-slash', 'Code / Web Dev'),
+        ('bi-cpu-fill', 'CPU / ML'),
+        ('bi-database-fill', 'Database / Data Science'),
+        ('bi-stars', 'Stars / AI'),
+        ('bi-book-fill', 'Book / Generic'),
+        ('bi-terminal-fill', 'Terminal / Python'),
+        ('bi-table', 'Table / SQL'),
+        ('bi-file-earmark-code-fill', 'File / Notebooks'),
+    ]
+
+    domain = models.CharField(
+        max_length=60, choices=DOMAIN_CHOICES,
+        help_text="Which internship domain this topic belongs to. Use 'All' to show to every student."
+    )
+    title = models.CharField(max_length=200, help_text="Chapter title, e.g. 'Python Basics'")
+    icon = models.CharField(
+        max_length=60, choices=ICON_CHOICES, default='bi-book-fill',
+        help_text="Bootstrap Icons class for this topic"
+    )
+    description = models.CharField(
+        max_length=400, blank=True,
+        help_text="Short description shown in the topic card (1-2 sentences)"
+    )
+    order = models.PositiveIntegerField(
+        default=0,
+        help_text="Topics are displayed in ascending order within each domain"
+    )
+    is_active = models.BooleanField(default=True, help_text="Uncheck to hide from students")
+
+    class Meta:
+        ordering = ['domain', 'order', 'title']
+        verbose_name = 'Learning Topic'
+        verbose_name_plural = 'Learning Topics'
+
+    def __str__(self):
+        return f"[{self.domain}] {self.title}"
+
+    @property
+    def lesson_count(self):
+        return self.lessons.filter(is_active=True).count()
+
+
+class LearningLesson(models.Model):
+    """
+    A single lesson page within a LearningTopic.
+    Content is stored as HTML so it can include headings, bold, tables, etc.
+    code_example is stored as plain text and rendered with syntax highlighting.
+    """
+
+    LANGUAGE_CHOICES = [
+        ('python', 'Python'),
+        ('sql', 'SQL'),
+        ('javascript', 'JavaScript'),
+        ('html', 'HTML'),
+        ('css', 'CSS'),
+        ('bash', 'Bash / Terminal'),
+        ('json', 'JSON'),
+        ('none', 'No code'),
+    ]
+
+    topic = models.ForeignKey(
+        LearningTopic, on_delete=models.CASCADE, related_name='lessons'
+    )
+    title = models.CharField(max_length=200, help_text="Lesson title, e.g. 'Variables & Data Types'")
+    content = models.TextField(
+        help_text="Main lesson body — HTML is supported. Use <p>, <h3>, <ul>, <strong>, <code>, <table>, etc."
+    )
+    code_example = models.TextField(
+        blank=True,
+        help_text="Code snippet shown in the highlighted code block. Leave blank if no code."
+    )
+    code_language = models.CharField(
+        max_length=20, choices=LANGUAGE_CHOICES, default='python',
+        help_text="Language for syntax highlighting"
+    )
+    try_it_note = models.CharField(
+        max_length=500, blank=True,
+        help_text="Optional hint shown below the code block (e.g. 'Try changing x to 10')"
+    )
+    order = models.PositiveIntegerField(
+        default=0,
+        help_text="Lessons are displayed in ascending order within each topic"
+    )
+    is_active = models.BooleanField(default=True, help_text="Uncheck to hide from students")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    # Students who have marked this lesson as completed
+    completed_by = models.ManyToManyField(
+        User, related_name='completed_lessons', blank=True
+    )
+
+    class Meta:
+        ordering = ['topic', 'order', 'title']
+        verbose_name = 'Learning Lesson'
+        verbose_name_plural = 'Learning Lessons'
+
+    def __str__(self):
+        return f"{self.topic.title} › {self.title}"
