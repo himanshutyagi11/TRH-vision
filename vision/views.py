@@ -412,6 +412,87 @@ def enroll_success(request):
             pass
     return render(request, 'vision/enroll_success.html', {'enrollment': enrollment})
 
+
+def create_cert_payment_order(request):
+    """AJAX: creates a Razorpay order specifically for the certificate fee."""
+    if not request.user.is_authenticated:
+        return JsonResponse({'error': 'Login required'}, status=401)
+    if request.method != 'POST':
+        return JsonResponse({'error': 'Method not allowed'}, status=405)
+
+    try:
+        data = json.loads(request.body)
+        amount_inr = int(data.get('amount', 499))   # default ₹499 if not sent
+        if amount_inr <= 0:
+            return JsonResponse({'error': 'Invalid amount'}, status=400)
+
+        client = razorpay.Client(
+            auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET)
+        )
+        order = client.order.create({
+            'amount': amount_inr * 100,
+            'currency': 'INR',
+            'payment_capture': 1,
+        })
+        return JsonResponse({
+            'order_id': order['id'],
+            'amount':   order['amount'],
+            'currency': order['currency'],
+            'key':      settings.RAZORPAY_KEY_ID,
+        })
+    except Exception as e:
+        error_msg = str(e)
+        if 'Authentication failed' in error_msg:
+            error_msg = 'Razorpay key invalid — check RAZORPAY_KEY_ID / RAZORPAY_KEY_SECRET in .env'
+        return JsonResponse({'error': error_msg}, status=500)
+
+
+@csrf_exempt
+def cert_payment_success(request):
+    """Called by the dashboard after the student pays the certificate fee."""
+    if not request.user.is_authenticated:
+        return redirect('sigin')
+    if request.method != 'POST':
+        return JsonResponse({'error': 'Method not allowed'}, status=405)
+
+    try:
+        razorpay_order_id   = request.POST.get('razorpay_order_id', '')
+        razorpay_payment_id = request.POST.get('razorpay_payment_id', '')
+        razorpay_signature  = request.POST.get('razorpay_signature', '')
+        amount_paid         = int(request.POST.get('amount_paid', 0))  # in paise
+
+        # Verify Razorpay signature
+        key_secret = settings.RAZORPAY_KEY_SECRET.encode()
+        message    = f'{razorpay_order_id}|{razorpay_payment_id}'.encode()
+        generated_sig = hmac.new(key_secret, message, hashlib.sha256).hexdigest()
+
+        if not hmac.compare_digest(generated_sig, razorpay_signature):
+            messages.error(request, 'Certificate payment verification failed. Contact support.')
+            return redirect('dashboard')
+
+        # Mark certificate as paid on the enrollment record
+        from .models import Enrollment
+        from django.utils import timezone as tz
+
+        enrollment = Enrollment.objects.filter(
+            email=request.user.email, is_paid=True
+        ).first()
+        if enrollment:
+            enrollment.certificate_paid           = True
+            enrollment.certificate_payment_id     = razorpay_payment_id
+            enrollment.certificate_payment_amount = amount_paid / 100
+            enrollment.certificate_payment_date   = tz.now()
+            enrollment.save()
+
+        messages.success(request, '✅ Payment successful! Your certificate is ready for download.')
+        return redirect('dashboard')
+
+    except Exception as e:
+        messages.error(request, f'Certificate payment error: {e}')
+        return redirect('dashboard')
+
+
+
 def services(request):
     return render(request, 'vision/services.html')
 
@@ -574,24 +655,39 @@ def dashboard(request):
         min_period__lte=student_limit
     )
 
-    # Certificate eligibility: all tasks must be completed
-    all_tasks_complete = (total_tasks > 0 and completed_tasks_count == total_tasks)
-    
-    certificate_unlocked = False
-    validation_pending = False
-    days_left_for_cert = 0
+    # Fetch student enrollment early (needed for certificate unlock logic below)
+    from .models import Enrollment
+    paid_enrollment = Enrollment.objects.filter(email=request.user.email, is_paid=True).first()
+    is_paid = bool(paid_enrollment)
+    # 'enrollment' used for offer letter (requires admin approval); also used for cert date
+    enrollment = Enrollment.objects.filter(email=request.user.email, is_paid=True, is_approved=True).first()
+    # For certificate date calculation use paid_enrollment (has start_date even before approval)
+    cert_enrollment = paid_enrollment
 
-    if all_tasks_complete and all_projects_submitted and len(projects) > 0:
-        latest_sub_date = max(p.submission.submitted_at for p in projects)
-        diff = timezone.now() - latest_sub_date
-        
-        if all_projects_cleared:
+    # Certificate eligibility: unlock when the internship period is complete
+    certificate_unlocked = False
+    days_left_for_cert = 0
+    validation_pending = False
+
+    if cert_enrollment:
+        from dateutil.relativedelta import relativedelta
+        # Determine internship start: prefer admin-set start_date, else approved_at, else created_at
+        if cert_enrollment.start_date:
+            intern_start = cert_enrollment.start_date
+        elif cert_enrollment.approved_at:
+            intern_start = cert_enrollment.approved_at.date()
+        else:
+            intern_start = cert_enrollment.created_at.date()
+
+        dur_map = {'1 Month': 1, '2 Months': 2, '3 Months': 3, '6 Months': 6}
+        months = dur_map.get(profile.period, 1)
+        internship_end_date = intern_start + relativedelta(months=months)
+        today = timezone.now().date()
+
+        if today >= internship_end_date:
             certificate_unlocked = True
         else:
-            validation_pending = True
-            days_left_for_cert = max(0, 3 - diff.days)
-    elif all_tasks_complete and len(projects) == 0:
-        certificate_unlocked = True
+            days_left_for_cert = (internship_end_date - today).days
         
     has_certificate = bool(profile.certificate)
 
@@ -686,11 +782,12 @@ def dashboard(request):
     # Milestone achievements
     user_milestones = MilestoneAchievement.objects.filter(user=request.user).select_related('track')
 
-    # Fetch student enrollment for offer letter download (only if admin-approved)
-    from .models import Enrollment
-    enrollment = Enrollment.objects.filter(email=request.user.email, is_paid=True, is_approved=True).first()
-    paid_enrollment = Enrollment.objects.filter(email=request.user.email, is_paid=True).first()
-    is_paid = bool(paid_enrollment)
+    # (enrollment, paid_enrollment, is_paid already fetched above)
+
+    all_tasks_complete = total_tasks > 0 and completed_tasks_count == total_tasks
+
+    # Has the student already paid the certificate fee?
+    certificate_paid = bool(paid_enrollment and paid_enrollment.certificate_paid)
 
     context = {
         'tasks': all_tasks,
@@ -709,6 +806,7 @@ def dashboard(request):
         'days_passed': days_since_joined,
         'all_tasks_complete': all_tasks_complete,
         'certificate_unlocked': certificate_unlocked,
+        'certificate_paid': certificate_paid,
         'validation_pending': validation_pending,
         'days_left_for_cert': days_left_for_cert,
         'all_projects_cleared': all_projects_cleared,
@@ -1385,40 +1483,37 @@ def generate_certificate(request):
 
     profile = request.user.profile
     
-    # ── Security Check for Certificate Unlock ──
-    duration_map = {'1 Month': 1, '2 Months': 2, '3 Months': 3, '6 Months': 6}
-    student_limit = duration_map.get(profile.period, 1)
-    
-    # Check tasks
-    all_tasks = Task.objects.filter(category=profile.Intren, required_period__lte=student_limit)
-    total_tasks = all_tasks.count()
-    completed_tasks = sum(1 for t in all_tasks if request.user in t.users_completed.all())
-    
-    if total_tasks > 0 and completed_tasks != total_tasks:
-        messages.error(request, "You must complete all tasks before downloading your certificate.")
-        return redirect('dashboard')
-        
-    # Check projects
-    from .models import Project, ProjectSubmission
-    from django.utils import timezone
-    projects = Project.objects.filter(category=profile.Intren, required_period__lte=student_limit)
-    
-    for p in projects:
-        sub = ProjectSubmission.objects.filter(user=request.user, project=p).first()
-        if not sub:
-            messages.error(request, f"You must submit project '{p.title}' before downloading your certificate.")
-            return redirect('dashboard')
-            
-        diff = timezone.now() - sub.submitted_at
-        if not sub.is_approved and diff.days < 3:
-            messages.error(request, f"Please wait {3 - diff.days} more day(s) for verification before downloading your certificate.")
-            return redirect('dashboard')
-
-    # Look up the student's enrollment to use the same UNID as the offer letter
+    # ── Security Check: internship must be complete & certificate payment done ──
     from .models import Enrollment
+    from django.utils import timezone
+    from dateutil.relativedelta import relativedelta
+
     enrollment = Enrollment.objects.filter(email=request.user.email, is_paid=True).first()
-    if not enrollment:
-        messages.error(request, "Payment required! Please complete your payment before downloading your certificate.")
+
+    # Verify the internship period has actually ended
+    internship_complete = False
+    if enrollment:
+        # Fallback date chain: start_date → approved_at → created_at
+        if enrollment.start_date:
+            intern_start = enrollment.start_date
+        elif enrollment.approved_at:
+            intern_start = enrollment.approved_at.date()
+        else:
+            intern_start = enrollment.created_at.date()
+
+        dur_map = {'1 Month': 1, '2 Months': 2, '3 Months': 3, '6 Months': 6}
+        months = dur_map.get(profile.period, 1)
+        end_date = intern_start + relativedelta(months=months)
+        if timezone.now().date() >= end_date:
+            internship_complete = True
+
+    if not internship_complete:
+        messages.error(request, "Your internship is not yet complete. The certificate will be available after your internship ends.")
+        return redirect('dashboard')
+
+    # Check certificate payment
+    if not enrollment or not enrollment.certificate_paid:
+        messages.error(request, "Payment required! Please complete your certificate payment before downloading.")
         return redirect('dashboard')
 
     pdf_bytes = _build_certificate_pdf(request.user, profile, enrollment=enrollment)

@@ -508,7 +508,7 @@
                     {% endif %}
                 </div>
 
-                {% if certificate_unlocked and is_paid %}
+                {% if certificate_unlocked and certificate_paid %}
                 <h5 class="fw-bold text-success">🎓 Certificate Unlocked!</h5>
                 <p class="small text-muted mb-1">
                     <strong>{{ internship_name }}</strong> Internship<br>
@@ -525,51 +525,35 @@
                         <i class="bi bi-download me-2"></i>Download
                     </a>
                 </div>
-                {% elif certificate_unlocked and not is_paid %}
+                {% elif certificate_unlocked and not certificate_paid %}
                 <h5 class="fw-bold text-warning">🎓 Certificate Ready — Payment Required</h5>
                 <p class="small text-muted mb-1">
                     <strong>{{ internship_name }}</strong> Internship<br>
                     <span class="badge bg-warning bg-opacity-10 text-dark mt-1">{{ period_text }}</span>
                 </p>
-                <p class="small text-muted mb-3">Please complete the payment to download your official certificate.</p>
+                <p class="small text-muted mb-3">Pay a one-time fee to download your official verified certificate.</p>
                 <button type="button" id="payForCertBtn"
                     class="btn btn-orange w-100 rounded-pill text-white fw-bold shadow-sm py-2">
-                    <i class="bi bi-credit-card me-2"></i>Pay & Download Certificate
+                    <i class="bi bi-credit-card me-2"></i>Pay &amp; Download Certificate
                 </button>
-                <form id="certPaymentSuccessForm" method="POST" action="{% url 'payment_success' %}">
+                <form id="certPaymentSuccessForm" method="POST" action="{% url 'cert_payment_success' %}">
                     {% csrf_token %}
                     <input type="hidden" name="razorpay_order_id" id="cert_h_order_id">
                     <input type="hidden" name="razorpay_payment_id" id="cert_h_payment_id">
                     <input type="hidden" name="razorpay_signature" id="cert_h_signature">
-                    <input type="hidden" name="name" value="{{ request.user.first_name }} {{ request.user.last_name }}">
-                    <input type="hidden" name="college" value="N/A">
-                    <input type="hidden" name="email" value="{{ request.user.email }}">
-                    <input type="hidden" name="phone" value="N/A">
-                    <input type="hidden" name="domain" value="{{ internship_name }}">
-                    <input type="hidden" name="duration" value="{{ period_text }}">
+                    <input type="hidden" name="amount_paid" id="cert_h_amount">
                 </form>
-                {% elif validation_pending or not all_projects_cleared %}
-                <h5 class="fw-bold text-warning">Project Under Review</h5>
-                <p class="small text-muted mb-1">
-                    You'll earn your <strong>{{ internship_name }}</strong> certificate<br>
-                    <span class="badge bg-secondary bg-opacity-10 text-secondary mt-1">{{ period_text }}</span>
-                </p>
-                <p class="small text-muted mb-3">Your project is submitted! Your certificate will unlock immediately
-                    upon admin verification or automatically in <strong>{{ days_left_for_cert }} day(s)</strong>.</p>
-                <div class="alert alert-warning py-2 mb-0 small">
-                    <i class="bi bi-hourglass-split me-1"></i> Verification Pending
-                </div>
                 {% else %}
-                <h5 class="fw-bold">Certificate Locked</h5>
+                <h5 class="fw-bold">Internship In Progress</h5>
                 <p class="small text-muted mb-1">
                     You'll earn your <strong>{{ internship_name }}</strong> certificate<br>
                     <span class="badge bg-secondary bg-opacity-10 text-secondary mt-1">{{ period_text }}</span>
                 </p>
-                <p class="small text-muted mb-3">Complete all tasks and submit your capstone project(s) to unlock your
-                    verified certificate.</p>
-                <div class="progress mb-2" style="height: 6px;">
-                    <div class="progress-bar bg-secondary" style="width: {{ progress_percent }}%"></div>
-                </div>
+                {% if days_left_for_cert > 0 %}
+                <p class="small text-muted mb-3">Your certificate will unlock automatically when your internship ends in <strong>{{ days_left_for_cert }} day(s)</strong>.</p>
+                {% else %}
+                <p class="small text-muted mb-3">Complete your internship period to unlock your verified certificate.</p>
+                {% endif %}
                 <small class="text-muted">{{ completed_count }} / {{ total_count }} tasks completed</small>
                 {% endif %}
             </div>
@@ -641,10 +625,12 @@
                     certBtn.disabled = true;
                     certBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Creating payment order…';
 
-                    fetch('{% url "create_razorpay_order" %}', {
+                    const CERT_FEE = 499;  // ₹499 certificate fee
+
+                    fetch('{% url "create_cert_payment_order" %}', {
                         method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ duration: '{{ period_text }}' }),
+                        headers: { 'Content-Type': 'application/json', 'X-CSRFToken': '{{ csrf_token }}' },
+                        body: JSON.stringify({ amount: CERT_FEE }),
                     })
                         .then(res => res.json())
                         .then(data => {
@@ -669,9 +655,10 @@
                                 },
                                 theme: { color: '#111111' },
                                 handler: function (response) {
-                                    document.getElementById('cert_h_order_id').value = response.razorpay_order_id;
+                                    document.getElementById('cert_h_order_id').value  = response.razorpay_order_id;
                                     document.getElementById('cert_h_payment_id').value = response.razorpay_payment_id;
-                                    document.getElementById('cert_h_signature').value = response.razorpay_signature;
+                                    document.getElementById('cert_h_signature').value  = response.razorpay_signature;
+                                    document.getElementById('cert_h_amount').value     = data.amount;  // paise
                                     document.getElementById('certPaymentSuccessForm').submit();
                                 },
                                 modal: {

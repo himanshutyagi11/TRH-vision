@@ -69,6 +69,8 @@ urlpatterns = [
     path('enroll/success/', views.enroll_success, name='enroll_success'),
     path('payment/create-order/', views.create_razorpay_order, name='create_razorpay_order'),
     path('payment/success/', views.payment_success, name='payment_success'),
+    path('payment/cert-order/', views.create_cert_payment_order, name='create_cert_payment_order'),
+    path('payment/cert-success/', views.cert_payment_success, name='cert_payment_success'),
     path('dashboard/', views.dashboard, name='dashboard'),
     # This captures the ID and sends it to the task_detail function
     path('task/<int:task_id>/', views.task_details, name='task_details'),
