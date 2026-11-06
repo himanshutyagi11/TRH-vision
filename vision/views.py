@@ -592,12 +592,10 @@ def dashboard(request):
     }
     student_limit = duration_map.get(period_text, 1)
 
-    # Filter tasks: 
-    # 1. Matches the category (e.g. 'Python')
-    # 2. required_period is LESS THAN OR EQUAL TO the student's internship period
+    # Filter tasks:
+    # Matches the student's enrolled domain (e.g. 'Data Analytics') without period restrictions
     all_tasks = list(Task.objects.filter(
-        category=internship_name,
-        required_period__lte=student_limit
+        category=internship_name
     ).order_by('id'))
 
     # Sequential unlock: each task is locked until the previous one is completed
@@ -636,11 +634,10 @@ def dashboard(request):
     # Calculate current week
     current_week = (days_since_joined // 7) + 1
 
-    # Filter Projects
+    # Filter Projects: shows all projects for the student's enrolled domain
     from .models import Project, Announcement, ProjectSubmission
     projects = list(Project.objects.filter(
-        category=internship_name,
-        required_period__lte=student_limit
+        category=internship_name
     ))
 
     all_projects_submitted = True
@@ -1171,15 +1168,14 @@ def task_details(request, task_id):
     duration_map = {'1 Month': 1, '2 Months': 2, '3 Months': 3, '6 Months': 6}
     student_limit = duration_map.get(profile.period, 1)
 
-    # Check if student is allowed to see this task
-    if task.category != profile.Intren or task.required_period > student_limit:
-        messages.error(request, "This task is not included in your internship duration.")
+    # Check if student is allowed to see this task (domain check)
+    if task.category != profile.Intren:
+        messages.error(request, "This task is not included in your internship domain.")
         return redirect('dashboard')
 
     # Sequential unlock check: task N is only accessible if task N-1 is completed
     all_tasks_ordered = list(Task.objects.filter(
-        category=profile.Intren,
-        required_period__lte=student_limit
+        category=profile.Intren
     ).order_by('id'))
     task_index = next((i for i, t in enumerate(all_tasks_ordered) if t.id == task.id), None)
     if task_index is not None and task_index > 0:
@@ -1188,23 +1184,19 @@ def task_details(request, task_id):
             messages.error(request, "Complete the previous task first to unlock this one.")
             return redirect('dashboard')
 
-    # --- New Logic for Drip Feed ---
+    # Learning Materials for this task: all unlocked without weekly drip restrictions
     from django.utils import timezone
     from .models import LearningMaterial
-    
-    # Calculate days since joined
-    days_since_joined = (timezone.now() - request.user.date_joined).days
-    # Week 1 starts at day 0. Week 2 starts at day 7, etc.
-    # So: 0-6 days = Week 1, 7-13 days = Week 2
-    current_week = (days_since_joined // 7) + 1
-    
-    materials = list(LearningMaterial.objects.filter(task=task).order_by('week_number', 'order').distinct())
-    
-    for material in materials:
-        material.locked = material.week_number > current_week
 
-    # Assessment unlocks only when ALL materials are accessible (none locked)
-    has_locked_materials = any(material.locked for material in materials)
+    days_since_joined = (timezone.now() - request.user.date_joined).days
+    current_week = (days_since_joined // 7) + 1
+
+    materials = list(LearningMaterial.objects.filter(task=task).order_by('week_number', 'order').distinct())
+
+    for material in materials:
+        material.locked = False
+
+    has_locked_materials = False
 
     # Handle assessment submission (POST)
     if request.method == 'POST' and not has_locked_materials:
@@ -1558,13 +1550,10 @@ def generate_certificate(request):
     internship_complete = False
     task_progress_complete = False
 
-    # Check task progress (100% tasks done counts as complete)
-    duration_map = {'1 Month': 1, '2 Months': 2, '3 Months': 3, '6 Months': 6}
-    student_limit = duration_map.get(profile.period, 1)
+    # Check task progress (100% domain tasks done counts as complete)
     from .models import Task as TaskModel
     all_tasks = TaskModel.objects.filter(
-        category=profile.Intren,
-        required_period__lte=student_limit
+        category=profile.Intren
     )
     total_tasks = all_tasks.count()
     completed_tasks = sum(1 for t in all_tasks if request.user in t.users_completed.all())
