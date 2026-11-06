@@ -498,8 +498,7 @@
 
             <!-- Certificate Section -->
             <h5 class="fw-bold mb-3">Certification</h5>
-            <div
-                class="dashboard-card p-4 text-center mb-4 {% if not certificate_unlocked %}certificate-locked{% endif %}">
+            <div class="dashboard-card p-4 text-center mb-4 {% if not certificate_unlocked %}certificate-locked{% endif %}">
                 <div class="mb-3">
                     {% if certificate_unlocked %}
                     <i class="bi bi-patch-check-fill display-1 text-orange"></i>
@@ -509,7 +508,8 @@
                 </div>
 
                 {% if certificate_unlocked and certificate_paid %}
-                <h5 class="fw-bold text-success">🎓 Certificate Unlocked!</h5>
+                {# ── STATE 3: Paid — show download buttons ── #}
+                <h5 class="fw-bold text-success">&#127891; Certificate Unlocked!</h5>
                 <p class="small text-muted mb-1">
                     <strong>{{ internship_name }}</strong> Internship<br>
                     <span class="badge bg-success bg-opacity-10 text-success mt-1">{{ period_text }}</span>
@@ -525,16 +525,20 @@
                         <i class="bi bi-download me-2"></i>Download
                     </a>
                 </div>
+
                 {% elif certificate_unlocked and not certificate_paid %}
-                <h5 class="fw-bold text-warning">🎓 Certificate Ready — Payment Required</h5>
+                {# ── STATE 2: Unlocked but not paid — show Razorpay payment button ── #}
+                <h5 class="fw-bold text-warning">&#127891; Certificate Ready &mdash; Payment Required</h5>
                 <p class="small text-muted mb-1">
                     <strong>{{ internship_name }}</strong> Internship<br>
                     <span class="badge bg-warning bg-opacity-10 text-dark mt-1">{{ period_text }}</span>
                 </p>
-                <p class="small text-muted mb-3">Pay a one-time fee to download your official verified certificate.</p>
+                <p class="small text-muted mb-3">
+                    You have completed the course! Pay a one-time fee to get your official verified certificate.
+                </p>
                 <button type="button" id="payForCertBtn"
                     class="btn btn-orange w-100 rounded-pill text-white fw-bold shadow-sm py-2">
-                    <i class="bi bi-credit-card me-2"></i>Pay &amp; Download Certificate
+                    <i class="bi bi-credit-card me-2"></i>Pay &amp; Get Certificate
                 </button>
                 <form id="certPaymentSuccessForm" method="POST" action="{% url 'cert_payment_success' %}">
                     {% csrf_token %}
@@ -543,18 +547,111 @@
                     <input type="hidden" name="razorpay_signature" id="cert_h_signature">
                     <input type="hidden" name="amount_paid" id="cert_h_amount">
                 </form>
+                <small class="text-muted d-block mt-2" style="font-size:.72rem;">
+                    {% if cert_fee %}&#8377;{{ cert_fee }} one-time fee{% else %}One-time fee{% endif %} &bull; Instant digital certificate after payment
+                </small>
+
                 {% else %}
-                <h5 class="fw-bold">Internship In Progress</h5>
-                <p class="small text-muted mb-1">
-                    You'll earn your <strong>{{ internship_name }}</strong> certificate<br>
-                    <span class="badge bg-secondary bg-opacity-10 text-secondary mt-1">{{ period_text }}</span>
+                {# ── STATE 1: Not yet unlocked — show checklist ── #}
+                <h5 class="fw-bold">Internship Certificate</h5>
+                <p class="small text-muted mb-3">
+                    Complete all requirements below to unlock your verified
+                    <strong>{{ internship_name }}</strong> certificate.
                 </p>
-                {% if days_left_for_cert > 0 %}
-                <p class="small text-muted mb-3">Your certificate will unlock automatically when your internship ends in <strong>{{ days_left_for_cert }} day(s)</strong>.</p>
-                {% else %}
-                <p class="small text-muted mb-3">Complete your internship period to unlock your verified certificate.</p>
-                {% endif %}
-                <small class="text-muted">{{ completed_count }} / {{ total_count }} tasks completed</small>
+
+                {# ── Prerequisite checklist ── #}
+                <div class="text-start mb-4" style="max-width: 340px; margin: 0 auto;">
+
+                    {# 1. Course Task Progress (100% unlocks the certificate) #}
+                    <div class="d-flex align-items-start gap-3 mb-3 p-3 rounded-3"
+                        style="background: {% if progress_percent >= 100 %}rgba(16,185,129,.08){% else %}rgba(0,0,0,.04){% endif %}; border: 1px solid {% if progress_percent >= 100 %}rgba(16,185,129,.25){% else %}rgba(0,0,0,.08){% endif %};">
+                        <div class="flex-shrink-0 mt-1">
+                            {% if progress_percent >= 100 %}
+                            <i class="bi bi-check-circle-fill text-success fs-5"></i>
+                            {% else %}
+                            <i class="bi bi-list-check text-warning fs-5"></i>
+                            {% endif %}
+                        </div>
+                        <div class="flex-grow-1">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <div class="fw-semibold small">Course Tasks</div>
+                                <span class="badge {% if progress_percent >= 100 %}bg-success{% else %}bg-secondary{% endif %} bg-opacity-10 {% if progress_percent >= 100 %}text-success{% else %}text-secondary{% endif %}" style="font-size:.65rem;">
+                                    {{ completed_count }}/{{ total_count }}
+                                </span>
+                            </div>
+                            {% if progress_percent >= 100 %}
+                            <div class="text-success" style="font-size:.75rem;">&#10003; All tasks completed</div>
+                            {% else %}
+                            <div class="progress mb-1" style="height:5px;">
+                                <div class="progress-bar bg-warning" style="width:{{ progress_percent }}%;"></div>
+                            </div>
+                            <div class="text-muted" style="font-size:.75rem;">{{ progress_percent }}% complete &mdash; finish all tasks to unlock</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    {# 2. Internship Duration #}
+                    <div class="d-flex align-items-start gap-3 mb-3 p-3 rounded-3"
+                        style="background: {% if internship_duration_done %}rgba(16,185,129,.08){% else %}rgba(0,0,0,.04){% endif %}; border: 1px solid {% if internship_duration_done %}rgba(16,185,129,.25){% else %}rgba(0,0,0,.08){% endif %};">
+                        <div class="flex-shrink-0 mt-1">
+                            {% if internship_duration_done %}
+                            <i class="bi bi-check-circle-fill text-success fs-5"></i>
+                            {% else %}
+                            <i class="bi bi-hourglass-split text-warning fs-5"></i>
+                            {% endif %}
+                        </div>
+                        <div class="flex-grow-1">
+                            <div class="fw-semibold small mb-0">Internship Duration</div>
+                            {% if internship_duration_done %}
+                            <div class="text-success" style="font-size:.75rem;">&#10003; Completed &mdash; {{ period_text }}</div>
+                            {% else %}
+                            <div class="text-muted" style="font-size:.75rem;">
+                                {{ days_left_for_cert }} day(s) remaining ({{ period_text }})
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    {# 3. Learning Material #}
+                    <div class="d-flex align-items-start gap-3 p-3 rounded-3"
+                        style="background: {% if all_lessons_done %}rgba(16,185,129,.08){% else %}rgba(0,0,0,.04){% endif %}; border: 1px solid {% if all_lessons_done %}rgba(16,185,129,.25){% else %}rgba(0,0,0,.08){% endif %};">
+                        <div class="flex-shrink-0 mt-1">
+                            {% if all_lessons_done %}
+                            <i class="bi bi-check-circle-fill text-success fs-5"></i>
+                            {% else %}
+                            <i class="bi bi-book-fill text-primary fs-5"></i>
+                            {% endif %}
+                        </div>
+                        <div class="flex-grow-1">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <div class="fw-semibold small">Learning Material</div>
+                                <span class="badge {% if all_lessons_done %}bg-success{% else %}bg-secondary{% endif %} bg-opacity-10 {% if all_lessons_done %}text-success{% else %}text-secondary{% endif %}" style="font-size:.65rem;">
+                                    {{ completed_learning_count }}/{{ total_learning_lessons }}
+                                </span>
+                            </div>
+                            {% if all_lessons_done %}
+                            <div class="text-success" style="font-size:.75rem;">&#10003; All lessons completed</div>
+                            {% else %}
+                            <div class="progress mb-1" style="height:5px;">
+                                <div class="progress-bar bg-primary" style="width:{{ learning_progress_pct }}%;"></div>
+                            </div>
+                            <div class="text-muted" style="font-size:.75rem;">
+                                {{ learning_progress_pct }}% complete &mdash;
+                                <a href="{% url 'learn_home' %}" class="text-primary fw-semibold text-decoration-none">Open Learning Hub &rarr;</a>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                {# ── Locked button ── #}
+                <button class="btn btn-secondary w-100 rounded-pill fw-bold py-2"
+                    disabled style="cursor: not-allowed; opacity: .55;">
+                    <i class="bi bi-lock-fill me-2"></i>Certificate Locked
+                </button>
+                <small class="text-muted d-block mt-2" style="font-size:.72rem;">
+                    Complete all requirements above to unlock certificate payment.
+                </small>
                 {% endif %}
             </div>
 
@@ -625,12 +722,10 @@
                     certBtn.disabled = true;
                     certBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Creating payment order…';
 
-                    const CERT_FEE = 499;  // ₹499 certificate fee
-
                     fetch('{% url "create_cert_payment_order" %}', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json', 'X-CSRFToken': '{{ csrf_token }}' },
-                        body: JSON.stringify({ amount: CERT_FEE }),
+                        body: JSON.stringify({}),
                     })
                         .then(res => res.json())
                         .then(data => {

@@ -414,17 +414,26 @@ def enroll_success(request):
 
 
 def create_cert_payment_order(request):
-    """AJAX: creates a Razorpay order specifically for the certificate fee."""
+    """AJAX: creates a Razorpay order specifically for the certificate fee using InternshipPricing table."""
     if not request.user.is_authenticated:
         return JsonResponse({'error': 'Login required'}, status=401)
     if request.method != 'POST':
         return JsonResponse({'error': 'Method not allowed'}, status=405)
 
     try:
-        data = json.loads(request.body)
-        amount_inr = int(data.get('amount', 499))   # default ₹499 if not sent
+        from .models import InternshipPricing
+        profile = getattr(request.user, 'profile', None)
+        period = profile.period if profile else '1 Month'
+
+        # Look up price set by admin in InternshipPricing
+        pricing = InternshipPricing.objects.filter(duration=period, is_active=True).first()
+        if not pricing:
+            # Fallback to any active pricing or default
+            pricing = InternshipPricing.objects.filter(is_active=True).first()
+
+        amount_inr = int(pricing.price) if pricing else 149
         if amount_inr <= 0:
-            return JsonResponse({'error': 'Invalid amount'}, status=400)
+            return JsonResponse({'error': 'Invalid pricing configured for this duration'}, status=400)
 
         client = razorpay.Client(
             auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET)
@@ -474,9 +483,12 @@ def cert_payment_success(request):
         from .models import Enrollment
         from django.utils import timezone as tz
 
-        enrollment = Enrollment.objects.filter(
-            email=request.user.email, is_paid=True
-        ).first()
+        # Try to find enrollment: prefer paid+approved, then paid, then any
+        enrollment = (
+            Enrollment.objects.filter(email=request.user.email, is_paid=True, is_approved=True).first()
+            or Enrollment.objects.filter(email=request.user.email, is_paid=True).first()
+            or Enrollment.objects.filter(email=request.user.email).first()
+        )
         if enrollment:
             enrollment.certificate_paid           = True
             enrollment.certificate_payment_id     = razorpay_payment_id
@@ -664,10 +676,38 @@ def dashboard(request):
     # For certificate date calculation use paid_enrollment (has start_date even before approval)
     cert_enrollment = paid_enrollment
 
-    # Certificate eligibility: unlock when the internship period is complete
+    # Certificate eligibility: unlock when BOTH the internship period is complete
+    # AND all learning material for the student's domain is completed.
     certificate_unlocked = False
     days_left_for_cert = 0
     validation_pending = False
+    internship_duration_done = False
+
+    # ── Learning material completion check ────────────────────────────────
+    from .models import LearningTopic, LearningLesson
+    student_domain = profile.Intren
+    domain_topics = LearningTopic.objects.filter(
+        is_active=True,
+        domain__in=[student_domain, 'All']
+    ).prefetch_related('lessons')
+
+    all_domain_lesson_ids = set()
+    for _topic in domain_topics:
+        for _lesson in _topic.lessons.all():
+            if _lesson.is_active:
+                all_domain_lesson_ids.add(_lesson.id)
+
+    completed_learning_ids = set(
+        request.user.completed_lessons.values_list('id', flat=True)
+    )
+    total_learning_lessons = len(all_domain_lesson_ids)
+    completed_learning_count = len(all_domain_lesson_ids & completed_learning_ids)
+    all_lessons_done = (total_learning_lessons > 0 and completed_learning_count >= total_learning_lessons)
+    learning_progress_pct = (
+        int((completed_learning_count / total_learning_lessons) * 100)
+        if total_learning_lessons > 0 else 0
+    )
+    # ──────────────────────────────────────────────────────────────────────
 
     if cert_enrollment:
         from dateutil.relativedelta import relativedelta
@@ -682,13 +722,21 @@ def dashboard(request):
         dur_map = {'1 Month': 1, '2 Months': 2, '3 Months': 3, '6 Months': 6}
         months = dur_map.get(profile.period, 1)
         internship_end_date = intern_start + relativedelta(months=months)
-        today = timezone.now().date()
+        today_date = timezone.now().date()
 
-        if today >= internship_end_date:
-            certificate_unlocked = True
+        if today_date >= internship_end_date:
+            internship_duration_done = True
         else:
-            days_left_for_cert = (internship_end_date - today).days
-        
+            days_left_for_cert = (internship_end_date - today_date).days
+
+    # ── Certificate unlock logic ──────────────────────────────────────────
+    # Unlock when task progress is 100%  OR  internship duration is done AND
+    # all learning lessons are complete.  This check is intentionally OUTSIDE
+    # the cert_enrollment block so that students who have completed all tasks
+    # are always shown the payment option regardless of enrollment status.
+    if progress_percent >= 100 or (internship_duration_done and all_lessons_done):
+        certificate_unlocked = True
+
     has_certificate = bool(profile.certificate)
 
     # ══════════════════════════════════════════════════════════
@@ -787,7 +835,16 @@ def dashboard(request):
     all_tasks_complete = total_tasks > 0 and completed_tasks_count == total_tasks
 
     # Has the student already paid the certificate fee?
-    certificate_paid = bool(paid_enrollment and paid_enrollment.certificate_paid)
+    # Check across ALL enrollment records for this email (paid or not) in case
+    # the payment was recorded on a different enrollment row.
+    certificate_paid = Enrollment.objects.filter(
+        email=request.user.email, certificate_paid=True
+    ).exists()
+
+    # Fetch certificate pricing for this student's period from InternshipPricing table
+    from .models import InternshipPricing
+    cert_pricing = InternshipPricing.objects.filter(duration=period_text, is_active=True).first()
+    cert_fee = int(cert_pricing.price) if cert_pricing else 0
 
     context = {
         'tasks': all_tasks,
@@ -799,6 +856,7 @@ def dashboard(request):
         'student_id': student_id,
         'internship_name': internship_name,
         'period_text': period_text,
+        'cert_fee': cert_fee,
         'student_limit': student_limit,
         'days_remaining': days_remaining,
         'current_week': current_week,
@@ -812,6 +870,12 @@ def dashboard(request):
         'all_projects_cleared': all_projects_cleared,
         'has_certificate': has_certificate,
         'is_paid': is_paid,
+        # Learning material progress (for certificate unlock)
+        'all_lessons_done': all_lessons_done,
+        'total_learning_lessons': total_learning_lessons,
+        'completed_learning_count': completed_learning_count,
+        'learning_progress_pct': learning_progress_pct,
+        'internship_duration_done': internship_duration_done,
         # Daily Challenger
         'streak': streak,
         'enrollments': enrollments,
@@ -1490,8 +1554,23 @@ def generate_certificate(request):
 
     enrollment = Enrollment.objects.filter(email=request.user.email, is_paid=True).first()
 
-    # Verify the internship period has actually ended
+    # Verify eligibility: either internship period ended OR task progress is 100%
     internship_complete = False
+    task_progress_complete = False
+
+    # Check task progress (100% tasks done counts as complete)
+    duration_map = {'1 Month': 1, '2 Months': 2, '3 Months': 3, '6 Months': 6}
+    student_limit = duration_map.get(profile.period, 1)
+    from .models import Task as TaskModel
+    all_tasks = TaskModel.objects.filter(
+        category=profile.Intren,
+        required_period__lte=student_limit
+    )
+    total_tasks = all_tasks.count()
+    completed_tasks = sum(1 for t in all_tasks if request.user in t.users_completed.all())
+    if total_tasks > 0 and completed_tasks >= total_tasks:
+        task_progress_complete = True
+
     if enrollment:
         # Fallback date chain: start_date → approved_at → created_at
         if enrollment.start_date:
@@ -1507,14 +1586,21 @@ def generate_certificate(request):
         if timezone.now().date() >= end_date:
             internship_complete = True
 
-    if not internship_complete:
-        messages.error(request, "Your internship is not yet complete. The certificate will be available after your internship ends.")
+    # Allow download if either condition is met
+    if not internship_complete and not task_progress_complete:
+        messages.error(request, "Complete all course tasks to unlock your certificate.")
         return redirect('dashboard')
 
-    # Check certificate payment
-    if not enrollment or not enrollment.certificate_paid:
+    # Check certificate payment — look for ANY paid enrollment for this user's email
+    paid_enrollment_for_cert = Enrollment.objects.filter(
+        email=request.user.email, is_paid=True, certificate_paid=True
+    ).first()
+    if not paid_enrollment_for_cert:
         messages.error(request, "Payment required! Please complete your certificate payment before downloading.")
         return redirect('dashboard')
+
+    # Use the paid enrollment for PDF generation (may differ from enrollment above)
+    enrollment = paid_enrollment_for_cert
 
     pdf_bytes = _build_certificate_pdf(request.user, profile, enrollment=enrollment)
 
