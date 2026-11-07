@@ -85,7 +85,7 @@ class Profile(models.Model):
     DOMAIN_CHOICES = [
         ('Data Analytics', 'Data Analytics'),
         ('Power BI developer', 'Power BI developer'),
-        ('Web development', 'Web development'),
+        ('Web Development', 'Web Development'),
         ('Machine Learning', 'Machine Learning'),
         ('Data Science', 'Data Science'),
         ('Artificial Intelligence', 'Artificial Intelligence'),

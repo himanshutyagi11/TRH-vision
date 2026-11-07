@@ -680,19 +680,27 @@ def dashboard(request):
     validation_pending = False
     internship_duration_done = False
 
-    # ── Learning material completion check ────────────────────────────────
+    # ── Learning material completion check & dashboard learning modules ──
     from .models import LearningTopic, LearningLesson
     student_domain = profile.Intren
-    domain_topics = LearningTopic.objects.filter(
+    # Match domain case-insensitively or via exact/All match
+    domain_topics = list(LearningTopic.objects.filter(
         is_active=True,
-        domain__in=[student_domain, 'All']
-    ).prefetch_related('lessons')
+        domain__in=[student_domain, student_domain.title(), 'Web Development', 'All'] if student_domain.lower() == 'web development' else [student_domain, 'All']
+    ).prefetch_related('lessons'))
 
     all_domain_lesson_ids = set()
     for _topic in domain_topics:
-        for _lesson in _topic.lessons.all():
-            if _lesson.is_active:
-                all_domain_lesson_ids.add(_lesson.id)
+        active_lessons = [l for l in _topic.lessons.all() if l.is_active]
+        _topic.active_lessons = active_lessons
+        _topic.active_lesson_count = len(active_lessons)
+        completed_in_topic = sum(1 for l in active_lessons if l.completed_by.filter(id=request.user.id).exists())
+        _topic.completed_count = completed_in_topic
+        _topic.topic_progress = (
+            int((completed_in_topic / len(active_lessons)) * 100) if active_lessons else 0
+        )
+        for _lesson in active_lessons:
+            all_domain_lesson_ids.add(_lesson.id)
 
     completed_learning_ids = set(
         request.user.completed_lessons.values_list('id', flat=True)
@@ -867,6 +875,7 @@ def dashboard(request):
         'all_projects_cleared': all_projects_cleared,
         'has_certificate': has_certificate,
         'is_paid': is_paid,
+        'learning_topics': domain_topics,
         # Learning material progress (for certificate unlock)
         'all_lessons_done': all_lessons_done,
         'total_learning_lessons': total_learning_lessons,
@@ -1024,9 +1033,12 @@ def learn_home(request):
     if browse_all:
         topics = LearningTopic.objects.filter(is_active=True).prefetch_related('lessons')
     else:
+        domain_filters = [student_domain, 'All']
+        if student_domain.lower() == 'web development':
+            domain_filters.extend(['Web Development', 'Web development'])
         topics = LearningTopic.objects.filter(
             is_active=True,
-            domain__in=[student_domain, 'All']
+            domain__in=domain_filters
         ).prefetch_related('lessons')
 
     # Enrich topics with lesson count & student progress
@@ -1107,9 +1119,12 @@ def learn_lesson(request, lesson_id):
     if browse_all:
         sidebar_topics = LearningTopic.objects.filter(is_active=True).prefetch_related('lessons')
     else:
+        domain_filters = [student_domain, 'All']
+        if student_domain.lower() == 'web development':
+            domain_filters.extend(['Web Development', 'Web development'])
         sidebar_topics = LearningTopic.objects.filter(
             is_active=True,
-            domain__in=[student_domain, 'All']
+            domain__in=domain_filters
         ).prefetch_related('lessons')
 
     completed_lesson_ids = set(
@@ -2976,10 +2991,10 @@ def trh_admin_approve_enrollment(request, enrollment_id):
             last_name=" ".join(name_parts[1:]) if len(name_parts) > 1 else ""
         )
 
-        # Map domains to match Profile model choices
+        # Map domains to match canonical domain names
         domain_mapping = {
-            'Web Development': 'Web development',
-            'Webdevlopment': 'Web development',
+            'Web development': 'Web Development',
+            'Webdevlopment': 'Web Development',
             'ML': 'Machine Learning',
             'Artificial Intelligence': 'Artificial Intelligence',
             'data science': 'Data Science',
@@ -3164,8 +3179,8 @@ def trh_admin_send_credentials(request, enrollment_id):
         except Exception:
             from .models import Profile
             domain_mapping = {
-                'Web Development': 'Web development',
-                'Webdevlopment': 'Web development',
+                'Web development': 'Web Development',
+                'Webdevlopment': 'Web Development',
                 'ML': 'Machine Learning',
                 'Artificial Intelligence': 'Artificial Intelligence',
                 'data science': 'Data Science',
@@ -3190,8 +3205,8 @@ def trh_admin_send_credentials(request, enrollment_id):
         )
         from .models import Profile
         domain_mapping = {
-            'Web Development': 'Web development',
-            'Webdevlopment': 'Web development',
+            'Web development': 'Web Development',
+            'Webdevlopment': 'Web Development',
             'ML': 'Machine Learning',
             'Artificial Intelligence': 'Artificial Intelligence',
             'data science': 'Data Science',
@@ -3321,8 +3336,8 @@ def process_approved_enrollments():
 
                 # Map domains if needed to match Profile constraints
                 domain_mapping = {
-                    'Web Development': 'Web development',
-                    'Webdevlopment': 'Web development',
+                    'Web development': 'Web Development',
+                    'Webdevlopment': 'Web Development',
                     'ML': 'Machine Learning',
                     'Artificial Intelligence': 'Artificial Intelligence',
                     'data science': 'Data Science',
