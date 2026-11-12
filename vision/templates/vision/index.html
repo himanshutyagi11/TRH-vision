@@ -1,1144 +1,1839 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-<head>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-HXWELDJFKG"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
 
-  gtag('config', 'G-HXWELDJFKG');
-</script>
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-HXWELDJFKG"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-HXWELDJFKG');
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TRHvision | Global Digital Solutions & Technology Services</title>
-    <meta name="description" content="TRHvision — your trusted partner for web development, data analytics, dashboard solutions, and backend APIs. We deliver scalable digital solutions for businesses worldwide.">
-    <meta name="keywords" content="web development, data analytics, python, django, dashboard, backend API, digital solutions India, technology services">
+    <meta name="description"
+        content="TRHvision — your trusted partner for web development, data analytics, dashboard solutions, and backend APIs. We deliver scalable digital solutions for businesses worldwide.">
+    <meta name="keywords"
+        content="web development, data analytics, python, django, dashboard, backend API, digital solutions India, technology services">
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <link rel="stylesheet" href="{% static 'vision/css/style.css' %}">
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 
     <style>
-        *, *::before, *::after { box-sizing: border-box; }
-        body { font-family: 'Inter', sans-serif; }
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+        }
 
         /* ── Hero ─────────────────────────────────────────── */
         .hero-split {
-            background: linear-gradient(135deg, rgba(14,165,233,.05) 0%, #fff 100%);
+            background: linear-gradient(135deg, rgba(14, 165, 233, .05) 0%, #fff 100%);
             padding-top: 120px;
             padding-bottom: 80px;
             overflow: hidden;
         }
-        .hero-blob { position:absolute; z-index:0; opacity:.1; filter:blur(40px); border-radius:50%; }
-        .blob-1 { top:-50px; right:-50px; width:300px; height:300px; background:#0ea5e9; }
-        .blob-2 { bottom:-30px; left:-30px; width:200px; height:200px; background:#000; }
+
+        .hero-blob {
+            position: absolute;
+            z-index: 0;
+            opacity: .1;
+            filter: blur(40px);
+            border-radius: 50%;
+        }
+
+        .blob-1 {
+            top: -50px;
+            right: -50px;
+            width: 300px;
+            height: 300px;
+            background: #0ea5e9;
+        }
+
+        .blob-2 {
+            bottom: -30px;
+            left: -30px;
+            width: 200px;
+            height: 200px;
+            background: #000;
+        }
 
         .stat-box {
-            background:#fff; border-radius:16px; padding:20px;
-            box-shadow:0 10px 30px rgba(0,0,0,.05);
-            transition:transform .3s;
+            background: #fff;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, .05);
+            transition: transform .3s;
         }
-        .stat-box:hover { transform:translateY(-5px); }
+
+        .stat-box:hover {
+            transform: translateY(-5px);
+        }
+
         .service-pill {
-            background:rgba(14,165,233,.1); color:#0ea5e9;
-            padding:8px 16px; border-radius:50px; font-weight:600;
-            display:inline-block; margin-bottom:15px;
+            background: rgba(14, 165, 233, .1);
+            color: #0ea5e9;
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 15px;
         }
 
         /* ── Dual cards ───────────────────────────────────── */
         .dual-card {
-            border:none; border-radius:20px; overflow:hidden;
-            transition:all .4s ease; height:100%; position:relative;
+            border: none;
+            border-radius: 20px;
+            overflow: hidden;
+            transition: all .4s ease;
+            height: 100%;
+            position: relative;
         }
-        .dual-card:hover { transform:translateY(-10px); box-shadow:0 20px 40px rgba(0,0,0,.1); }
+
+        .dual-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, .1);
+        }
 
         /* ── How-It-Works steps ───────────────────────────── */
         .step-card {
-            background:#fff; border-radius:18px; padding:2rem 1.5rem;
-            border:1px solid #f1f5f9; box-shadow:0 4px 20px rgba(0,0,0,.04);
-            text-align:center; transition:transform .2s, box-shadow .2s;
+            background: #fff;
+            border-radius: 18px;
+            padding: 2rem 1.5rem;
+            border: 1px solid #f1f5f9;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, .04);
+            text-align: center;
+            transition: transform .2s, box-shadow .2s;
         }
-        .step-card:hover { transform:translateY(-6px); box-shadow:0 12px 32px rgba(0,0,0,.09); }
+
+        .step-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, .09);
+        }
+
         .step-num {
-            width:52px; height:52px; border-radius:50%;
-            background:linear-gradient(135deg,#0ea5e9,#0284c7);
-            color:#fff; font-size:1.2rem; font-weight:900;
-            display:flex; align-items:center; justify-content:center;
-            margin:0 auto 1rem;
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #0ea5e9, #0284c7);
+            color: #fff;
+            font-size: 1.2rem;
+            font-weight: 900;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
         }
 
         /* ── Why Us ───────────────────────────────────────── */
         .why-item {
-            display:flex; align-items:flex-start; gap:1rem;
-            padding:1.2rem 1.4rem; background:#fff;
-            border-radius:14px; border:1px solid #f1f5f9;
-            box-shadow:0 2px 10px rgba(0,0,0,.04);
-            transition:transform .2s;
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1.2rem 1.4rem;
+            background: #fff;
+            border-radius: 14px;
+            border: 1px solid #f1f5f9;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, .04);
+            transition: transform .2s;
         }
-        .why-item:hover { transform:translateX(5px); }
+
+        .why-item:hover {
+            transform: translateX(5px);
+        }
+
         .why-icon {
-            width:44px; height:44px; border-radius:12px;
-            display:flex; align-items:center; justify-content:center;
-            font-size:1.25rem; flex-shrink:0;
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            flex-shrink: 0;
         }
 
         /* ── Why Choose Us Premium ────────────────────────── */
         .why-choose-section {
             background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0c1a2e 100%);
-            position: relative; overflow: hidden;
+            position: relative;
+            overflow: hidden;
         }
+
         .why-choose-section::before {
-            content: ''; position: absolute; inset: 0;
+            content: '';
+            position: absolute;
+            inset: 0;
             background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%230ea5e9' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
         }
+
         .why-card-premium {
-            background: rgba(255,255,255,0.04);
-            border: 1px solid rgba(255,255,255,0.08);
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
             border-radius: 20px;
             padding: 2rem 1.6rem;
             transition: all 0.4s ease;
-            position: relative; overflow: hidden;
+            position: relative;
+            overflow: hidden;
         }
+
         .why-card-premium::before {
-            content: ''; position: absolute;
-            top: 0; left: 0; right: 0; height: 3px;
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
             background: linear-gradient(90deg, #0ea5e9, #8b5cf6, #f97316);
-            opacity: 0; transition: opacity 0.3s;
+            opacity: 0;
+            transition: opacity 0.3s;
         }
-        .why-card-premium:hover { background: rgba(255,255,255,0.08); transform: translateY(-8px); border-color: rgba(14,165,233,0.3); }
-        .why-card-premium:hover::before { opacity: 1; }
+
+        .why-card-premium:hover {
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateY(-8px);
+            border-color: rgba(14, 165, 233, 0.3);
+        }
+
+        .why-card-premium:hover::before {
+            opacity: 1;
+        }
+
         .why-icon-lg {
-            width: 64px; height: 64px; border-radius: 18px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 1.7rem; margin-bottom: 1.2rem;
+            width: 64px;
+            height: 64px;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.7rem;
+            margin-bottom: 1.2rem;
         }
+
         .glow-badge {
-            display: inline-block; padding: 4px 12px;
-            border-radius: 50px; font-size: .65rem; font-weight: 800;
-            letter-spacing: 1.5px; text-transform: uppercase;
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 50px;
+            font-size: .65rem;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
             margin-bottom: .6rem;
         }
 
         /* ── Future Vision / AI Section ──────────────────── */
         .ai-vision-section {
             background: #fff;
-            position: relative; overflow: hidden;
+            position: relative;
+            overflow: hidden;
         }
+
         .ai-card {
-            border-radius: 22px; padding: 2.2rem;
-            position: relative; overflow: hidden;
+            border-radius: 22px;
+            padding: 2.2rem;
+            position: relative;
+            overflow: hidden;
             transition: transform 0.4s ease, box-shadow 0.4s ease;
             height: 100%;
         }
-        .ai-card:hover { transform: translateY(-10px); box-shadow: 0 30px 60px rgba(0,0,0,0.15); }
-        .ai-card-ai { background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%); color: #fff; }
-        .ai-card-agents { background: linear-gradient(135deg, #064e3b 0%, #065f46 100%); color: #fff; }
-        .ai-card-data { background: linear-gradient(135deg, #1e3a5f 0%, #1e40af 100%); color: #fff; }
-        .ai-card-ml { background: linear-gradient(135deg, #4a1942 0%, #7c3aed 100%); color: #fff; }
-        .ai-icon-circle {
-            width: 56px; height: 56px; border-radius: 16px;
-            background: rgba(255,255,255,0.15);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 1.5rem; margin-bottom: 1rem;
+
+        .ai-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.15);
         }
+
+        .ai-card-ai {
+            background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+            color: #fff;
+        }
+
+        .ai-card-agents {
+            background: linear-gradient(135deg, #064e3b 0%, #065f46 100%);
+            color: #fff;
+        }
+
+        .ai-card-data {
+            background: linear-gradient(135deg, #1e3a5f 0%, #1e40af 100%);
+            color: #fff;
+        }
+
+        .ai-card-ml {
+            background: linear-gradient(135deg, #4a1942 0%, #7c3aed 100%);
+            color: #fff;
+        }
+
+        .ai-icon-circle {
+            width: 56px;
+            height: 56px;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
         .ai-tag {
-            display: inline-block; padding: 3px 10px;
-            border-radius: 50px; font-size: .6rem; font-weight: 800;
-            letter-spacing: 1px; text-transform: uppercase;
-            background: rgba(255,255,255,0.15); color: rgba(255,255,255,0.9);
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 50px;
+            font-size: .6rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            background: rgba(255, 255, 255, 0.15);
+            color: rgba(255, 255, 255, 0.9);
             margin-bottom: .7rem;
         }
-        .ai-feature-list { list-style: none; padding: 0; margin: 0; }
+
+        .ai-feature-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
         .ai-feature-list li {
-            display: flex; align-items: center; gap: .6rem;
-            color: rgba(255,255,255,0.8); font-size: .85rem;
+            display: flex;
+            align-items: center;
+            gap: .6rem;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: .85rem;
             margin-bottom: .5rem;
         }
+
         .ai-feature-list li::before {
-            content: '→'; color: rgba(255,255,255,0.5); font-weight: 700;
+            content: '→';
+            color: rgba(255, 255, 255, 0.5);
+            font-weight: 700;
         }
+
         .future-badge {
-            display: inline-flex; align-items: center; gap: .5rem;
-            background: linear-gradient(135deg, rgba(139,92,246,0.1), rgba(14,165,233,0.1));
-            border: 1px solid rgba(139,92,246,0.3);
-            border-radius: 50px; padding: 6px 16px;
-            font-size: .75rem; font-weight: 700; color: #8b5cf6;
+            display: inline-flex;
+            align-items: center;
+            gap: .5rem;
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(14, 165, 233, 0.1));
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            border-radius: 50px;
+            padding: 6px 16px;
+            font-size: .75rem;
+            font-weight: 700;
+            color: #8b5cf6;
             margin-bottom: 1rem;
         }
 
         /* ── Industries We Serve ─────────────────────────── */
         .industry-chip {
-            display: flex; align-items: center; gap: .7rem;
-            padding: .9rem 1.3rem; background: #fff;
-            border: 1px solid #e8ecf0; border-radius: 14px;
-            font-weight: 600; font-size: .9rem;
-            transition: all 0.3s ease; cursor: default;
+            display: flex;
+            align-items: center;
+            gap: .7rem;
+            padding: .9rem 1.3rem;
+            background: #fff;
+            border: 1px solid #e8ecf0;
+            border-radius: 14px;
+            font-weight: 600;
+            font-size: .9rem;
+            transition: all 0.3s ease;
+            cursor: default;
         }
+
         .industry-chip:hover {
-            border-color: #0ea5e9; background: rgba(14,165,233,0.05);
+            border-color: #0ea5e9;
+            background: rgba(14, 165, 233, 0.05);
             transform: scale(1.04);
         }
+
         .industry-chip-icon {
-            width: 40px; height: 40px; border-radius: 10px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 1.1rem; flex-shrink: 0;
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            flex-shrink: 0;
         }
 
         /* ── Animated Stats Strip ────────────────────────── */
         .stats-strip {
             background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 50%, #0369a1 100%);
-            position: relative; overflow: hidden;
+            position: relative;
+            overflow: hidden;
         }
+
         .stats-strip::before {
-            content: ''; position: absolute; inset: 0;
-            background: radial-gradient(ellipse at 20% 50%, rgba(255,255,255,0.1) 0%, transparent 60%),
-                        radial-gradient(ellipse at 80% 50%, rgba(255,255,255,0.07) 0%, transparent 60%);
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at 20% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 50%, rgba(255, 255, 255, 0.07) 0%, transparent 60%);
         }
+
         .stat-pill {
-            text-align: center; padding: 2rem 1rem;
-            border-right: 1px solid rgba(255,255,255,0.15);
+            text-align: center;
+            padding: 2rem 1rem;
+            border-right: 1px solid rgba(255, 255, 255, 0.15);
         }
-        .stat-pill:last-child { border-right: none; }
+
+        .stat-pill:last-child {
+            border-right: none;
+        }
+
         .stat-pill-num {
-            font-size: 2.8rem; font-weight: 900; color: #fff; line-height: 1;
+            font-size: 2.8rem;
+            font-weight: 900;
+            color: #fff;
+            line-height: 1;
             font-family: 'Inter', sans-serif;
         }
+
         .stat-pill-label {
-            font-size: .75rem; font-weight: 700; color: rgba(255,255,255,0.7);
-            letter-spacing: 1.5px; text-transform: uppercase; margin-top: .4rem;
+            font-size: .75rem;
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.7);
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            margin-top: .4rem;
         }
 
         /* ── Tech stack ───────────────────────────────────── */
-        .tech-stack-icon { font-size:2.5rem; opacity:.6; transition:.3s; }
-        .tech-stack-icon:hover { opacity:1; transform:scale(1.1); }
+        .tech-stack-icon {
+            font-size: 2.5rem;
+            opacity: .6;
+            transition: .3s;
+        }
+
+        .tech-stack-icon:hover {
+            opacity: 1;
+            transform: scale(1.1);
+        }
 
         /* ── Stats ticker strip ───────────────────────────── */
-        .ticker-strip { background:#111; color:#fff; overflow:hidden; }
+        .ticker-strip {
+            background: #111;
+            color: #fff;
+            overflow: hidden;
+        }
+
         .ticker-inner {
-            display:flex; gap:4rem; animation:ticker 20s linear infinite;
-            white-space:nowrap; padding:.85rem 0;
+            display: flex;
+            gap: 4rem;
+            animation: ticker 20s linear infinite;
+            white-space: nowrap;
+            padding: .85rem 0;
         }
+
         @keyframes ticker {
-            0%   { transform:translateX(0); }
-            100% { transform:translateX(-50%); }
+            0% {
+                transform: translateX(0);
+            }
+
+            100% {
+                transform: translateX(-50%);
+            }
         }
-        .ticker-item { display:flex; align-items:center; gap:.6rem; font-size:.85rem; font-weight:600; }
+
+        .ticker-item {
+            display: flex;
+            align-items: center;
+            gap: .6rem;
+            font-size: .85rem;
+            font-weight: 600;
+        }
 
         /* ── Testimonial ──────────────────────────────────── */
         .testi-card {
-            background:#fff; border-radius:18px; padding:1.8rem;
-            border:1px solid #e8ecf0; box-shadow:0 4px 20px rgba(0,0,0,.05);
+            background: #fff;
+            border-radius: 18px;
+            padding: 1.8rem;
+            border: 1px solid #e8ecf0;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, .05);
         }
+
         .testi-avatar {
-            width:44px; height:44px; border-radius:50%;
-            background:linear-gradient(135deg,#0ea5e9,#0284c7);
-            color:#fff; font-weight:800; font-size:1rem;
-            display:flex; align-items:center; justify-content:center;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #0ea5e9, #0284c7);
+            color: #fff;
+            font-weight: 800;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         /* ── Robot widget (fixed, applied globally) ────────── */
         #dc-robot-btn {
-            position:fixed; bottom:28px; right:28px;
-            width:64px; height:64px; border-radius:50%;
-            background:linear-gradient(135deg,#10b981,#0f766e);
-            border:none; cursor:pointer; z-index:9998;
-            box-shadow:0 8px 32px rgba(16,185,129,.5);
-            display:flex; align-items:center; justify-content:center;
-            animation:robotBob 2.5s ease-in-out infinite;
+            position: fixed;
+            bottom: 28px;
+            right: 28px;
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #10b981, #0f766e);
+            border: none;
+            cursor: pointer;
+            z-index: 9998;
+            box-shadow: 0 8px 32px rgba(16, 185, 129, .5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: robotBob 2.5s ease-in-out infinite;
         }
+
         #dc-robot-btn::before {
-            content:''; position:absolute; inset:-6px; border-radius:50%;
-            border:2px solid rgba(16,185,129,.45);
-            animation:robotRing 2s ease-out infinite;
+            content: '';
+            position: absolute;
+            inset: -6px;
+            border-radius: 50%;
+            border: 2px solid rgba(16, 185, 129, .45);
+            animation: robotRing 2s ease-out infinite;
         }
-        .robot-face { font-size:1.9rem; line-height:1; pointer-events:none; animation:robotBlink 4s ease-in-out infinite; }
-        @keyframes robotBob   { 0%,100%{transform:translateY(0)}  50%{transform:translateY(-8px)} }
-        @keyframes robotBlink { 0%,48%,52%,100%{opacity:1}        50%{opacity:.1} }
-        @keyframes robotRing  { 0%{transform:scale(1);opacity:.7} 100%{transform:scale(1.65);opacity:0} }
+
+        .robot-face {
+            font-size: 1.9rem;
+            line-height: 1;
+            pointer-events: none;
+            animation: robotBlink 4s ease-in-out infinite;
+        }
+
+        @keyframes robotBob {
+
+            0%,
+            100% {
+                transform: translateY(0)
+            }
+
+            50% {
+                transform: translateY(-8px)
+            }
+        }
+
+        @keyframes robotBlink {
+
+            0%,
+            48%,
+            52%,
+            100% {
+                opacity: 1
+            }
+
+            50% {
+                opacity: .1
+            }
+        }
+
+        @keyframes robotRing {
+            0% {
+                transform: scale(1);
+                opacity: .7
+            }
+
+            100% {
+                transform: scale(1.65);
+                opacity: 0
+            }
+        }
 
         #dc-robot-tooltip {
-            position:fixed; bottom:36px; right:106px;
-            background:#1e293b; color:#fff;
-            font-size:.75rem; font-weight:700; padding:7px 13px;
-            border-radius:9px; white-space:nowrap; z-index:9998;
-            box-shadow:0 4px 16px rgba(0,0,0,.3);
-            animation:tooltipPop .4s ease; pointer-events:none;
+            position: fixed;
+            bottom: 36px;
+            right: 106px;
+            background: #1e293b;
+            color: #fff;
+            font-size: .75rem;
+            font-weight: 700;
+            padding: 7px 13px;
+            border-radius: 9px;
+            white-space: nowrap;
+            z-index: 9998;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, .3);
+            animation: tooltipPop .4s ease;
+            pointer-events: none;
         }
+
         #dc-robot-tooltip::after {
-            content:''; position:absolute; top:50%; right:-7px;
-            transform:translateY(-50%); border:7px solid transparent;
-            border-left-color:#1e293b;
+            content: '';
+            position: absolute;
+            top: 50%;
+            right: -7px;
+            transform: translateY(-50%);
+            border: 7px solid transparent;
+            border-left-color: #1e293b;
         }
-        @keyframes tooltipPop { from{opacity:0;transform:translateX(8px)} to{opacity:1;transform:translateX(0)} }
+
+        @keyframes tooltipPop {
+            from {
+                opacity: 0;
+                transform: translateX(8px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0)
+            }
+        }
 
         #dc-panel {
-            position:fixed; bottom:106px; right:28px;
-            width:min(420px,calc(100vw - 32px));
-            max-height:calc(100vh - 140px); overflow-y:auto;
-            background:linear-gradient(160deg,#0f172a 0%,#1e3a5f 55%,#064e3b 100%);
-            border-radius:22px;
-            box-shadow:0 24px 60px rgba(0,0,0,.5), 0 0 0 1px rgba(255,255,255,.06);
-            z-index:9997;
-            transform:translateY(30px) scale(.96); opacity:0; pointer-events:none;
-            transition:transform .35s cubic-bezier(.34,1.56,.64,1), opacity .3s ease;
+            position: fixed;
+            bottom: 106px;
+            right: 28px;
+            width: min(420px, calc(100vw - 32px));
+            max-height: calc(100vh - 140px);
+            overflow-y: auto;
+            background: linear-gradient(160deg, #0f172a 0%, #1e3a5f 55%, #064e3b 100%);
+            border-radius: 22px;
+            box-shadow: 0 24px 60px rgba(0, 0, 0, .5), 0 0 0 1px rgba(255, 255, 255, .06);
+            z-index: 9997;
+            transform: translateY(30px) scale(.96);
+            opacity: 0;
+            pointer-events: none;
+            transition: transform .35s cubic-bezier(.34, 1.56, .64, 1), opacity .3s ease;
         }
-        #dc-panel.open { transform:translateY(0) scale(1); opacity:1; pointer-events:all; }
-        #dc-panel::-webkit-scrollbar { width:4px; }
-        #dc-panel::-webkit-scrollbar-thumb { background:rgba(255,255,255,.15); border-radius:4px; }
 
-        .dcp-header { display:flex; align-items:center; justify-content:space-between; padding:1.2rem 1.4rem 1rem; border-bottom:1px solid rgba(255,255,255,.08); }
-        .dcp-header-left { display:flex; align-items:center; gap:.7rem; }
-        .dcp-robot-sm { width:38px; height:38px; border-radius:12px; background:rgba(16,185,129,.2); display:flex; align-items:center; justify-content:center; font-size:1.25rem; }
-        .dcp-title { font-size:.95rem; font-weight:800; color:#fff; margin:0; }
-        .dcp-sub   { font-size:.68rem; color:rgba(255,255,255,.4); margin:2px 0 0; }
-        .dcp-close { width:30px; height:30px; border-radius:50%; background:rgba(255,255,255,.08); border:none; color:#fff; cursor:pointer; font-size:1rem; display:flex; align-items:center; justify-content:center; transition:background .15s; }
-        .dcp-close:hover { background:rgba(255,255,255,.18); }
-        .dcp-body { padding:1.1rem 1.4rem 1.5rem; }
-        .dcp-streak-row { display:flex; align-items:center; justify-content:space-between; background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.09); border-radius:14px; padding:.9rem 1.1rem; margin-bottom:1rem; }
-        .dcp-streak-num { font-size:2.2rem; font-weight:900; color:#10b981; line-height:1; }
-        .dcp-streak-lbl { font-size:.57rem; letter-spacing:1.5px; text-transform:uppercase; color:rgba(255,255,255,.35); }
-        .dcp-best-val { font-size:1.2rem; font-weight:900; color:#fbbf24; }
-        .dcp-best-lbl { font-size:.57rem; letter-spacing:1px; text-transform:uppercase; color:rgba(255,255,255,.3); }
-        .dcp-tracks { display:grid; grid-template-columns:1fr 1fr; gap:.6rem; margin-bottom:1rem; }
-        .dcp-track { background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.1); border-radius:12px; padding:.7rem .9rem; display:flex; align-items:center; gap:.6rem; transition:background .2s; }
-        .dcp-track:hover { background:rgba(255,255,255,.12); }
-        .dcp-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; animation:pDot 2s ease-in-out infinite; }
-        @keyframes pDot { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(1.5)} }
-        .dcp-track-name   { font-size:.72rem; font-weight:700; color:#fff; margin:0; }
-        .dcp-track-status { font-size:.6rem; color:rgba(255,255,255,.4); margin:0; }
-        .dcp-hm-label { font-size:.57rem; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,.3); margin:0 0 .45rem; }
-        .dcp-heatmap  { display:flex; gap:3px; }
-        .dcp-hm-dot   { width:12px; height:12px; border-radius:2px; flex-shrink:0; }
-        .dcp-milestones { display:flex; flex-wrap:wrap; gap:.4rem; margin:.9rem 0; }
-        .dcp-ms { font-size:.68rem; font-weight:700; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.15); border-radius:50px; padding:3px 10px; color:rgba(255,255,255,.65); }
-        .dcp-ms.gold { background:rgba(251,191,36,.12); border-color:rgba(251,191,36,.35); color:#fbbf24; }
-        .dcp-gift { background:linear-gradient(90deg,#451a03,#78350f); color:#fbbf24; border-radius:10px; padding:.65rem 1rem; font-size:.72rem; font-weight:700; margin:.5rem 0 1rem; display:flex; align-items:center; gap:.5rem; }
-        .dcp-cta { width:100%; background:linear-gradient(90deg,#10b981,#059669); color:#fff; font-weight:800; font-size:.88rem; border:none; border-radius:12px; padding:13px; cursor:pointer; text-decoration:none; display:block; text-align:center; animation:dcp-pulse 2.5s ease-in-out infinite; transition:transform .15s; }
-        .dcp-cta:hover { transform:scale(1.02); color:#fff; }
-        @keyframes dcp-pulse { 0%{box-shadow:0 0 0 0 rgba(16,185,129,.5)} 70%{box-shadow:0 0 0 14px rgba(16,185,129,0)} 100%{box-shadow:0 0 0 0 rgba(16,185,129,0)} }
+        #dc-panel.open {
+            transform: translateY(0) scale(1);
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        #dc-panel::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        #dc-panel::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, .15);
+            border-radius: 4px;
+        }
+
+        .dcp-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.2rem 1.4rem 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, .08);
+        }
+
+        .dcp-header-left {
+            display: flex;
+            align-items: center;
+            gap: .7rem;
+        }
+
+        .dcp-robot-sm {
+            width: 38px;
+            height: 38px;
+            border-radius: 12px;
+            background: rgba(16, 185, 129, .2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+
+        .dcp-title {
+            font-size: .95rem;
+            font-weight: 800;
+            color: #fff;
+            margin: 0;
+        }
+
+        .dcp-sub {
+            font-size: .68rem;
+            color: rgba(255, 255, 255, .4);
+            margin: 2px 0 0;
+        }
+
+        .dcp-close {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, .08);
+            border: none;
+            color: #fff;
+            cursor: pointer;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background .15s;
+        }
+
+        .dcp-close:hover {
+            background: rgba(255, 255, 255, .18);
+        }
+
+        .dcp-body {
+            padding: 1.1rem 1.4rem 1.5rem;
+        }
+
+        .dcp-streak-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(255, 255, 255, .05);
+            border: 1px solid rgba(255, 255, 255, .09);
+            border-radius: 14px;
+            padding: .9rem 1.1rem;
+            margin-bottom: 1rem;
+        }
+
+        .dcp-streak-num {
+            font-size: 2.2rem;
+            font-weight: 900;
+            color: #10b981;
+            line-height: 1;
+        }
+
+        .dcp-streak-lbl {
+            font-size: .57rem;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, .35);
+        }
+
+        .dcp-best-val {
+            font-size: 1.2rem;
+            font-weight: 900;
+            color: #fbbf24;
+        }
+
+        .dcp-best-lbl {
+            font-size: .57rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, .3);
+        }
+
+        .dcp-tracks {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: .6rem;
+            margin-bottom: 1rem;
+        }
+
+        .dcp-track {
+            background: rgba(255, 255, 255, .07);
+            border: 1px solid rgba(255, 255, 255, .1);
+            border-radius: 12px;
+            padding: .7rem .9rem;
+            display: flex;
+            align-items: center;
+            gap: .6rem;
+            transition: background .2s;
+        }
+
+        .dcp-track:hover {
+            background: rgba(255, 255, 255, .12);
+        }
+
+        .dcp-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            animation: pDot 2s ease-in-out infinite;
+        }
+
+        @keyframes pDot {
+
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1)
+            }
+
+            50% {
+                opacity: .4;
+                transform: scale(1.5)
+            }
+        }
+
+        .dcp-track-name {
+            font-size: .72rem;
+            font-weight: 700;
+            color: #fff;
+            margin: 0;
+        }
+
+        .dcp-track-status {
+            font-size: .6rem;
+            color: rgba(255, 255, 255, .4);
+            margin: 0;
+        }
+
+        .dcp-hm-label {
+            font-size: .57rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, .3);
+            margin: 0 0 .45rem;
+        }
+
+        .dcp-heatmap {
+            display: flex;
+            gap: 3px;
+        }
+
+        .dcp-hm-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 2px;
+            flex-shrink: 0;
+        }
+
+        .dcp-milestones {
+            display: flex;
+            flex-wrap: wrap;
+            gap: .4rem;
+            margin: .9rem 0;
+        }
+
+        .dcp-ms {
+            font-size: .68rem;
+            font-weight: 700;
+            background: rgba(255, 255, 255, .08);
+            border: 1px solid rgba(255, 255, 255, .15);
+            border-radius: 50px;
+            padding: 3px 10px;
+            color: rgba(255, 255, 255, .65);
+        }
+
+        .dcp-ms.gold {
+            background: rgba(251, 191, 36, .12);
+            border-color: rgba(251, 191, 36, .35);
+            color: #fbbf24;
+        }
+
+        .dcp-gift {
+            background: linear-gradient(90deg, #451a03, #78350f);
+            color: #fbbf24;
+            border-radius: 10px;
+            padding: .65rem 1rem;
+            font-size: .72rem;
+            font-weight: 700;
+            margin: .5rem 0 1rem;
+            display: flex;
+            align-items: center;
+            gap: .5rem;
+        }
+
+        .dcp-cta {
+            width: 100%;
+            background: linear-gradient(90deg, #10b981, #059669);
+            color: #fff;
+            font-weight: 800;
+            font-size: .88rem;
+            border: none;
+            border-radius: 12px;
+            padding: 13px;
+            cursor: pointer;
+            text-decoration: none;
+            display: block;
+            text-align: center;
+            animation: dcp-pulse 2.5s ease-in-out infinite;
+            transition: transform .15s;
+        }
+
+        .dcp-cta:hover {
+            transform: scale(1.02);
+            color: #fff;
+        }
+
+        @keyframes dcp-pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(16, 185, 129, .5)
+            }
+
+            70% {
+                box-shadow: 0 0 0 14px rgba(16, 185, 129, 0)
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(16, 185, 129, 0)
+            }
+        }
     </style>
 </head>
+
 <body>
 
-<!-- ══════════════════════════════════════════════
+    <!-- ══════════════════════════════════════════════
      NAVBAR
      ══════════════════════════════════════════════ -->
-<nav class="navbar navbar-expand-lg fixed-top shadow-sm custom-nav bg-white">
-    <div class="container">
-        <a class="navbar-brand d-flex align-items-center gap-2" href="{% url 'index' %}">
-            <img src="{% static 'vision/image/logo.png' %}" alt="TRHvision Logo" class="brand-logo" onerror="this.style.display='none'">
-            <span class="brand-name fw-bold fs-4">TRHvision<span class="text-orange"></span></span>
-        </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="menu">
-            <ul class="navbar-nav mx-auto gap-lg-4 fw-semibold">
-                <li class="nav-item"><a class="nav-link active" href="{% url 'index' %}">Home</a></li>
-                <li class="nav-item"><a class="nav-link" href="{% url 'services' %}">Services</a></li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'career' %}">Careers
-                        <span class="badge bg-danger rounded-pill small ms-1" style="font-size:.6em;vertical-align:top;">New</span>
-                    </a>
-                </li>
-                <li class="nav-item"><a class="nav-link" href="{% url 'about' %}">About</a></li>
-                <li class="nav-item"><a class="nav-link" href="{% url 'contact' %}">Contact</a></li>
-            </ul>
-            <div class="d-flex gap-2">
-                <a href="{% url 'sigin' %}" class="btn btn-outline-dark rounded-pill px-4">Login</a>
-                <a href="{% url 'contact' %}" class="btn btn-orange rounded-pill px-4 text-white hover-up shadow-sm">Get Started</a>
+    <nav class="navbar navbar-expand-lg fixed-top shadow-sm custom-nav bg-white">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center gap-2" href="{% url 'index' %}">
+                <img src="{% static 'vision/image/logo.png' %}" alt="TRHvision Logo" class="brand-logo"
+                    onerror="this.style.display='none'">
+                <span class="brand-name fw-bold fs-4">TRHvision<span class="text-orange"></span></span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="menu">
+                <ul class="navbar-nav mx-auto gap-lg-4 fw-semibold">
+                    <li class="nav-item"><a class="nav-link active" href="{% url 'index' %}">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'services' %}">Services</a></li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'career' %}">Careers
+                            <span class="badge bg-danger rounded-pill small ms-1"
+                                style="font-size:.6em;vertical-align:top;">New</span>
+                        </a>
+                    </li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'about' %}">About</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'contact' %}">Contact</a></li>
+                </ul>
+                <div class="d-flex gap-2">
+                    <a href="{% url 'sigin' %}" class="btn btn-outline-dark rounded-pill px-4">Login</a>
+                    <a href="{% url 'contact' %}"
+                        class="btn btn-orange rounded-pill px-4 text-white hover-up shadow-sm">Get Started</a>
+                </div>
             </div>
         </div>
-    </div>
-</nav>
+    </nav>
 
-<!-- ══════════════════════════════════════════════
+    <!-- ══════════════════════════════════════════════
      HERO
      ══════════════════════════════════════════════ -->
-<section class="hero-split d-flex align-items-center" id="hero">
-    <div class="container position-relative">
-        <div class="hero-blob blob-1"></div>
-        <div class="hero-blob blob-2"></div>
-        <div class="row align-items-center g-5">
-            <div class="col-lg-6" data-aos="fade-right">
-                <span class="service-pill">Build. Deliver. Scale.</span>
-                <h1 class="display-3 fw-800 mb-4 lh-tight">
-                    Digital Solutions <span class="text-orange">Engineered</span>.<br>
-                    Results <span class="text-primary">Guaranteed</span>.
-                </h1>
-                <p class="lead text-muted mb-5">
-                    Your trusted technology partner for <strong>Web Development, Data Analytics &amp; Dashboard Solutions</strong> —
-                    helping businesses grow faster with modern, scalable digital products.
-                </p>
-                <div class="d-flex flex-wrap gap-3 mb-5">
-                    <a href="{% url 'services' %}" class="btn btn-dark btn-lg px-4 rounded-pill shadow-lg hover-up">
-                        <i class="bi bi-briefcase me-2"></i>Explore Our Services
-                    </a>
-                    <a href="{% url 'contact' %}" class="btn btn-outline-orange btn-lg px-4 rounded-pill hover-up">
-                        <i class="bi bi-send me-2"></i>Get a Free Quote
-                    </a>
-                </div>
-                <div class="d-flex align-items-center gap-4">
-                    <span class="bg-light rounded-circle border p-1"><i class="bi bi-check-circle-fill text-success fs-4"></i></span>
-                    <div>
-                        <p class="mb-0 fw-bold">Trusted by Global Clients</p>
-                        <small class="text-muted">From Startups to Enterprise</small>
+    <section class="hero-split d-flex align-items-center" id="hero">
+        <div class="container position-relative">
+            <div class="hero-blob blob-1"></div>
+            <div class="hero-blob blob-2"></div>
+            <div class="row align-items-center g-5">
+                <div class="col-lg-6" data-aos="fade-right">
+                    <span class="service-pill">Build. Deliver. Scale.</span>
+                    <h1 class="display-3 fw-800 mb-4 lh-tight">
+                        Digital Solutions <span class="text-orange">Engineered</span>.<br>
+                        Results <span class="text-primary">Guaranteed</span>.
+                    </h1>
+                    <p class="lead text-muted mb-5">
+                        Your trusted technology partner for <strong>Web Development, Data Analytics &amp; Dashboard
+                            Solutions</strong> —
+                        helping businesses grow faster with modern, scalable digital products.
+                    </p>
+                    <div class="d-flex flex-wrap gap-3 mb-5">
+                        <a href="{% url 'services' %}" class="btn btn-dark btn-lg px-4 rounded-pill shadow-lg hover-up">
+                            <i class="bi bi-briefcase me-2"></i>Explore Our Services
+                        </a>
+                        <a href="{% url 'contact' %}" class="btn btn-outline-orange btn-lg px-4 rounded-pill hover-up">
+                            <i class="bi bi-send me-2"></i>Get a Free Quote
+                        </a>
+                    </div>
+                    <div class="d-flex align-items-center gap-4">
+                        <span class="bg-light rounded-circle border p-1"><i
+                                class="bi bi-check-circle-fill text-success fs-4"></i></span>
+                        <div>
+                            <p class="mb-0 fw-bold">Trusted by Global Clients</p>
+                            <small class="text-muted">From Startups to Enterprise</small>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-lg-6" data-aos="fade-left">
-                <div class="row g-4">
-                    <div class="col-6">
-                        <div class="stat-box mb-4">
-                            <h2 class="fw-bold text-orange mb-0"><span class="counter">15</span>+</h2>
-                            <small class="text-muted text-uppercase fw-bold">Projects Delivered</small>
+                <div class="col-lg-6" data-aos="fade-left">
+                    <div class="row g-4">
+                        <div class="col-6">
+                            <div class="stat-box mb-4">
+                                <h2 class="fw-bold text-orange mb-0"><span class="counter">15</span>+</h2>
+                                <small class="text-muted text-uppercase fw-bold">Projects Delivered</small>
+                            </div>
+                            <div class="stat-box bg-dark text-white">
+                                <h2 class="fw-bold mb-0"><span class="counter">250</span>+</h2>
+                                <small class="text-white-50 text-uppercase fw-bold">Students Trained</small>
+                            </div>
                         </div>
-                        <div class="stat-box bg-dark text-white">
-                            <h2 class="fw-bold mb-0"><span class="counter">250</span>+</h2>
-                            <small class="text-white-50 text-uppercase fw-bold">Students Trained</small>
-                        </div>
-                    </div>
-                    <div class="col-6 mt-5">
-                        <div class="stat-box mb-4 text-white" style="background:#0ea5e9;">
-                            <h2 class="fw-bold mb-0"><span class="counter">85</span>%</h2>
-                            <small class="text-white-50 text-uppercase fw-bold">Client Retention</small>
-                        </div>
-                        <div class="stat-box">
-                            <h2 class="fw-bold text-primary mb-0"><span class="counter">24</span>/7</h2>
-                            <small class="text-muted text-uppercase fw-bold">Global Support</small>
+                        <div class="col-6 mt-5">
+                            <div class="stat-box mb-4 text-white" style="background:#0ea5e9;">
+                                <h2 class="fw-bold mb-0"><span class="counter">85</span>%</h2>
+                                <small class="text-white-50 text-uppercase fw-bold">Client Retention</small>
+                            </div>
+                            <div class="stat-box">
+                                <h2 class="fw-bold text-primary mb-0"><span class="counter">24</span>/7</h2>
+                                <small class="text-muted text-uppercase fw-bold">Global Support</small>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
-<!-- ══════════════════════════════════════════════
+    <!-- ══════════════════════════════════════════════
      TICKER STRIP
      ══════════════════════════════════════════════ -->
-<div class="ticker-strip">
-    <div class="ticker-inner">
-        <!-- Duplicate for seamless loop -->
-        {% for _ in "12" %}
-        <span class="ticker-item"><i class="bi bi-code-slash text-orange"></i> Web Development</span>
-        <span class="ticker-item"><i class="bi bi-graph-up-arrow text-info"></i> Data Analytics</span>
-        <span class="ticker-item"><i class="bi bi-laptop text-warning"></i> Custom Dashboards</span>
-        <span class="ticker-item"><i class="bi bi-cpu-fill" style="color:#a78bfa;"></i> AI & Agentic AI</span>
-        <span class="ticker-item"><i class="bi bi-server text-success"></i> Backend APIs</span>
-        <span class="ticker-item"><i class="bi bi-robot" style="color:#34d399;"></i> AI Agents</span>
-        <span class="ticker-item"><i class="bi bi-bar-chart-line-fill text-info"></i> Data Science</span>
-        <span class="ticker-item"><i class="bi bi-shield-check text-primary"></i> 85% Client Retention</span>
-        <span class="ticker-item"><i class="bi bi-buildings text-white"></i> 15+ Projects Delivered</span>
-        <span class="ticker-item"><i class="bi bi-lightbulb-fill text-warning"></i> Machine Learning</span>
-        {% endfor %}
+    <div class="ticker-strip">
+        <div class="ticker-inner">
+            <!-- Duplicate for seamless loop -->
+            {% for _ in "12" %}
+            <span class="ticker-item"><i class="bi bi-code-slash text-orange"></i> Web Development</span>
+            <span class="ticker-item"><i class="bi bi-graph-up-arrow text-info"></i> Data Analytics</span>
+            <span class="ticker-item"><i class="bi bi-laptop text-warning"></i> Custom Dashboards</span>
+            <span class="ticker-item"><i class="bi bi-cpu-fill" style="color:#a78bfa;"></i> AI & Agentic AI</span>
+            <span class="ticker-item"><i class="bi bi-server text-success"></i> Backend APIs</span>
+            <span class="ticker-item"><i class="bi bi-robot" style="color:#34d399;"></i> AI Agents</span>
+            <span class="ticker-item"><i class="bi bi-bar-chart-line-fill text-info"></i> Data Science</span>
+            <span class="ticker-item"><i class="bi bi-shield-check text-primary"></i> 85% Client Retention</span>
+            <span class="ticker-item"><i class="bi bi-buildings text-white"></i> 15+ Projects Delivered</span>
+            <span class="ticker-item"><i class="bi bi-lightbulb-fill text-warning"></i> Machine Learning</span>
+            {% endfor %}
+        </div>
     </div>
-</div>
 
-<!-- ══════════════════════════════════════════════
+    <!-- ══════════════════════════════════════════════
      ECOSYSTEM — For Business & Students
      ══════════════════════════════════════════════ -->
-<section class="py-5 bg-white" id="ecosystem">
-    <div class="container py-5">
-        <div class="text-center mb-5" data-aos="fade-up">
-            <h6 class="text-orange fw-bold ls-1">WHAT WE DO</h6>
-            <h2 class="fw-800 display-5">Services Built for Growth</h2>
-            <p class="text-muted mx-auto" style="max-width:540px;">From frontend interfaces to powerful backend systems — we deliver end-to-end digital solutions tailored to your business goals.</p>
-        </div>
-        <div class="row g-4">
-            <!-- Web & App Development -->
-            <div class="col-md-6" data-aos="fade-up" data-aos-delay="100">
-                <div class="dual-card bg-light p-5 h-100 position-relative">
-                    <div class="position-absolute top-0 end-0 p-4 opacity-25">
-                        <i class="bi bi-code-slash display-1"></i>
+    <section class="py-5 bg-white" id="ecosystem">
+        <div class="container py-5">
+            <div class="text-center mb-5" data-aos="fade-up">
+                <h6 class="text-orange fw-bold ls-1">WHAT WE DO</h6>
+                <h2 class="fw-800 display-5">Services Built for Growth</h2>
+                <p class="text-muted mx-auto" style="max-width:540px;">From frontend interfaces to powerful backend
+                    systems — we deliver end-to-end digital solutions tailored to your business goals.</p>
+            </div>
+            <div class="row g-4">
+                <!-- Web & App Development -->
+                <div class="col-md-6" data-aos="fade-up" data-aos-delay="100">
+                    <div class="dual-card bg-light p-5 h-100 position-relative">
+                        <div class="position-absolute top-0 end-0 p-4 opacity-25">
+                            <i class="bi bi-code-slash display-1"></i>
+                        </div>
+                        <span class="badge bg-dark text-white mb-3 px-3 py-2">WEB DEVELOPMENT</span>
+                        <h3 class="fw-bold mb-3">Custom Web Solutions</h3>
+                        <p class="text-muted mb-4 fs-5">We design and develop fast, responsive, and scalable web
+                            applications using modern technologies.</p>
+                        <div class="row g-3 mb-5">
+                            <div class="col-sm-6">
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="bg-white p-2 rounded shadow-sm"><i
+                                            class="bi bi-filetype-html text-danger fs-4"></i></div>
+                                    <span class="fw-bold text-dark">Frontend UI/UX</span>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="bg-white p-2 rounded shadow-sm"><i
+                                            class="bi bi-server text-danger fs-4"></i></div>
+                                    <span class="fw-bold text-dark">Backend APIs</span>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="bg-white p-2 rounded shadow-sm"><i
+                                            class="bi bi-database text-primary fs-4"></i></div>
+                                    <span class="fw-bold text-dark">Database Design</span>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="bg-white p-2 rounded shadow-sm"><i
+                                            class="bi bi-phone text-success fs-4"></i></div>
+                                    <span class="fw-bold text-dark">Responsive Design</span>
+                                </div>
+                            </div>
+                        </div>
+                        <a href="{% url 'services' %}" class="btn btn-dark rounded-pill px-4">Learn More <i
+                                class="bi bi-arrow-right ms-2"></i></a>
                     </div>
-                    <span class="badge bg-dark text-white mb-3 px-3 py-2">WEB DEVELOPMENT</span>
-                    <h3 class="fw-bold mb-3">Custom Web Solutions</h3>
-                    <p class="text-muted mb-4 fs-5">We design and develop fast, responsive, and scalable web applications using modern technologies.</p>
-                    <div class="row g-3 mb-5">
-                        <div class="col-sm-6">
-                            <div class="d-flex align-items-center gap-3">
-                                <div class="bg-white p-2 rounded shadow-sm"><i class="bi bi-filetype-html text-danger fs-4"></i></div>
-                                <span class="fw-bold text-dark">Frontend UI/UX</span>
-                            </div>
+                </div>
+                <!-- Data & Analytics -->
+                <div class="col-md-6" data-aos="fade-up" data-aos-delay="200">
+                    <div class="dual-card bg-soft-orange p-5 h-100 position-relative">
+                        <div class="position-absolute top-0 end-0 p-4 opacity-25">
+                            <i class="bi bi-graph-up-arrow display-1 text-orange"></i>
                         </div>
-                        <div class="col-sm-6">
-                            <div class="d-flex align-items-center gap-3">
-                                <div class="bg-white p-2 rounded shadow-sm"><i class="bi bi-server text-danger fs-4"></i></div>
-                                <span class="fw-bold text-dark">Backend APIs</span>
-                            </div>
-                        </div>
-                        <div class="col-sm-6">
-                            <div class="d-flex align-items-center gap-3">
-                                <div class="bg-white p-2 rounded shadow-sm"><i class="bi bi-database text-primary fs-4"></i></div>
-                                <span class="fw-bold text-dark">Database Design</span>
-                            </div>
-                        </div>
-                        <div class="col-sm-6">
-                            <div class="d-flex align-items-center gap-3">
-                                <div class="bg-white p-2 rounded shadow-sm"><i class="bi bi-phone text-success fs-4"></i></div>
-                                <span class="fw-bold text-dark">Responsive Design</span>
-                            </div>
-                        </div>
+                        <span class="badge bg-orange text-white mb-3 px-3 py-2">DATA & ANALYTICS</span>
+                        <h3 class="fw-bold mb-3">Data-Driven Insights</h3>
+                        <p class="text-dark mb-4 fs-5">Transform raw data into actionable insights with our analytics,
+                            reporting, and visualization services.</p>
+                        <ul class="list-unstyled mb-5">
+                            <li class="mb-3 d-flex align-items-center"><i
+                                    class="bi bi-check-circle-fill text-orange me-3 fs-5"></i><strong>Interactive
+                                    Dashboards</strong>&nbsp;(Power BI, Custom)</li>
+                            <li class="mb-3 d-flex align-items-center"><i
+                                    class="bi bi-check-circle-fill text-orange me-3 fs-5"></i><strong>Data Cleaning
+                                    &amp; Processing</strong></li>
+                            <li class="mb-3 d-flex align-items-center"><i
+                                    class="bi bi-check-circle-fill text-orange me-3 fs-5"></i>Python & SQL Automation
+                            </li>
+                            <li class="mb-3 d-flex align-items-center"><i
+                                    class="bi bi-check-circle-fill text-orange me-3 fs-5"></i>Business Intelligence
+                                Reports</li>
+                            <li class="mb-3 d-flex align-items-center"><i
+                                    class="bi bi-check-circle-fill text-orange me-3 fs-5"></i>KPI Tracking &amp;
+                                Real-Time Analytics</li>
+                        </ul>
+                        <a href="{% url 'services' %}" class="btn btn-orange text-white rounded-pill px-4">View Services
+                            <i class="bi bi-arrow-right ms-2"></i></a>
                     </div>
-                    <a href="{% url 'services' %}" class="btn btn-dark rounded-pill px-4">Learn More <i class="bi bi-arrow-right ms-2"></i></a>
                 </div>
             </div>
-            <!-- Data & Analytics -->
-            <div class="col-md-6" data-aos="fade-up" data-aos-delay="200">
-                <div class="dual-card bg-soft-orange p-5 h-100 position-relative">
-                    <div class="position-absolute top-0 end-0 p-4 opacity-25">
-                        <i class="bi bi-graph-up-arrow display-1 text-orange"></i>
-                    </div>
-                    <span class="badge bg-orange text-white mb-3 px-3 py-2">DATA & ANALYTICS</span>
-                    <h3 class="fw-bold mb-3">Data-Driven Insights</h3>
-                    <p class="text-dark mb-4 fs-5">Transform raw data into actionable insights with our analytics, reporting, and visualization services.</p>
-                    <ul class="list-unstyled mb-5">
-                        <li class="mb-3 d-flex align-items-center"><i class="bi bi-check-circle-fill text-orange me-3 fs-5"></i><strong>Interactive Dashboards</strong>&nbsp;(Power BI, Custom)</li>
-                        <li class="mb-3 d-flex align-items-center"><i class="bi bi-check-circle-fill text-orange me-3 fs-5"></i><strong>Data Cleaning &amp; Processing</strong></li>
-                        <li class="mb-3 d-flex align-items-center"><i class="bi bi-check-circle-fill text-orange me-3 fs-5"></i>Python & SQL Automation</li>
-                        <li class="mb-3 d-flex align-items-center"><i class="bi bi-check-circle-fill text-orange me-3 fs-5"></i>Business Intelligence Reports</li>
-                        <li class="mb-3 d-flex align-items-center"><i class="bi bi-check-circle-fill text-orange me-3 fs-5"></i>KPI Tracking &amp; Real-Time Analytics</li>
-                    </ul>
-                    <a href="{% url 'services' %}" class="btn btn-orange text-white rounded-pill px-4">View Services <i class="bi bi-arrow-right ms-2"></i></a>
-                </div>
-            </div>
-        </div>
 
-        <!-- Additional Services Grid -->
-        <div class="row g-4 mt-2">
-            <!-- AI Solutions -->
-            <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="100">
-                <div class="dual-card bg-light p-4 h-100 text-center">
-                    <div class="bg-white rounded-circle shadow-sm d-inline-flex align-items-center justify-content-center mb-3" style="width:64px;height:64px;">
-                        <i class="bi bi-cpu-fill fs-3" style="color:#8b5cf6;"></i>
+            <!-- Additional Services Grid -->
+            <div class="row g-4 mt-2">
+                <!-- AI Solutions -->
+                <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="100">
+                    <div class="dual-card bg-light p-4 h-100 text-center">
+                        <div class="bg-white rounded-circle shadow-sm d-inline-flex align-items-center justify-content-center mb-3"
+                            style="width:64px;height:64px;">
+                            <i class="bi bi-cpu-fill fs-3" style="color:#8b5cf6;"></i>
+                        </div>
+                        <span class="badge text-white mb-2 px-3 py-1" style="background:#8b5cf6;">AI SOLUTIONS</span>
+                        <h5 class="fw-bold mb-2">AI Solutions</h5>
+                        <p class="text-muted small mb-3">Leverage artificial intelligence to automate processes, predict
+                            outcomes, and unlock intelligent business insights.</p>
+                        <a href="{% url 'services' %}" class="btn btn-sm btn-outline-dark rounded-pill px-3">Learn More
+                            <i class="bi bi-arrow-right ms-1"></i></a>
                     </div>
-                    <span class="badge text-white mb-2 px-3 py-1" style="background:#8b5cf6;">AI SOLUTIONS</span>
-                    <h5 class="fw-bold mb-2">AI Solutions</h5>
-                    <p class="text-muted small mb-3">Leverage artificial intelligence to automate processes, predict outcomes, and unlock intelligent business insights.</p>
-                    <a href="{% url 'services' %}" class="btn btn-sm btn-outline-dark rounded-pill px-3">Learn More <i class="bi bi-arrow-right ms-1"></i></a>
                 </div>
-            </div>
-            <!-- Chatbot Development -->
-            <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="200">
-                <div class="dual-card bg-light p-4 h-100 text-center">
-                    <div class="bg-white rounded-circle shadow-sm d-inline-flex align-items-center justify-content-center mb-3" style="width:64px;height:64px;">
-                        <i class="bi bi-chat-dots-fill fs-3 text-success"></i>
+                <!-- Chatbot Development -->
+                <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="200">
+                    <div class="dual-card bg-light p-4 h-100 text-center">
+                        <div class="bg-white rounded-circle shadow-sm d-inline-flex align-items-center justify-content-center mb-3"
+                            style="width:64px;height:64px;">
+                            <i class="bi bi-chat-dots-fill fs-3 text-success"></i>
+                        </div>
+                        <span class="badge bg-success text-white mb-2 px-3 py-1">CHATBOT</span>
+                        <h5 class="fw-bold mb-2">Chatbot Development</h5>
+                        <p class="text-muted small mb-3">Build intelligent, conversational chatbots that engage
+                            customers, answer queries, and boost support efficiency 24/7.</p>
+                        <a href="{% url 'services' %}" class="btn btn-sm btn-outline-dark rounded-pill px-3">Learn More
+                            <i class="bi bi-arrow-right ms-1"></i></a>
                     </div>
-                    <span class="badge bg-success text-white mb-2 px-3 py-1">CHATBOT</span>
-                    <h5 class="fw-bold mb-2">Chatbot Development</h5>
-                    <p class="text-muted small mb-3">Build intelligent, conversational chatbots that engage customers, answer queries, and boost support efficiency 24/7.</p>
-                    <a href="{% url 'services' %}" class="btn btn-sm btn-outline-dark rounded-pill px-3">Learn More <i class="bi bi-arrow-right ms-1"></i></a>
                 </div>
-            </div>
-            <!-- Data Analysis -->
-            <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="300">
-                <div class="dual-card bg-light p-4 h-100 text-center">
-                    <div class="bg-white rounded-circle shadow-sm d-inline-flex align-items-center justify-content-center mb-3" style="width:64px;height:64px;">
-                        <i class="bi bi-bar-chart-line-fill fs-3 text-info"></i>
+                <!-- Data Analysis -->
+                <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="300">
+                    <div class="dual-card bg-light p-4 h-100 text-center">
+                        <div class="bg-white rounded-circle shadow-sm d-inline-flex align-items-center justify-content-center mb-3"
+                            style="width:64px;height:64px;">
+                            <i class="bi bi-bar-chart-line-fill fs-3 text-info"></i>
+                        </div>
+                        <span class="badge bg-info text-white mb-2 px-3 py-1">DATA ANALYSIS</span>
+                        <h5 class="fw-bold mb-2">Data Analysis</h5>
+                        <p class="text-muted small mb-3">Extract meaningful patterns from your data using Python, SQL,
+                            and advanced statistical techniques for smarter decisions.</p>
+                        <a href="{% url 'services' %}" class="btn btn-sm btn-outline-dark rounded-pill px-3">Learn More
+                            <i class="bi bi-arrow-right ms-1"></i></a>
                     </div>
-                    <span class="badge bg-info text-white mb-2 px-3 py-1">DATA ANALYSIS</span>
-                    <h5 class="fw-bold mb-2">Data Analysis</h5>
-                    <p class="text-muted small mb-3">Extract meaningful patterns from your data using Python, SQL, and advanced statistical techniques for smarter decisions.</p>
-                    <a href="{% url 'services' %}" class="btn btn-sm btn-outline-dark rounded-pill px-3">Learn More <i class="bi bi-arrow-right ms-1"></i></a>
                 </div>
-            </div>
-            <!-- Database Solutions -->
-            <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="400">
-                <div class="dual-card bg-light p-4 h-100 text-center">
-                    <div class="bg-white rounded-circle shadow-sm d-inline-flex align-items-center justify-content-center mb-3" style="width:64px;height:64px;">
-                        <i class="bi bi-database-fill-gear fs-3 text-warning"></i>
+                <!-- Database Solutions -->
+                <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="400">
+                    <div class="dual-card bg-light p-4 h-100 text-center">
+                        <div class="bg-white rounded-circle shadow-sm d-inline-flex align-items-center justify-content-center mb-3"
+                            style="width:64px;height:64px;">
+                            <i class="bi bi-database-fill-gear fs-3 text-warning"></i>
+                        </div>
+                        <span class="badge bg-warning text-dark mb-2 px-3 py-1">DATABASES</span>
+                        <h5 class="fw-bold mb-2">Database Solutions</h5>
+                        <p class="text-muted small mb-3">Design, optimize, and manage scalable databases — from
+                            PostgreSQL and MySQL to MongoDB and cloud-based solutions.</p>
+                        <a href="{% url 'services' %}" class="btn btn-sm btn-outline-dark rounded-pill px-3">Learn More
+                            <i class="bi bi-arrow-right ms-1"></i></a>
                     </div>
-                    <span class="badge bg-warning text-dark mb-2 px-3 py-1">DATABASES</span>
-                    <h5 class="fw-bold mb-2">Database Solutions</h5>
-                    <p class="text-muted small mb-3">Design, optimize, and manage scalable databases — from PostgreSQL and MySQL to MongoDB and cloud-based solutions.</p>
-                    <a href="{% url 'services' %}" class="btn btn-sm btn-outline-dark rounded-pill px-3">Learn More <i class="bi bi-arrow-right ms-1"></i></a>
                 </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
-<!-- ══════════════════════════════════════════════
+    <!-- ══════════════════════════════════════════════
      HOW IT WORKS
      ══════════════════════════════════════════════ -->
-<section class="py-5 bg-light" id="how-it-works">
-    <div class="container py-5">
-        <div class="text-center mb-5" data-aos="fade-up">
-            <h6 class="text-orange fw-bold ls-1">OUR PROCESS</h6>
-            <h2 class="fw-800 display-5">How We Deliver</h2>
-            <p class="text-muted">A proven four-step process to bring your digital vision to life.</p>
+    <section class="py-5 bg-light" id="how-it-works">
+        <div class="container py-5">
+            <div class="text-center mb-5" data-aos="fade-up">
+                <h6 class="text-orange fw-bold ls-1">OUR PROCESS</h6>
+                <h2 class="fw-800 display-5">How We Deliver</h2>
+                <p class="text-muted">A proven four-step process to bring your digital vision to life.</p>
+            </div>
+            <div class="row g-4">
+                <div class="col-sm-6 col-lg-3" data-aos="fade-up" data-aos-delay="0">
+                    <div class="step-card">
+                        <div class="step-num">1</div>
+                        <h6 class="fw-bold mb-2">Discovery & Scoping</h6>
+                        <p class="text-muted small mb-0">We understand your business goals, requirements, and define a
+                            clear project scope.</p>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-lg-3" data-aos="fade-up" data-aos-delay="100">
+                    <div class="step-card">
+                        <div class="step-num">2</div>
+                        <h6 class="fw-bold mb-2">Design & Planning</h6>
+                        <p class="text-muted small mb-0">Our team crafts wireframes, architecture plans, and a detailed
+                            delivery roadmap.</p>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-lg-3" data-aos="fade-up" data-aos-delay="200">
+                    <div class="step-card">
+                        <div class="step-num">3</div>
+                        <h6 class="fw-bold mb-2">Build & Test</h6>
+                        <p class="text-muted small mb-0">We develop, test, and iterate — keeping you updated at every
+                            milestone.</p>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-lg-3" data-aos="fade-up" data-aos-delay="300">
+                    <div class="step-card">
+                        <div class="step-num">4</div>
+                        <h6 class="fw-bold mb-2">Launch & Support</h6>
+                        <p class="text-muted small mb-0">We deploy your solution and provide ongoing support to ensure
+                            long-term success.</p>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="row g-4">
-            <div class="col-sm-6 col-lg-3" data-aos="fade-up" data-aos-delay="0">
-                <div class="step-card">
-                    <div class="step-num">1</div>
-                    <h6 class="fw-bold mb-2">Discovery & Scoping</h6>
-                    <p class="text-muted small mb-0">We understand your business goals, requirements, and define a clear project scope.</p>
-                </div>
-            </div>
-            <div class="col-sm-6 col-lg-3" data-aos="fade-up" data-aos-delay="100">
-                <div class="step-card">
-                    <div class="step-num">2</div>
-                    <h6 class="fw-bold mb-2">Design & Planning</h6>
-                    <p class="text-muted small mb-0">Our team crafts wireframes, architecture plans, and a detailed delivery roadmap.</p>
-                </div>
-            </div>
-            <div class="col-sm-6 col-lg-3" data-aos="fade-up" data-aos-delay="200">
-                <div class="step-card">
-                    <div class="step-num">3</div>
-                    <h6 class="fw-bold mb-2">Build & Test</h6>
-                    <p class="text-muted small mb-0">We develop, test, and iterate — keeping you updated at every milestone.</p>
-                </div>
-            </div>
-            <div class="col-sm-6 col-lg-3" data-aos="fade-up" data-aos-delay="300">
-                <div class="step-card">
-                    <div class="step-num">4</div>
-                    <h6 class="fw-bold mb-2">Launch & Support</h6>
-                    <p class="text-muted small mb-0">We deploy your solution and provide ongoing support to ensure long-term success.</p>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
+    </section>
 
-<!-- ══════════════════════════════════════════════
+    <!-- ══════════════════════════════════════════════
      WHY CHOOSE US — PREMIUM DARK
      ══════════════════════════════════════════════ -->
-<section class="py-5 why-choose-section" id="why-us">
-    <div class="container py-5 position-relative" style="z-index:1;">
-        <div class="text-center mb-5" data-aos="fade-up">
-            <span class="glow-badge" style="background:rgba(14,165,233,0.12);color:#38bdf8;border:1px solid rgba(14,165,233,0.25);">✦ WHY TRHVISION</span>
-            <h2 class="fw-800 display-4 text-white mt-2 mb-3">Why <span style="background:linear-gradient(90deg,#0ea5e9,#8b5cf6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Choose Us</span>?</h2>
-            <p class="text-white-50 mx-auto" style="max-width:580px;font-size:1.05rem;">We don't just build products — we craft experiences powered by cutting-edge technology, human expertise, and a relentless commitment to results.</p>
-        </div>
+    <section class="py-5 why-choose-section" id="why-us">
+        <div class="container py-5 position-relative" style="z-index:1;">
+            <div class="text-center mb-5" data-aos="fade-up">
+                <span class="glow-badge"
+                    style="background:rgba(14,165,233,0.12);color:#38bdf8;border:1px solid rgba(14,165,233,0.25);">✦ WHY
+                    TRHVISION</span>
+                <h2 class="fw-800 display-4 text-white mt-2 mb-3">Why <span
+                        style="background:linear-gradient(90deg,#0ea5e9,#8b5cf6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Choose
+                        Us</span>?</h2>
+                <p class="text-white-50 mx-auto" style="max-width:580px;font-size:1.05rem;">We don't just build products
+                    — we craft experiences powered by cutting-edge technology, human expertise, and a relentless
+                    commitment to results.</p>
+            </div>
 
-        <div class="row g-4 mb-5">
-            <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="0">
-                <div class="why-card-premium">
-                    <div class="why-icon-lg" style="background:rgba(14,165,233,0.15);"><i class="bi bi-shield-fill-check" style="color:#38bdf8;"></i></div>
-                    <span class="glow-badge" style="background:rgba(14,165,233,0.1);color:#38bdf8;border:1px solid rgba(14,165,233,0.2);">RELIABILITY</span>
-                    <h5 class="fw-bold text-white mb-2">Enterprise-Grade Security</h5>
-                    <p class="text-white-50 small mb-0">Every project is delivered with battle-tested code, industry-standard security practices, and comprehensive QA. Your data is always safe.</p>
+            <div class="row g-4 mb-5">
+                <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="0">
+                    <div class="why-card-premium">
+                        <div class="why-icon-lg" style="background:rgba(14,165,233,0.15);"><i
+                                class="bi bi-shield-fill-check" style="color:#38bdf8;"></i></div>
+                        <span class="glow-badge"
+                            style="background:rgba(14,165,233,0.1);color:#38bdf8;border:1px solid rgba(14,165,233,0.2);">RELIABILITY</span>
+                        <h5 class="fw-bold text-white mb-2">Enterprise-Grade Security</h5>
+                        <p class="text-white-50 small mb-0">Every project is delivered with battle-tested code,
+                            industry-standard security practices, and comprehensive QA. Your data is always safe.</p>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="100">
+                    <div class="why-card-premium">
+                        <div class="why-icon-lg" style="background:rgba(249,115,22,0.15);"><i
+                                class="bi bi-graph-up-arrow" style="color:#fb923c;"></i></div>
+                        <span class="glow-badge"
+                            style="background:rgba(249,115,22,0.1);color:#fb923c;border:1px solid rgba(249,115,22,0.2);">DATA-FIRST</span>
+                        <h5 class="fw-bold text-white mb-2">Data-Driven Decisions</h5>
+                        <p class="text-white-50 small mb-0">We transform raw data into intelligent insights — from
+                            real-time dashboards to predictive analytics — helping you outpace competition.</p>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="200">
+                    <div class="why-card-premium">
+                        <div class="why-icon-lg" style="background:rgba(139,92,246,0.15);"><i class="bi bi-cpu-fill"
+                                style="color:#a78bfa;"></i></div>
+                        <span class="glow-badge"
+                            style="background:rgba(139,92,246,0.1);color:#a78bfa;border:1px solid rgba(139,92,246,0.2);">AI
+                            POWERED</span>
+                        <h5 class="fw-bold text-white mb-2">AI-First Engineering</h5>
+                        <p class="text-white-50 small mb-0">From agentic AI workflows to smart automation, we embed
+                            intelligence into every solution — future-proofing your business today.</p>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="300">
+                    <div class="why-card-premium">
+                        <div class="why-icon-lg" style="background:rgba(16,185,129,0.15);"><i
+                                class="bi bi-lightning-charge-fill" style="color:#34d399;"></i></div>
+                        <span class="glow-badge"
+                            style="background:rgba(16,185,129,0.1);color:#34d399;border:1px solid rgba(16,185,129,0.2);">SPEED</span>
+                        <h5 class="fw-bold text-white mb-2">Fast Delivery, Always</h5>
+                        <p class="text-white-50 small mb-0">Agile methodology, dedicated sprints, and a 24/7 support
+                            team ensure your projects are delivered on time — every single time.</p>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="400">
+                    <div class="why-card-premium">
+                        <div class="why-icon-lg" style="background:rgba(251,191,36,0.15);"><i class="bi bi-people-fill"
+                                style="color:#fbbf24;"></i></div>
+                        <span class="glow-badge"
+                            style="background:rgba(251,191,36,0.1);color:#fbbf24;border:1px solid rgba(251,191,36,0.2);">EXPERTISE</span>
+                        <h5 class="fw-bold text-white mb-2">Senior Expert Team</h5>
+                        <p class="text-white-50 small mb-0">You get direct access to experienced developers, data
+                            scientists, and AI engineers — not juniors. Real experts on your project.</p>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="500">
+                    <div class="why-card-premium">
+                        <div class="why-icon-lg" style="background:rgba(236,72,153,0.15);"><i
+                                class="bi bi-globe-americas" style="color:#f472b6;"></i></div>
+                        <span class="glow-badge"
+                            style="background:rgba(236,72,153,0.1);color:#f472b6;border:1px solid rgba(236,72,153,0.2);">GLOBAL</span>
+                        <h5 class="fw-bold text-white mb-2">Global Reach & Support</h5>
+                        <p class="text-white-50 small mb-0">Serving clients across India, USA, UK, and beyond.
+                            Timezone-flexible communication and 24/7 support wherever you are.</p>
+                    </div>
                 </div>
             </div>
-            <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="100">
-                <div class="why-card-premium">
-                    <div class="why-icon-lg" style="background:rgba(249,115,22,0.15);"><i class="bi bi-graph-up-arrow" style="color:#fb923c;"></i></div>
-                    <span class="glow-badge" style="background:rgba(249,115,22,0.1);color:#fb923c;border:1px solid rgba(249,115,22,0.2);">DATA-FIRST</span>
-                    <h5 class="fw-bold text-white mb-2">Data-Driven Decisions</h5>
-                    <p class="text-white-50 small mb-0">We transform raw data into intelligent insights — from real-time dashboards to predictive analytics — helping you outpace competition.</p>
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="200">
-                <div class="why-card-premium">
-                    <div class="why-icon-lg" style="background:rgba(139,92,246,0.15);"><i class="bi bi-cpu-fill" style="color:#a78bfa;"></i></div>
-                    <span class="glow-badge" style="background:rgba(139,92,246,0.1);color:#a78bfa;border:1px solid rgba(139,92,246,0.2);">AI POWERED</span>
-                    <h5 class="fw-bold text-white mb-2">AI-First Engineering</h5>
-                    <p class="text-white-50 small mb-0">From agentic AI workflows to smart automation, we embed intelligence into every solution — future-proofing your business today.</p>
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="300">
-                <div class="why-card-premium">
-                    <div class="why-icon-lg" style="background:rgba(16,185,129,0.15);"><i class="bi bi-lightning-charge-fill" style="color:#34d399;"></i></div>
-                    <span class="glow-badge" style="background:rgba(16,185,129,0.1);color:#34d399;border:1px solid rgba(16,185,129,0.2);">SPEED</span>
-                    <h5 class="fw-bold text-white mb-2">Fast Delivery, Always</h5>
-                    <p class="text-white-50 small mb-0">Agile methodology, dedicated sprints, and a 24/7 support team ensure your projects are delivered on time — every single time.</p>
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="400">
-                <div class="why-card-premium">
-                    <div class="why-icon-lg" style="background:rgba(251,191,36,0.15);"><i class="bi bi-people-fill" style="color:#fbbf24;"></i></div>
-                    <span class="glow-badge" style="background:rgba(251,191,36,0.1);color:#fbbf24;border:1px solid rgba(251,191,36,0.2);">EXPERTISE</span>
-                    <h5 class="fw-bold text-white mb-2">Senior Expert Team</h5>
-                    <p class="text-white-50 small mb-0">You get direct access to experienced developers, data scientists, and AI engineers — not juniors. Real experts on your project.</p>
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="500">
-                <div class="why-card-premium">
-                    <div class="why-icon-lg" style="background:rgba(236,72,153,0.15);"><i class="bi bi-globe-americas" style="color:#f472b6;"></i></div>
-                    <span class="glow-badge" style="background:rgba(236,72,153,0.1);color:#f472b6;border:1px solid rgba(236,72,153,0.2);">GLOBAL</span>
-                    <h5 class="fw-bold text-white mb-2">Global Reach & Support</h5>
-                    <p class="text-white-50 small mb-0">Serving clients across India, USA, UK, and beyond. Timezone-flexible communication and 24/7 support wherever you are.</p>
-                </div>
+
+            <div class="text-center" data-aos="fade-up">
+                <a href="{% url 'about' %}" class="btn btn-lg px-5 rounded-pill fw-bold"
+                    style="background:linear-gradient(90deg,#0ea5e9,#8b5cf6);color:#fff;box-shadow:0 8px 30px rgba(14,165,233,0.4);">Discover
+                    Our Story <i class="bi bi-arrow-right ms-2"></i></a>
             </div>
         </div>
+    </section>
 
-        <div class="text-center" data-aos="fade-up">
-            <a href="{% url 'about' %}" class="btn btn-lg px-5 rounded-pill fw-bold" style="background:linear-gradient(90deg,#0ea5e9,#8b5cf6);color:#fff;box-shadow:0 8px 30px rgba(14,165,233,0.4);">Discover Our Story <i class="bi bi-arrow-right ms-2"></i></a>
-        </div>
-    </div>
-</section>
-
-<!-- ══════════════════════════════════════════════
+    <!-- ══════════════════════════════════════════════
      NUMBERS THAT SPEAK — ANIMATED STATS STRIP
      ══════════════════════════════════════════════ -->
-<section class="stats-strip py-0" id="stats-strip">
-    <div class="container-fluid position-relative" style="z-index:1;">
-        <div class="row g-0">
-            <div class="col-6 col-md-3 stat-pill" data-aos="fade-up" data-aos-delay="0">
-                <div class="stat-pill-num"><span class="counter2" data-target="15">0</span>+</div>
-                <div class="stat-pill-label">Projects Delivered</div>
-            </div>
-            <div class="col-6 col-md-3 stat-pill" data-aos="fade-up" data-aos-delay="100">
-                <div class="stat-pill-num"><span class="counter2" data-target="250">0</span>+</div>
-                <div class="stat-pill-label">Students Trained</div>
-            </div>
-            <div class="col-6 col-md-3 stat-pill" data-aos="fade-up" data-aos-delay="200">
-                <div class="stat-pill-num"><span class="counter2" data-target="85">0</span>%</div>
-                <div class="stat-pill-label">Client Retention Rate</div>
-            </div>
-            <div class="col-6 col-md-3 stat-pill" data-aos="fade-up" data-aos-delay="300">
-                <div class="stat-pill-num">24<span style="font-size:1.8rem;">/7</span></div>
-                <div class="stat-pill-label">Global Support</div>
+    <section class="stats-strip py-0" id="stats-strip">
+        <div class="container-fluid position-relative" style="z-index:1;">
+            <div class="row g-0">
+                <div class="col-6 col-md-3 stat-pill" data-aos="fade-up" data-aos-delay="0">
+                    <div class="stat-pill-num"><span class="counter2" data-target="15">0</span>+</div>
+                    <div class="stat-pill-label">Projects Delivered</div>
+                </div>
+                <div class="col-6 col-md-3 stat-pill" data-aos="fade-up" data-aos-delay="100">
+                    <div class="stat-pill-num"><span class="counter2" data-target="250">0</span>+</div>
+                    <div class="stat-pill-label">Students Trained</div>
+                </div>
+                <div class="col-6 col-md-3 stat-pill" data-aos="fade-up" data-aos-delay="200">
+                    <div class="stat-pill-num"><span class="counter2" data-target="85">0</span>%</div>
+                    <div class="stat-pill-label">Client Retention Rate</div>
+                </div>
+                <div class="col-6 col-md-3 stat-pill" data-aos="fade-up" data-aos-delay="300">
+                    <div class="stat-pill-num">24<span style="font-size:1.8rem;">/7</span></div>
+                    <div class="stat-pill-label">Global Support</div>
+                </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
-<!-- ══════════════════════════════════════════════
+    <!-- ══════════════════════════════════════════════
      FUTURE VISION — AI & TECHNOLOGY
      ══════════════════════════════════════════════ -->
-<section class="py-5 ai-vision-section" id="ai-future">
-    <div class="container py-5">
-        <div class="text-center mb-5" data-aos="fade-up">
-            <span class="future-badge"><i class="bi bi-stars"></i> THE FUTURE WE'RE BUILDING</span>
-            <h2 class="fw-800 display-4 mb-3">Powered by <span style="background:linear-gradient(90deg,#7c3aed,#0ea5e9);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">AI & Intelligence</span></h2>
-            <p class="text-muted mx-auto" style="max-width:620px;font-size:1.05rem;">We're not just a software company — we're building the intelligent future. From autonomous AI agents to deep data science, we're already working on tomorrow's technology today.</p>
-        </div>
+    <section class="py-5 ai-vision-section" id="ai-future">
+        <div class="container py-5">
+            <div class="text-center mb-5" data-aos="fade-up">
+                <span class="future-badge"><i class="bi bi-stars"></i> THE FUTURE WE'RE BUILDING</span>
+                <h2 class="fw-800 display-4 mb-3">Powered by <span
+                        style="background:linear-gradient(90deg,#7c3aed,#0ea5e9);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">AI
+                        & Intelligence</span></h2>
+                <p class="text-muted mx-auto" style="max-width:620px;font-size:1.05rem;">We're not just a software
+                    company — we're building the intelligent future. From autonomous AI agents to deep data science,
+                    we're already working on tomorrow's technology today.</p>
+            </div>
 
-        <div class="row g-4">
-            <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="0">
-                <div class="ai-card ai-card-ai">
-                    <div class="ai-icon-circle"><i class="bi bi-robot"></i></div>
-                    <span class="ai-tag">🚀 Coming Soon</span>
-                    <h5 class="fw-bold text-white mb-2">Agentic AI Systems</h5>
-                    <p style="color:rgba(255,255,255,0.7);font-size:.85rem;margin-bottom:1rem;">Autonomous AI agents that think, plan, and execute tasks independently — transforming how businesses operate at scale.</p>
-                    <ul class="ai-feature-list">
-                        <li>Multi-agent workflows</li>
-                        <li>Task automation pipelines</li>
-                        <li>Intelligent decision loops</li>
-                    </ul>
+            <div class="row g-4">
+                <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="0">
+                    <div class="ai-card ai-card-ai">
+                        <div class="ai-icon-circle"><i class="bi bi-robot"></i></div>
+                        <span class="ai-tag">🚀 Coming Soon</span>
+                        <h5 class="fw-bold text-white mb-2">Agentic AI Systems</h5>
+                        <p style="color:rgba(255,255,255,0.7);font-size:.85rem;margin-bottom:1rem;">Autonomous AI agents
+                            that think, plan, and execute tasks independently — transforming how businesses operate at
+                            scale.</p>
+                        <ul class="ai-feature-list">
+                            <li>Multi-agent workflows</li>
+                            <li>Task automation pipelines</li>
+                            <li>Intelligent decision loops</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="100">
+                    <div class="ai-card ai-card-agents">
+                        <div class="ai-icon-circle"><i class="bi bi-cpu-fill"></i></div>
+                        <span class="ai-tag">⚡ In Development</span>
+                        <h5 class="fw-bold text-white mb-2">Custom AI Agents</h5>
+                        <p style="color:rgba(255,255,255,0.7);font-size:.85rem;margin-bottom:1rem;">Tailored AI agents
+                            built for your business — from intelligent customer support to smart data processors and
+                            workflow assistants.</p>
+                        <ul class="ai-feature-list">
+                            <li>LLM-powered agents</li>
+                            <li>RAG-based knowledge systems</li>
+                            <li>Real-time API integration</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="200">
+                    <div class="ai-card ai-card-data">
+                        <div class="ai-icon-circle"><i class="bi bi-bar-chart-line-fill"></i></div>
+                        <span class="ai-tag">📊 Active Service</span>
+                        <h5 class="fw-bold text-white mb-2">Data Science</h5>
+                        <p style="color:rgba(255,255,255,0.7);font-size:.85rem;margin-bottom:1rem;">Advanced statistical
+                            modeling, predictive analytics, and data engineering to turn your data into real competitive
+                            advantage.</p>
+                        <ul class="ai-feature-list">
+                            <li>Predictive modeling (ML)</li>
+                            <li>Data pipelines & ETL</li>
+                            <li>Statistical analysis</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="300">
+                    <div class="ai-card ai-card-ml">
+                        <div class="ai-icon-circle"><i class="bi bi-lightning-charge-fill"></i></div>
+                        <span class="ai-tag">🔬 Research Phase</span>
+                        <h5 class="fw-bold text-white mb-2">Machine Learning</h5>
+                        <p style="color:rgba(255,255,255,0.7);font-size:.85rem;margin-bottom:1rem;">Custom ML models
+                            trained on your data — classification, forecasting, NLP, computer vision, and beyond.</p>
+                        <ul class="ai-feature-list">
+                            <li>Custom model training</li>
+                            <li>NLP & text processing</li>
+                            <li>Model deployment & MLOps</li>
+                        </ul>
+                    </div>
                 </div>
             </div>
-            <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="100">
-                <div class="ai-card ai-card-agents">
-                    <div class="ai-icon-circle"><i class="bi bi-cpu-fill"></i></div>
-                    <span class="ai-tag">⚡ In Development</span>
-                    <h5 class="fw-bold text-white mb-2">Custom AI Agents</h5>
-                    <p style="color:rgba(255,255,255,0.7);font-size:.85rem;margin-bottom:1rem;">Tailored AI agents built for your business — from intelligent customer support to smart data processors and workflow assistants.</p>
-                    <ul class="ai-feature-list">
-                        <li>LLM-powered agents</li>
-                        <li>RAG-based knowledge systems</li>
-                        <li>Real-time API integration</li>
-                    </ul>
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="200">
-                <div class="ai-card ai-card-data">
-                    <div class="ai-icon-circle"><i class="bi bi-bar-chart-line-fill"></i></div>
-                    <span class="ai-tag">📊 Active Service</span>
-                    <h5 class="fw-bold text-white mb-2">Data Science</h5>
-                    <p style="color:rgba(255,255,255,0.7);font-size:.85rem;margin-bottom:1rem;">Advanced statistical modeling, predictive analytics, and data engineering to turn your data into real competitive advantage.</p>
-                    <ul class="ai-feature-list">
-                        <li>Predictive modeling (ML)</li>
-                        <li>Data pipelines & ETL</li>
-                        <li>Statistical analysis</li>
-                    </ul>
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="300">
-                <div class="ai-card ai-card-ml">
-                    <div class="ai-icon-circle"><i class="bi bi-lightning-charge-fill"></i></div>
-                    <span class="ai-tag">🔬 Research Phase</span>
-                    <h5 class="fw-bold text-white mb-2">Machine Learning</h5>
-                    <p style="color:rgba(255,255,255,0.7);font-size:.85rem;margin-bottom:1rem;">Custom ML models trained on your data — classification, forecasting, NLP, computer vision, and beyond.</p>
-                    <ul class="ai-feature-list">
-                        <li>Custom model training</li>
-                        <li>NLP & text processing</li>
-                        <li>Model deployment & MLOps</li>
-                    </ul>
-                </div>
+
+            <div class="mt-5 p-4 p-md-5 rounded-4 text-center"
+                style="background:linear-gradient(135deg,rgba(124,58,237,0.08),rgba(14,165,233,0.08));border:1px solid rgba(124,58,237,0.2);"
+                data-aos="fade-up">
+                <i class="bi bi-stars fs-2 mb-3" style="color:#8b5cf6;display:block;"></i>
+                <h4 class="fw-bold mb-2">We're Building the Intelligent Future — <span style="color:#0ea5e9;">Right
+                        Now</span></h4>
+                <p class="text-muted mb-4" style="max-width:600px;margin:0 auto 1.5rem;">Our R&amp;D team is actively
+                    working on AI agents, agentic workflows, and next-generation data science tools. Partner with us
+                    today and get early access to tomorrow's technology.</p>
+                <a href="{% url 'contact' %}" class="btn btn-lg rounded-pill px-5 fw-bold"
+                    style="background:linear-gradient(90deg,#7c3aed,#0ea5e9);color:#fff;box-shadow:0 8px 25px rgba(124,58,237,0.35);">Talk
+                    to Our AI Team <i class="bi bi-arrow-right ms-2"></i></a>
             </div>
         </div>
+    </section>
 
-        <div class="mt-5 p-4 p-md-5 rounded-4 text-center" style="background:linear-gradient(135deg,rgba(124,58,237,0.08),rgba(14,165,233,0.08));border:1px solid rgba(124,58,237,0.2);" data-aos="fade-up">
-            <i class="bi bi-stars fs-2 mb-3" style="color:#8b5cf6;display:block;"></i>
-            <h4 class="fw-bold mb-2">We're Building the Intelligent Future — <span style="color:#0ea5e9;">Right Now</span></h4>
-            <p class="text-muted mb-4" style="max-width:600px;margin:0 auto 1.5rem;">Our R&amp;D team is actively working on AI agents, agentic workflows, and next-generation data science tools. Partner with us today and get early access to tomorrow's technology.</p>
-            <a href="{% url 'contact' %}" class="btn btn-lg rounded-pill px-5 fw-bold" style="background:linear-gradient(90deg,#7c3aed,#0ea5e9);color:#fff;box-shadow:0 8px 25px rgba(124,58,237,0.35);">Talk to Our AI Team <i class="bi bi-arrow-right ms-2"></i></a>
-        </div>
-    </div>
-</section>
-
-<!-- ══════════════════════════════════════════════
+    <!-- ══════════════════════════════════════════════
      INDUSTRIES WE SERVE
      ══════════════════════════════════════════════ -->
-<section class="py-5 bg-light" id="industries">
-    <div class="container py-4">
-        <div class="text-center mb-5" data-aos="fade-up">
-            <h6 class="text-orange fw-bold ls-1">INDUSTRIES WE SERVE</h6>
-            <h2 class="fw-800 display-5">Built for Every Sector</h2>
-            <p class="text-muted mx-auto" style="max-width:520px;">Our solutions span across industries — delivering specialized digital intelligence and technology tailored to each domain's unique needs.</p>
+    <section class="py-5 bg-light" id="industries">
+        <div class="container py-4">
+            <div class="text-center mb-5" data-aos="fade-up">
+                <h6 class="text-orange fw-bold ls-1">INDUSTRIES WE SERVE</h6>
+                <h2 class="fw-800 display-5">Built for Every Sector</h2>
+                <p class="text-muted mx-auto" style="max-width:520px;">Our solutions span across industries — delivering
+                    specialized digital intelligence and technology tailored to each domain's unique needs.</p>
+            </div>
+            <div class="row g-3">
+                <div class="col-6 col-md-4 col-lg-3" data-aos="fade-up" data-aos-delay="0">
+                    <div class="industry-chip">
+                        <div class="industry-chip-icon" style="background:#fff0f0;">🏥</div><span>Healthcare</span>
+                    </div>
+                </div>
+                <div class="col-6 col-md-4 col-lg-3" data-aos="fade-up" data-aos-delay="50">
+                    <div class="industry-chip">
+                        <div class="industry-chip-icon" style="background:#f0f7ff;">🏦</div><span>FinTech &amp;
+                            Banking</span>
+                    </div>
+                </div>
+                <div class="col-6 col-md-4 col-lg-3" data-aos="fade-up" data-aos-delay="100">
+                    <div class="industry-chip">
+                        <div class="industry-chip-icon" style="background:#fff7f0;">🛒</div><span>E-Commerce</span>
+                    </div>
+                </div>
+                <div class="col-6 col-md-4 col-lg-3" data-aos="fade-up" data-aos-delay="150">
+                    <div class="industry-chip">
+                        <div class="industry-chip-icon" style="background:#f0fff4;">🎓</div><span>EdTech</span>
+                    </div>
+                </div>
+                <div class="col-6 col-md-4 col-lg-3" data-aos="fade-up" data-aos-delay="200">
+                    <div class="industry-chip">
+                        <div class="industry-chip-icon" style="background:#fdf0ff;">🏭</div><span>Manufacturing</span>
+                    </div>
+                </div>
+                <div class="col-6 col-md-4 col-lg-3" data-aos="fade-up" data-aos-delay="250">
+                    <div class="industry-chip">
+                        <div class="industry-chip-icon" style="background:#f0f0ff;">🚚</div><span>Logistics</span>
+                    </div>
+                </div>
+                <div class="col-6 col-md-4 col-lg-3" data-aos="fade-up" data-aos-delay="300">
+                    <div class="industry-chip">
+                        <div class="industry-chip-icon" style="background:#fffbf0;">🏢</div><span>Real Estate</span>
+                    </div>
+                </div>
+                <div class="col-6 col-md-4 col-lg-3" data-aos="fade-up" data-aos-delay="350">
+                    <div class="industry-chip">
+                        <div class="industry-chip-icon" style="background:#f0fff8;">🤖</div><span>AI Startups</span>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="row g-3">
-            <div class="col-6 col-md-4 col-lg-3" data-aos="fade-up" data-aos-delay="0">
-                <div class="industry-chip"><div class="industry-chip-icon" style="background:#fff0f0;">🏥</div><span>Healthcare</span></div>
-            </div>
-            <div class="col-6 col-md-4 col-lg-3" data-aos="fade-up" data-aos-delay="50">
-                <div class="industry-chip"><div class="industry-chip-icon" style="background:#f0f7ff;">🏦</div><span>FinTech &amp; Banking</span></div>
-            </div>
-            <div class="col-6 col-md-4 col-lg-3" data-aos="fade-up" data-aos-delay="100">
-                <div class="industry-chip"><div class="industry-chip-icon" style="background:#fff7f0;">🛒</div><span>E-Commerce</span></div>
-            </div>
-            <div class="col-6 col-md-4 col-lg-3" data-aos="fade-up" data-aos-delay="150">
-                <div class="industry-chip"><div class="industry-chip-icon" style="background:#f0fff4;">🎓</div><span>EdTech</span></div>
-            </div>
-            <div class="col-6 col-md-4 col-lg-3" data-aos="fade-up" data-aos-delay="200">
-                <div class="industry-chip"><div class="industry-chip-icon" style="background:#fdf0ff;">🏭</div><span>Manufacturing</span></div>
-            </div>
-            <div class="col-6 col-md-4 col-lg-3" data-aos="fade-up" data-aos-delay="250">
-                <div class="industry-chip"><div class="industry-chip-icon" style="background:#f0f0ff;">🚚</div><span>Logistics</span></div>
-            </div>
-            <div class="col-6 col-md-4 col-lg-3" data-aos="fade-up" data-aos-delay="300">
-                <div class="industry-chip"><div class="industry-chip-icon" style="background:#fffbf0;">🏢</div><span>Real Estate</span></div>
-            </div>
-            <div class="col-6 col-md-4 col-lg-3" data-aos="fade-up" data-aos-delay="350">
-                <div class="industry-chip"><div class="industry-chip-icon" style="background:#f0fff8;">🤖</div><span>AI Startups</span></div>
-            </div>
-        </div>
-    </div>
-</section>
+    </section>
 
 
-<!-- ══════════════════════════════════════════════
+    <!-- ══════════════════════════════════════════════
      TECH STACK
      ══════════════════════════════════════════════ -->
-<section class="py-4 bg-white border-top border-bottom" id="tech-stack">
-    <div class="container text-center py-3">
-        <p class="text-muted fw-bold mb-4 ls-1" style="font-size:.75rem;letter-spacing:2px;">POWERED BY MODERN TECHNOLOGIES</p>
-        <div class="d-flex justify-content-center flex-wrap gap-5 align-items-center">
-            <div class="text-center">
-                <i class="bi bi-filetype-py tech-stack-icon text-dark" title="Python"></i>
-                <p class="small text-muted mt-1 mb-0">Python</p>
-            </div>
-            <div class="text-center">
-                <i class="bi bi-filetype-sql tech-stack-icon text-primary" title="SQL"></i>
-                <p class="small text-muted mt-1 mb-0">SQL</p>
-            </div>
-            <div class="text-center">
-                <i class="bi bi-database tech-stack-icon text-warning" title="Power BI"></i>
-                <p class="small text-muted mt-1 mb-0">Power BI</p>
-            </div>
-            <div class="text-center">
-                <i class="bi bi-filetype-html tech-stack-icon text-danger" title="HTML5"></i>
-                <p class="small text-muted mt-1 mb-0">HTML5</p>
-            </div>
-            <div class="text-center">
-                <i class="bi bi-bootstrap tech-stack-icon text-info" title="Bootstrap"></i>
-                <p class="small text-muted mt-1 mb-0">Bootstrap</p>
-            </div>
-            <div class="text-center">
-                <i class="bi bi-server tech-stack-icon text-success" title="Django"></i>
-                <p class="small text-muted mt-1 mb-0">Django</p>
+    <section class="py-4 bg-white border-top border-bottom" id="tech-stack">
+        <div class="container text-center py-3">
+            <p class="text-muted fw-bold mb-4 ls-1" style="font-size:.75rem;letter-spacing:2px;">POWERED BY MODERN
+                TECHNOLOGIES</p>
+            <div class="d-flex justify-content-center flex-wrap gap-5 align-items-center">
+                <div class="text-center">
+                    <i class="bi bi-filetype-py tech-stack-icon text-dark" title="Python"></i>
+                    <p class="small text-muted mt-1 mb-0">Python</p>
+                </div>
+                <div class="text-center">
+                    <i class="bi bi-filetype-sql tech-stack-icon text-primary" title="SQL"></i>
+                    <p class="small text-muted mt-1 mb-0">SQL</p>
+                </div>
+                <div class="text-center">
+                    <i class="bi bi-database tech-stack-icon text-warning" title="Power BI"></i>
+                    <p class="small text-muted mt-1 mb-0">Power BI</p>
+                </div>
+                <div class="text-center">
+                    <i class="bi bi-filetype-html tech-stack-icon text-danger" title="HTML5"></i>
+                    <p class="small text-muted mt-1 mb-0">HTML5</p>
+                </div>
+                <div class="text-center">
+                    <i class="bi bi-bootstrap tech-stack-icon text-info" title="Bootstrap"></i>
+                    <p class="small text-muted mt-1 mb-0">Bootstrap</p>
+                </div>
+                <div class="text-center">
+                    <i class="bi bi-server tech-stack-icon text-success" title="Django"></i>
+                    <p class="small text-muted mt-1 mb-0">Django</p>
+                </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
-<!-- ══════════════════════════════════════════════
+    <!-- ══════════════════════════════════════════════
      STUDENT TESTIMONIALS
      ══════════════════════════════════════════════ -->
-<section class="py-5 bg-light" id="testimonials">
-    <div class="container py-5">
-        <div class="text-center mb-5" data-aos="fade-up">
-            <h6 class="text-orange fw-bold ls-1">CLIENT SUCCESS STORIES</h6>
-            <h2 class="fw-800 display-5">Trusted by Businesses Worldwide.</h2>
+    <section class="py-5 bg-light" id="testimonials">
+        <div class="container py-5">
+            <div class="text-center mb-5" data-aos="fade-up">
+                <h6 class="text-orange fw-bold ls-1">CLIENT SUCCESS STORIES</h6>
+                <h2 class="fw-800 display-5">Trusted by Businesses Worldwide.</h2>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="0">
+                    <div class="testi-card h-100">
+                        <div class="d-flex align-items-center gap-3 mb-3">
+                            <div class="testi-avatar">NS</div>
+                            <div>
+                                <h6 class="fw-bold mb-0">Nikhil S.</h6>
+                                <small class="text-muted">Founder, RetailEdge Startup</small>
+                            </div>
+                        </div>
+                        <p class="text-muted small">"TRHvision built our entire e-commerce platform from scratch. The
+                            delivery was on time, the code was clean, and support was outstanding. Highly recommended!"
+                        </p>
+                        <div class="text-warning">★★★★★</div>
+                    </div>
+                </div>
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+                    <div class="testi-card h-100">
+                        <div class="d-flex align-items-center gap-3 mb-3">
+                            <div class="testi-avatar" style="background:linear-gradient(135deg,#f472b6,#db2777);">MK
+                            </div>
+                            <div>
+                                <h6 class="fw-bold mb-0">Meera K.</h6>
+                                <small class="text-muted">Operations Head, LogiTrack Ltd.</small>
+                            </div>
+                        </div>
+                        <p class="text-muted small">"The Power BI dashboards TRHvision created transformed how we track
+                            KPIs. We now make data-backed decisions 10x faster than before."</p>
+                        <div class="text-warning">★★★★★</div>
+                    </div>
+                </div>
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+                    <div class="testi-card h-100">
+                        <div class="d-flex align-items-center gap-3 mb-3">
+                            <div class="testi-avatar" style="background:linear-gradient(135deg,#60a5fa,#2563eb);">SR
+                            </div>
+                            <div>
+                                <h6 class="fw-bold mb-0">Sanjay R.</h6>
+                                <small class="text-muted">CTO, FinSmart Solutions</small>
+                            </div>
+                        </div>
+                        <p class="text-muted small">"Their backend API development is top-notch. Scalable, secure, and
+                            well-documented. Our platform handles 50k+ requests daily without a hitch."</p>
+                        <div class="text-warning">★★★★★</div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="row g-4">
-            <div class="col-md-4" data-aos="fade-up" data-aos-delay="0">
-                <div class="testi-card h-100">
-                    <div class="d-flex align-items-center gap-3 mb-3">
-                        <div class="testi-avatar">NS</div>
-                        <div>
-                            <h6 class="fw-bold mb-0">Nikhil S.</h6>
-                            <small class="text-muted">Founder, RetailEdge Startup</small>
-                        </div>
-                    </div>
-                    <p class="text-muted small">"TRHvision built our entire e-commerce platform from scratch. The delivery was on time, the code was clean, and support was outstanding. Highly recommended!"</p>
-                    <div class="text-warning">★★★★★</div>
-                </div>
-            </div>
-            <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
-                <div class="testi-card h-100">
-                    <div class="d-flex align-items-center gap-3 mb-3">
-                        <div class="testi-avatar" style="background:linear-gradient(135deg,#f472b6,#db2777);">MK</div>
-                        <div>
-                            <h6 class="fw-bold mb-0">Meera K.</h6>
-                            <small class="text-muted">Operations Head, LogiTrack Ltd.</small>
-                        </div>
-                    </div>
-                    <p class="text-muted small">"The Power BI dashboards TRHvision created transformed how we track KPIs. We now make data-backed decisions 10x faster than before."</p>
-                    <div class="text-warning">★★★★★</div>
-                </div>
-            </div>
-            <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
-                <div class="testi-card h-100">
-                    <div class="d-flex align-items-center gap-3 mb-3">
-                        <div class="testi-avatar" style="background:linear-gradient(135deg,#60a5fa,#2563eb);">SR</div>
-                        <div>
-                            <h6 class="fw-bold mb-0">Sanjay R.</h6>
-                            <small class="text-muted">CTO, FinSmart Solutions</small>
-                        </div>
-                    </div>
-                    <p class="text-muted small">"Their backend API development is top-notch. Scalable, secure, and well-documented. Our platform handles 50k+ requests daily without a hitch."</p>
-                    <div class="text-warning">★★★★★</div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
+    </section>
 
-<!-- ══════════════════════════════════════════════
+    <!-- ══════════════════════════════════════════════
      CTA SECTION
      ══════════════════════════════════════════════ -->
-<section class="py-5 bg-dark text-white position-relative overflow-hidden" id="cta">
-    <div class="position-absolute rounded-circle bg-orange opacity-10"
-         style="width:400px;height:400px;right:-100px;top:-100px;"></div>
-    <div class="container py-5 text-center position-relative z-1" data-aos="zoom-in">
-        <h2 class="fw-bold display-5 mb-3">Ready to Build Something Great?</h2>
-        <p class="lead text-white-50 mb-5 mx-auto" style="max-width:600px;">
-            Whether you need a custom web app, a data analytics solution, or a powerful dashboard —
-            our team is ready to make it happen.
-        </p>
-        <div class="d-flex justify-content-center flex-wrap gap-3">
-            <a href="{% url 'contact' %}" class="btn btn-light text-dark btn-lg rounded-pill px-5 fw-bold hover-up">Get in Touch</a>
-            <a href="{% url 'services' %}" class="btn btn-outline-light btn-lg rounded-pill px-5 fw-bold hover-up">View All Services</a>
+    <section class="py-5 bg-dark text-white position-relative overflow-hidden" id="cta">
+        <div class="position-absolute rounded-circle bg-orange opacity-10"
+            style="width:400px;height:400px;right:-100px;top:-100px;"></div>
+        <div class="container py-5 text-center position-relative z-1" data-aos="zoom-in">
+            <h2 class="fw-bold display-5 mb-3">Ready to Build Something Great?</h2>
+            <p class="lead text-white-50 mb-5 mx-auto" style="max-width:600px;">
+                Whether you need a custom web app, a data analytics solution, or a powerful dashboard —
+                our team is ready to make it happen.
+            </p>
+            <div class="d-flex justify-content-center flex-wrap gap-3">
+                <a href="{% url 'contact' %}"
+                    class="btn btn-light text-dark btn-lg rounded-pill px-5 fw-bold hover-up">Get in Touch</a>
+                <a href="{% url 'services' %}"
+                    class="btn btn-outline-light btn-lg rounded-pill px-5 fw-bold hover-up">View All Services</a>
+            </div>
         </div>
-    </div>
-</section>
+    </section>
 
-<!-- ══════════════════════════════════════════════
+    <!-- ══════════════════════════════════════════════
      FOOTER
      ══════════════════════════════════════════════ -->
-<footer class="bg-black text-white py-5 border-top border-secondary">
-    <div class="container">
-        <div class="row g-4">
-            <div class="col-lg-4 mb-4 mb-lg-0">
-                <span class="brand-name fw-bold fs-3">TRHvision<span class="text-orange"></span></span>
-                <p class="text-white-50 mt-3">Empowering global enterprises with cutting-edge web development, data analytics, AI solutions, and digital transformation.</p>
-                <div class="d-flex gap-3 mt-4">
-                    <a href="https://www.linkedin.com/company/rhtvision/?viewAsMember=true" class="text-white-50 hover-white"><i class="bi bi-linkedin fs-5"></i></a>
-                    <a href="https://www.instagram.com/trhvision?igsh=MXhlZ2N6eWQ1dGprMA==" class="text-white-50 hover-white"><i class="bi bi-instagram fs-5"></i></a>
+    <footer class="bg-black text-white py-5 border-top border-secondary">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-lg-4 mb-4 mb-lg-0">
+                    <span class="brand-name fw-bold fs-3">TRHvision<span class="text-orange"></span></span>
+                    <p class="text-white-50 mt-3">Empowering global enterprises with cutting-edge web development, data
+                        analytics, AI solutions, and digital transformation.</p>
+                    <div class="d-flex gap-3 mt-4">
+                        <a href="https://www.linkedin.com/company/rhtvision/?viewAsMember=true"
+                            class="text-white-50 hover-white"><i class="bi bi-linkedin fs-5"></i></a>
+                        <a href="https://www.instagram.com/trhvision?igsh=MXhlZ2N6eWQ1dGprMA=="
+                            class="text-white-50 hover-white"><i class="bi bi-instagram fs-5"></i></a>
+                    </div>
+                </div>
+                <div class="col-6 col-lg-2 offset-lg-1">
+                    <h6 class="text-orange fw-bold mb-4">COMPANY</h6>
+                    <ul class="list-unstyled text-white-50">
+                        <li class="mb-2"><a href="{% url 'about' %}"
+                                class="text-white-50 text-decoration-none hover-white">About Us</a></li>
+                        <li class="mb-2"><a href="{% url 'services' %}"
+                                class="text-white-50 text-decoration-none hover-white">Services</a></li>
+                        <li class="mb-2"><a href="{% url 'career' %}"
+                                class="text-white-50 text-decoration-none hover-white">Careers</a></li>
+                        <li class="mb-2"><a href="{% url 'contact' %}"
+                                class="text-white-50 text-decoration-none hover-white">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="col-6 col-lg-2">
+                    <h6 class="text-orange fw-bold mb-4">LEGAL</h6>
+                    <ul class="list-unstyled text-white-50">
+                        <li class="mb-2"><a href="{% url 'terms' %}"
+                                class="text-white-50 text-decoration-none hover-white">Terms & Conditions</a></li>
+                        <li class="mb-2"><a href="{% url 'privacy' %}"
+                                class="text-white-50 text-decoration-none hover-white">Privacy Policy</a></li>
+                        <li class="mb-2"><a href="{% url 'refund_policy' %}"
+                                class="text-white-50 text-decoration-none hover-white">Refund Policy</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3">
+                    <h6 class="text-orange fw-bold mb-4">CONTACT</h6>
+                    <ul class="list-unstyled text-white-50">
+                        <li class="mb-2"><i class="bi bi-envelope me-2"></i>support@trhvision.com</li>
+                        <li class="mb-2"><i class="bi bi-phone me-2"></i>+91 8816847227</li>
+
+                    </ul>
                 </div>
             </div>
-            <div class="col-6 col-lg-2 offset-lg-1">
-                <h6 class="text-orange fw-bold mb-4">COMPANY</h6>
-                <ul class="list-unstyled text-white-50">
-                    <li class="mb-2"><a href="{% url 'about' %}" class="text-white-50 text-decoration-none hover-white">About Us</a></li>
-                    <li class="mb-2"><a href="{% url 'services' %}" class="text-white-50 text-decoration-none hover-white">Services</a></li>
-                    <li class="mb-2"><a href="{% url 'career' %}" class="text-white-50 text-decoration-none hover-white">Careers</a></li>
-                    <li class="mb-2"><a href="{% url 'contact' %}" class="text-white-50 text-decoration-none hover-white">Contact</a></li>
-                </ul>
-            </div>
-            <div class="col-6 col-lg-2">
-                <h6 class="text-orange fw-bold mb-4">LEGAL</h6>
-                <ul class="list-unstyled text-white-50">
-                    <li class="mb-2"><a href="{% url 'terms' %}" class="text-white-50 text-decoration-none hover-white">Terms & Conditions</a></li>
-                    <li class="mb-2"><a href="{% url 'privacy' %}" class="text-white-50 text-decoration-none hover-white">Privacy Policy</a></li>
-                    <li class="mb-2"><a href="{% url 'refund_policy' %}" class="text-white-50 text-decoration-none hover-white">Refund Policy</a></li>
-                </ul>
-            </div>
-            <div class="col-lg-3">
-                <h6 class="text-orange fw-bold mb-4">CONTACT</h6>
-                <ul class="list-unstyled text-white-50">
-                    <li class="mb-2"><i class="bi bi-envelope me-2"></i>support@trhvision.com</li>
-                    <li class="mb-2"><i class="bi bi-phone me-2"></i>+91 8816847227</li>
-                    <li class="mb-2"><i class="bi bi-geo-alt me-2"></i>[YOUR REGISTERED ADDRESS]</li>
-                </ul>
+            <hr class="border-secondary my-4">
+            <div class="d-flex flex-wrap justify-content-between align-items-center text-white-50">
+                <small>© 2026 TRHvision. All Rights Reserved.</small>
+                <div class="d-flex gap-3">
+                    <a href="{% url 'terms' %}" class="text-white-50 text-decoration-none small">Terms</a>
+                    <a href="{% url 'privacy' %}" class="text-white-50 text-decoration-none small">Privacy</a>
+                    <a href="{% url 'refund_policy' %}" class="text-white-50 text-decoration-none small">Refunds</a>
+                </div>
             </div>
         </div>
-        <hr class="border-secondary my-4">
-        <div class="d-flex flex-wrap justify-content-between align-items-center text-white-50">
-            <small>© 2026 TRHvision. All Rights Reserved.</small>
-            <div class="d-flex gap-3">
-                <a href="{% url 'terms' %}" class="text-white-50 text-decoration-none small">Terms</a>
-                <a href="{% url 'privacy' %}" class="text-white-50 text-decoration-none small">Privacy</a>
-                <a href="{% url 'refund_policy' %}" class="text-white-50 text-decoration-none small">Refunds</a>
-            </div>
-        </div>
-    </div>
-</footer>
+    </footer>
 
-<!-- ══════════════════════════════════════════════
+    <!-- ══════════════════════════════════════════════
      FLOATING ROBOT WIDGET — Daily Challenger
      ══════════════════════════════════════════════ -->
-<div id="dc-robot-tooltip">⚡ Daily Challenger</div>
+    <div id="dc-robot-tooltip">⚡ Daily Challenger</div>
 
-<button id="dc-robot-btn" aria-label="Open Daily Challenger" onclick="dcToggle()">
-    <span class="robot-face">🤖</span>
-</button>
+    <button id="dc-robot-btn" aria-label="Open Daily Challenger" onclick="dcToggle()">
+        <span class="robot-face">🤖</span>
+    </button>
 
-<div id="dc-panel" role="dialog" aria-label="Daily Challenger">
-    <div class="dcp-header">
-        <div class="dcp-header-left">
-            <div class="dcp-robot-sm">🤖</div>
-            <div>
-                <p class="dcp-title">Daily Challenger</p>
-                <p class="dcp-sub">Build habits. Win rewards.</p>
-            </div>
-        </div>
-        <button class="dcp-close" onclick="dcClose()" aria-label="Close">✕</button>
-    </div>
-    <div class="dcp-body">
-        <div class="dcp-streak-row">
-            <div>
-                <p class="dcp-streak-lbl">Sample Streak</p>
-                <div class="d-flex align-items-end gap-1">
-                    <span class="dcp-streak-num" id="dcStreakNum">0</span>
-                    <span style="font-size:1.3rem;margin-bottom:3px;">🔥</span>
+    <div id="dc-panel" role="dialog" aria-label="Daily Challenger">
+        <div class="dcp-header">
+            <div class="dcp-header-left">
+                <div class="dcp-robot-sm">🤖</div>
+                <div>
+                    <p class="dcp-title">Daily Challenger</p>
+                    <p class="dcp-sub">Build habits. Win rewards.</p>
                 </div>
-                <p class="dcp-streak-lbl">consecutive days</p>
             </div>
-            <div class="text-end">
-                <p class="dcp-best-lbl">Best Record</p>
-                <p class="dcp-best-val">🏆 247</p>
-                <p class="dcp-best-lbl">all time</p>
+            <button class="dcp-close" onclick="dcClose()" aria-label="Close">✕</button>
+        </div>
+        <div class="dcp-body">
+            <div class="dcp-streak-row">
+                <div>
+                    <p class="dcp-streak-lbl">Sample Streak</p>
+                    <div class="d-flex align-items-end gap-1">
+                        <span class="dcp-streak-num" id="dcStreakNum">0</span>
+                        <span style="font-size:1.3rem;margin-bottom:3px;">🔥</span>
+                    </div>
+                    <p class="dcp-streak-lbl">consecutive days</p>
+                </div>
+                <div class="text-end">
+                    <p class="dcp-best-lbl">Best Record</p>
+                    <p class="dcp-best-val">🏆 247</p>
+                    <p class="dcp-best-lbl">all time</p>
+                </div>
             </div>
+            <div class="dcp-tracks">
+                <div class="dcp-track">
+                    <div class="dcp-dot" style="background:#10b981;animation-delay:0s;"></div>
+                    <div>
+                        <p class="dcp-track-name">🐍 Python</p>
+                        <p class="dcp-track-status">142d streak</p>
+                    </div>
+                </div>
+                <div class="dcp-track">
+                    <div class="dcp-dot" style="background:#f472b6;animation-delay:.6s;"></div>
+                    <div>
+                        <p class="dcp-track-name">💪 Gym</p>
+                        <p class="dcp-track-status">✅ Done Today</p>
+                    </div>
+                </div>
+                <div class="dcp-track">
+                    <div class="dcp-dot" style="background:#60a5fa;animation-delay:1.2s;"></div>
+                    <div>
+                        <p class="dcp-track-name">🚀 Project</p>
+                        <p class="dcp-track-status">⏳ Pending</p>
+                    </div>
+                </div>
+                <div class="dcp-track">
+                    <div class="dcp-dot" style="background:#fbbf24;animation-delay:1.8s;"></div>
+                    <div>
+                        <p class="dcp-track-name">💼 Freelance</p>
+                        <p class="dcp-track-status">✅ Done Today</p>
+                    </div>
+                </div>
+            </div>
+            <p class="dcp-hm-label">30-Day Activity</p>
+            <div class="dcp-heatmap" id="dcHeatmap"></div>
+            <div class="dcp-milestones">
+                <span class="dcp-ms">🌱 30d</span>
+                <span class="dcp-ms">🔥 50d</span>
+                <span class="dcp-ms">💎 100d</span>
+                <span class="dcp-ms">⚡ 200d</span>
+                <span class="dcp-ms">👑 300d</span>
+                <span class="dcp-ms gold">🎁 500d</span>
+            </div>
+            <div class="dcp-gift"><span>🎁</span><span>Complete 500 days → Win <strong>₹500 Gift Card!</strong></span>
+            </div>
+            <p style="font-size:.7rem;color:rgba(255,255,255,.4);margin:0 0 .9rem;line-height:1.6;">
+                Track up to <strong style="color:#fff;">4 habits</strong> simultaneously.<br>
+                Min 30 days · Milestones: 50 · 100 · 200 · 300 · 500 days
+            </p>
+            <a href="{% url 'sigin' %}" class="dcp-cta"><i class="bi bi-lightning-charge-fill me-2"></i>Start Your
+                Streak Today ⚡</a>
         </div>
-        <div class="dcp-tracks">
-            <div class="dcp-track"><div class="dcp-dot" style="background:#10b981;animation-delay:0s;"></div><div><p class="dcp-track-name">🐍 Python</p><p class="dcp-track-status">142d streak</p></div></div>
-            <div class="dcp-track"><div class="dcp-dot" style="background:#f472b6;animation-delay:.6s;"></div><div><p class="dcp-track-name">💪 Gym</p><p class="dcp-track-status">✅ Done Today</p></div></div>
-            <div class="dcp-track"><div class="dcp-dot" style="background:#60a5fa;animation-delay:1.2s;"></div><div><p class="dcp-track-name">🚀 Project</p><p class="dcp-track-status">⏳ Pending</p></div></div>
-            <div class="dcp-track"><div class="dcp-dot" style="background:#fbbf24;animation-delay:1.8s;"></div><div><p class="dcp-track-name">💼 Freelance</p><p class="dcp-track-status">✅ Done Today</p></div></div>
-        </div>
-        <p class="dcp-hm-label">30-Day Activity</p>
-        <div class="dcp-heatmap" id="dcHeatmap"></div>
-        <div class="dcp-milestones">
-            <span class="dcp-ms">🌱 30d</span>
-            <span class="dcp-ms">🔥 50d</span>
-            <span class="dcp-ms">💎 100d</span>
-            <span class="dcp-ms">⚡ 200d</span>
-            <span class="dcp-ms">👑 300d</span>
-            <span class="dcp-ms gold">🎁 500d</span>
-        </div>
-        <div class="dcp-gift"><span>🎁</span><span>Complete 500 days → Win <strong>₹500 Gift Card!</strong></span></div>
-        <p style="font-size:.7rem;color:rgba(255,255,255,.4);margin:0 0 .9rem;line-height:1.6;">
-            Track up to <strong style="color:#fff;">4 habits</strong> simultaneously.<br>
-            Min 30 days · Milestones: 50 · 100 · 200 · 300 · 500 days
-        </p>
-        <a href="{% url 'sigin' %}" class="dcp-cta"><i class="bi bi-lightning-charge-fill me-2"></i>Start Your Streak Today ⚡</a>
     </div>
-</div>
 
-<!-- ══════════════════════════════════════════════
+    <!-- ══════════════════════════════════════════════
      SCRIPTS
      ══════════════════════════════════════════════ -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-<script>
-AOS.init({ duration: 800, once: true });
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({ duration: 800, once: true });
 
-// Generic counter animation helper
-function animateCounter(el, target, duration) {
-    let start = 0, startTime = null;
-    function step(timestamp) {
-        if (!startTime) startTime = timestamp;
-        const progress = Math.min((timestamp - startTime) / duration, 1);
-        const ease = 1 - Math.pow(1 - progress, 3);
-        el.textContent = Math.floor(ease * target);
-        if (progress < 1) requestAnimationFrame(step);
-        else el.textContent = target;
-    }
-    requestAnimationFrame(step);
-}
+        // Generic counter animation helper
+        function animateCounter(el, target, duration) {
+            let start = 0, startTime = null;
+            function step(timestamp) {
+                if (!startTime) startTime = timestamp;
+                const progress = Math.min((timestamp - startTime) / duration, 1);
+                const ease = 1 - Math.pow(1 - progress, 3);
+                el.textContent = Math.floor(ease * target);
+                if (progress < 1) requestAnimationFrame(step);
+                else el.textContent = target;
+            }
+            requestAnimationFrame(step);
+        }
 
-// Hero counters
-let counted = false;
-window.addEventListener('scroll', function() {
-    const s = document.querySelector('.hero-split');
-    if(s && s.getBoundingClientRect().top < window.innerHeight && !counted){
-        counted = true;
-        document.querySelectorAll('.counter').forEach(el => {
-            const target = +el.innerText;
-            el.setAttribute('data-target', target); el.innerText = 0;
-            (function step(){
-                const c = +el.innerText, inc = Math.ceil(target/200);
-                if(c < target){ el.innerText = Math.min(c+inc, target); setTimeout(step,20); }
-            })();
-        });
-    }
-});
-
-// Stats strip counters
-let stripCounted = false;
-const statsStrip = document.getElementById('stats-strip');
-if (statsStrip) {
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting && !stripCounted) {
-                stripCounted = true;
-                document.querySelectorAll('.counter2').forEach(el => {
-                    const target = parseInt(el.getAttribute('data-target'));
-                    animateCounter(el, target, 1800);
+        // Hero counters
+        let counted = false;
+        window.addEventListener('scroll', function () {
+            const s = document.querySelector('.hero-split');
+            if (s && s.getBoundingClientRect().top < window.innerHeight && !counted) {
+                counted = true;
+                document.querySelectorAll('.counter').forEach(el => {
+                    const target = +el.innerText;
+                    el.setAttribute('data-target', target); el.innerText = 0;
+                    (function step() {
+                        const c = +el.innerText, inc = Math.ceil(target / 200);
+                        if (c < target) { el.innerText = Math.min(c + inc, target); setTimeout(step, 20); }
+                    })();
                 });
             }
         });
-    }, { threshold: 0.3 });
-    observer.observe(statsStrip);
-}
 
-// Robot widget
-(function(){
-    setTimeout(() => {
-        const t = document.getElementById('dc-robot-tooltip');
-        if(t){ t.style.transition='opacity .4s'; t.style.opacity='0'; setTimeout(()=>t.remove(),400); }
-    }, 5000);
+        // Stats strip counters
+        let stripCounted = false;
+        const statsStrip = document.getElementById('stats-strip');
+        if (statsStrip) {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting && !stripCounted) {
+                        stripCounted = true;
+                        document.querySelectorAll('.counter2').forEach(el => {
+                            const target = parseInt(el.getAttribute('data-target'));
+                            animateCounter(el, target, 1800);
+                        });
+                    }
+                });
+            }, { threshold: 0.3 });
+            observer.observe(statsStrip);
+        }
 
-    let open = false;
-    window.dcToggle = () => open ? dcClose() : dcOpen();
-    window.dcOpen = function(){
-        open = true;
-        document.getElementById('dc-panel').classList.add('open');
-        document.getElementById('dc-robot-btn').querySelector('.robot-face').textContent = '👾';
-        buildHeatmap(); animateStreak();
-    };
-    window.dcClose = function(){
-        open = false;
-        document.getElementById('dc-panel').classList.remove('open');
-        document.getElementById('dc-robot-btn').querySelector('.robot-face').textContent = '🤖';
-    };
-    document.addEventListener('click', e => {
-        if(open && !e.target.closest('#dc-panel') && !e.target.closest('#dc-robot-btn')) dcClose();
-    });
+        // Robot widget
+        (function () {
+            setTimeout(() => {
+                const t = document.getElementById('dc-robot-tooltip');
+                if (t) { t.style.transition = 'opacity .4s'; t.style.opacity = '0'; setTimeout(() => t.remove(), 400); }
+            }, 5000);
 
-    let streakDone = false;
-    function animateStreak(){
-        if(streakDone) return; streakDone = true;
-        const el = document.getElementById('dcStreakNum');
-        let v=0,t=38; (function s(){ v+=Math.ceil((t-v)/7)||1; el.textContent=v; if(v<t) requestAnimationFrame(s); })();
-    }
-    let hmBuilt = false;
-    function buildHeatmap(){
-        if(hmBuilt) return; hmBuilt = true;
-        const hm = document.getElementById('dcHeatmap');
-        const pat=[0,0,1,1,1,0,1,1,1,1,0,1,1,0,1,1,1,1,1,0,1,1,1,1,1,1,0,1,1,1];
-        const today = new Date();
-        pat.forEach((v,i)=>{
-            const d=document.createElement('div'); d.className='dcp-hm-dot';
-            d.style.background=v?'#10b981':'rgba(255,255,255,.07)';
-            if(i===29){d.style.outline='2px solid #10b981';d.style.outlineOffset='1px';}
-            const day=new Date(today); day.setDate(today.getDate()-(29-i));
-            d.title=day.toDateString()+(v?' ✓':''); hm.appendChild(d);
-        });
-    }
-})();
-</script>
+            let open = false;
+            window.dcToggle = () => open ? dcClose() : dcOpen();
+            window.dcOpen = function () {
+                open = true;
+                document.getElementById('dc-panel').classList.add('open');
+                document.getElementById('dc-robot-btn').querySelector('.robot-face').textContent = '👾';
+                buildHeatmap(); animateStreak();
+            };
+            window.dcClose = function () {
+                open = false;
+                document.getElementById('dc-panel').classList.remove('open');
+                document.getElementById('dc-robot-btn').querySelector('.robot-face').textContent = '🤖';
+            };
+            document.addEventListener('click', e => {
+                if (open && !e.target.closest('#dc-panel') && !e.target.closest('#dc-robot-btn')) dcClose();
+            });
+
+            let streakDone = false;
+            function animateStreak() {
+                if (streakDone) return; streakDone = true;
+                const el = document.getElementById('dcStreakNum');
+                let v = 0, t = 38; (function s() { v += Math.ceil((t - v) / 7) || 1; el.textContent = v; if (v < t) requestAnimationFrame(s); })();
+            }
+            let hmBuilt = false;
+            function buildHeatmap() {
+                if (hmBuilt) return; hmBuilt = true;
+                const hm = document.getElementById('dcHeatmap');
+                const pat = [0, 0, 1, 1, 1, 0, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1];
+                const today = new Date();
+                pat.forEach((v, i) => {
+                    const d = document.createElement('div'); d.className = 'dcp-hm-dot';
+                    d.style.background = v ? '#10b981' : 'rgba(255,255,255,.07)';
+                    if (i === 29) { d.style.outline = '2px solid #10b981'; d.style.outlineOffset = '1px'; }
+                    const day = new Date(today); day.setDate(today.getDate() - (29 - i));
+                    d.title = day.toDateString() + (v ? ' ✓' : ''); hm.appendChild(d);
+                });
+            }
+        })();
+    </script>
 
 </body>
+
 </html>
