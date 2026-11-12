@@ -735,12 +735,9 @@ def dashboard(request):
             days_left_for_cert = (internship_end_date - today_date).days
 
     # ── Certificate unlock logic ──────────────────────────────────────────
-    # Unlock when task progress is 100%  OR  internship duration is done AND
-    # all learning lessons are complete.  This check is intentionally OUTSIDE
-    # the cert_enrollment block so that students who have completed all tasks
-    # are always shown the payment option regardless of enrollment status.
-    if progress_percent >= 100 or (internship_duration_done and all_lessons_done):
-        certificate_unlocked = True
+    # Certificate option is directly unlocked for enrolled students without restrictions.
+    # Students can directly pay to unlock and download their certificate.
+    certificate_unlocked = True
 
     has_certificate = bool(profile.certificate)
 
@@ -1560,40 +1557,6 @@ def generate_certificate(request):
     from dateutil.relativedelta import relativedelta
 
     enrollment = Enrollment.objects.filter(email=request.user.email, is_paid=True).first()
-
-    # Verify eligibility: either internship period ended OR task progress is 100%
-    internship_complete = False
-    task_progress_complete = False
-
-    # Check task progress (100% domain tasks done counts as complete)
-    from .models import Task as TaskModel
-    all_tasks = TaskModel.objects.filter(
-        category=profile.Intren
-    )
-    total_tasks = all_tasks.count()
-    completed_tasks = sum(1 for t in all_tasks if request.user in t.users_completed.all())
-    if total_tasks > 0 and completed_tasks >= total_tasks:
-        task_progress_complete = True
-
-    if enrollment:
-        # Fallback date chain: start_date → approved_at → created_at
-        if enrollment.start_date:
-            intern_start = enrollment.start_date
-        elif enrollment.approved_at:
-            intern_start = enrollment.approved_at.date()
-        else:
-            intern_start = enrollment.created_at.date()
-
-        dur_map = {'1 Month': 1, '2 Months': 2, '3 Months': 3, '6 Months': 6}
-        months = dur_map.get(profile.period, 1)
-        end_date = intern_start + relativedelta(months=months)
-        if timezone.now().date() >= end_date:
-            internship_complete = True
-
-    # Allow download if either condition is met
-    if not internship_complete and not task_progress_complete:
-        messages.error(request, "Complete all course tasks to unlock your certificate.")
-        return redirect('dashboard')
 
     # Check certificate payment — look for ANY paid enrollment for this user's email
     paid_enrollment_for_cert = Enrollment.objects.filter(
